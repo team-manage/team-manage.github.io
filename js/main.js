@@ -59,6 +59,9 @@ var org;
                                 return _this.$scope.title = element ? $("input[name='navbarTitle']", element).val() : null;
                             });
                         }, 0);
+                        setTimeout(function () {
+                            return $(".loading").addClass("done");
+                        }, 0);
                     };
                     return NavBar;
                 }());

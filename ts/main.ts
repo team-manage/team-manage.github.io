@@ -16,6 +16,9 @@ namespace org.usd232.robotics.management {
                     this.$scope.title = element ? $("input[name='navbarTitle']", element).val() : null
                 )
             , 0);
+            setTimeout(() =>
+                $(".loading").addClass("done")
+            , 0);
         }
 
         public constructor(history: HistoryController) {
