@@ -1,0 +1,21 @@
+[
+    {
+        "id": 1,
+        "name": "Thorin Oakenshield",
+        "verified": true,
+        "unexcused": 0,
+        "late": 1
+    },
+    {
+        "id": 2,
+        "name": "Gandalf",
+        "verified": true,
+        "unexcused": 0,
+        "late": 0
+    },
+    {
+        "id": 3,
+        "name": "Smaug",
+        "verified": false
+    }
+]

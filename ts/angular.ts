@@ -14,7 +14,7 @@ namespace org.usd232.robotics.management.ng {
         public static init(): void {
             AngularController.app = (window as any).angular.module("team-manage", []);
             Object.getOwnPropertyNames(AngularController.controllers).forEach(name => 
-                AngularController.app.controller(name, AngularController.app.controllers[name])
+                AngularController.app.controller(name, AngularController.controllers[name])
             );
         }
     }

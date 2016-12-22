@@ -1,0 +1,12 @@
+[
+    {
+        "name": "team.name",
+        "type": "string",
+        "value": "Jaguar Robotics"
+    },
+    {
+        "name": "absences.unexcused.max",
+        "type": "int",
+        "value": 5
+    }
+]

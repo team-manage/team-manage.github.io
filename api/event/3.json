@@ -1,0 +1,11 @@
+{
+    "id": 3,
+    "type": "meeting",
+    "location": "Mill Valley",
+    "date": "12/1/16",
+    "time": {
+        "allDay": false,
+        "start": "6:00 PM",
+        "end": "7:00 PM"
+    }
+}

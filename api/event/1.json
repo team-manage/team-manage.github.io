@@ -1,0 +1,16 @@
+{
+    "id": 1,
+    "type": "event",
+    "name": "Kickoff",
+    "location": "Mill Valley",
+    "date": "1/7/17",
+    "time": {
+        "allDay": false,
+        "start": "7:00 AM",
+        "end": "3:00 PM"
+    },
+    "signup": {
+        "required": true,
+        "deadline": "12/31/16"
+    }
+}

@@ -1,0 +1,61 @@
+[
+    {
+        "id": 1,
+        "type": "event",
+        "name": "Kickoff",
+        "location": "Mill Valley",
+        "date": "1/7/17",
+        "signup": {
+            "required": true,
+            "deadline": "12/31/16",
+            "rsvp": null
+        },
+        "attended": null
+    },
+    {
+        "id": 2,
+        "type": "event",
+        "name": "Team Building",
+        "location": "Mill Valley",
+        "date": "12/8/16",
+        "signup": {
+            "required": true,
+            "deadline": "12/7/16",
+            "rsvp": true
+        },
+        "attended": true
+    },
+    {
+        "id": 3,
+        "type": "meeting",
+        "location": "Mill Valley",
+        "date": "12/1/16",
+        "attended": true
+    },
+    {
+        "id": 4,
+        "type": "event",
+        "name": "Cow Town",
+        "location": "Lee's Summit",
+        "date": "10/29/16",
+        "signup": {
+            "required": true,
+            "deadline": "10/13/16",
+            "rsvp": true
+        },
+        "attended": true
+    },
+    {
+        "id": 5,
+        "type": "event",
+        "name": "Cow Town",
+        "location": "Lee's Summit",
+        "date": "10/28/16",
+        "signup": {
+            "required": true,
+            "deadline": "10/13/16",
+            "rsvp": true
+        },
+        "attended": true
+    }
+]

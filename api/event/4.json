@@ -1,0 +1,14 @@
+{
+    "id": 4,
+    "type": "event",
+    "name": "Cow Town",
+    "location": "Lee's Summit",
+    "date": "10/29/16",
+    "time": {
+        "allDay": true
+    },
+    "signup": {
+        "required": true,
+        "deadline": "10/13/16"
+    }
+}

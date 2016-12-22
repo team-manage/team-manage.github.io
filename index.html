@@ -13,13 +13,52 @@
 <!-- Angular JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
 
+<!-- Material Icons -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+
 <!-- Our stuff -->
 <link rel="stylesheet" href="/css/main.css" />
 <script src="/js/main.js"></script>
 
     </head>
     <body ng-app="team-manage">
-        <h1>Hello, world!</h1>
+        <nav ng-controller="header" ng-hide="title == null || title == 'null'" class="indigo darken-4">
+    <div class="nav-wrapper">
+        <a class="brand-logo center" ng-bind="title"></a>
+        <ul class="left">
+            <li>
+                <a ng-click="goBack()">
+                    <i class="material-icons">
+                        arrow_back
+                    </i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container" ng-controller="pages">
+    
+        <div ng-show="name == 'login'" id="page-login">
+            <input type="hidden" name="navbarTitle" value="null" />
+            <input type="hidden" name="pageTitle" value="Login" />
+            <input type="hidden" name="pageUrl" value="/" />
+            <h1>
+    Hello, world!
+</h1>
+
+        </div>
+    
+        <div ng-show="name == '404'" id="page-404">
+            <input type="hidden" name="navbarTitle" value="Page Not Found" />
+            <input type="hidden" name="pageTitle" value="HTTP 404" />
+            <input type="hidden" name="pageUrl" value="" />
+            <h1 class="center">
+    This is not the page you are looking for.
+</h1>
+
+        </div>
+    
+</div>
 
         <script>org.usd232.robotics.management.ng.AngularController.init()</script>
     </body>

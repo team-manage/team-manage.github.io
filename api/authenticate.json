@@ -1,0 +1,82 @@
+{
+    "authentication": "success",
+    "permissions": {
+        "kiosk": {
+            "open": true
+        },
+        "message": {
+            "send": true
+        },
+        "events": {
+            "view": true,
+            "add": true,
+            "edit": {
+                "type": true,
+                "name": true,
+                "datetime": true
+            },
+            "remove": true
+        },
+        "attendance": {
+            "view": true,
+            "modify": true,
+            "excuse": true
+        },
+        "users": {
+            "view": true,
+            "verify": true,
+            "unverify": true
+        },
+        "devices": {
+            "add": true,
+            "update": true,
+            "remove": true
+        },
+        "settings": {
+            "view": true,
+            "edit": true
+        },
+        "signIn": {
+            "kiosk": true,
+            "code": true,
+            "auto": true
+        }
+    },
+    "profile": {
+        "contact": [
+            {
+                "type": "email",
+                "address": "myemail@example.com",
+                "notifications": {
+                    "signIn": {
+                        "manual": false,
+                        "auto": false
+                    },
+                    "team": true,
+                    "meetings": {
+                        "missed": true,
+                        "reminders": false
+                    }
+                }
+            },
+            {
+                "type": "phone",
+                "number": "0123456789",
+                "provider": "T-Mobile",
+                "notifications": {
+                    "signIn": {
+                        "manual": false,
+                        "auto": false
+                    },
+                    "team": true,
+                    "meetings": {
+                        "missed": false,
+                        "reminders": true
+                    }
+                }
+            }
+        ],
+        "picture": "/api/profile-42914_1280.png",
+        "pin": 123
+    }
+}
