@@ -23,6 +23,12 @@
 .tabs .indicator {
   background-color: #3f51b5; }
 
+.login-container {
+  height: 100vh; }
+
+.login-container .valign {
+  width: 100%; }
+
 .loading {
   position: fixed;
   top: 0;
