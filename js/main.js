@@ -283,7 +283,13 @@ var org;
                     }());
                     apis.EventTime = EventTime;
                     var Event = (function () {
-                        function Event() {
+                        function Event(id, type, name, date, time, signup) {
+                            this.id = id;
+                            this.type = type;
+                            this.name = name;
+                            this.date = date;
+                            this.time = time;
+                            this.signup = signup;
                         }
                         return Event;
                     }());
@@ -355,6 +361,93 @@ var org;
                         return KioskSignInRequest;
                     }());
                     apis.KioskSignInRequest = KioskSignInRequest;
+                    var RegisterRequest = (function () {
+                        function RegisterRequest(username, fname, lname, password, email, email2, phone, provider) {
+                            this.username = username;
+                            this.fname = fname;
+                            this.lname = lname;
+                            this.password = password;
+                            this.email = email;
+                            this.email2 = email2;
+                            this.phone = phone;
+                            this.provider = provider;
+                        }
+                        return RegisterRequest;
+                    }());
+                    apis.RegisterRequest = RegisterRequest;
+                    var AddContactRequest = (function () {
+                        function AddContactRequest(type, value, provider) {
+                            this.type = type;
+                            if (type == ContactType.phone) {
+                                this.number = value;
+                                this.provider = provider;
+                            }
+                            else if (type == ContactType.email) {
+                                this.address = value;
+                            }
+                        }
+                        return AddContactRequest;
+                    }());
+                    apis.AddContactRequest = AddContactRequest;
+                    var EditContactRequest = (function () {
+                        function EditContactRequest(type, value, notifications) {
+                            this.type = type;
+                            if (type == ContactType.phone) {
+                                this.number = value;
+                            }
+                            else if (type == ContactType.email) {
+                                this.address = value;
+                            }
+                            this.notifications = notifications;
+                        }
+                        return EditContactRequest;
+                    }());
+                    apis.EditContactRequest = EditContactRequest;
+                    var RemoveContactRequest = (function () {
+                        function RemoveContactRequest(type, value) {
+                            this.type = type;
+                            if (type == ContactType.phone) {
+                                this.number = value;
+                            }
+                            else if (type == ContactType.email) {
+                                this.address = value;
+                            }
+                        }
+                        return RemoveContactRequest;
+                    }());
+                    apis.RemoveContactRequest = RemoveContactRequest;
+                    var RsvpRequest = (function () {
+                        function RsvpRequest(event, rsvp) {
+                            this.event = event;
+                            this.rsvp = rsvp;
+                        }
+                        return RsvpRequest;
+                    }());
+                    apis.RsvpRequest = RsvpRequest;
+                    var StatusIdResponse = (function (_super) {
+                        __extends(StatusIdResponse, _super);
+                        function StatusIdResponse() {
+                            return _super.apply(this, arguments) || this;
+                        }
+                        return StatusIdResponse;
+                    }(StatusResponse));
+                    apis.StatusIdResponse = StatusIdResponse;
+                    var ExcuseRequest = (function () {
+                        function ExcuseRequest(user, excused) {
+                            this.user = user;
+                            this.excused = excused;
+                        }
+                        return ExcuseRequest;
+                    }());
+                    apis.ExcuseRequest = ExcuseRequest;
+                    var SetSettingRequest = (function () {
+                        function SetSettingRequest(key, value) {
+                            this.key = key;
+                            this.value = value;
+                        }
+                        return SetSettingRequest;
+                    }());
+                    apis.SetSettingRequest = SetSettingRequest;
                     var ApiBase = (function () {
                         function ApiBase(url, ctrlr) {
                             this.lastModified = 0;
@@ -468,6 +561,19 @@ var org;
                             this.kiosk = new CollectionApi("/kiosk", this);
                             this.kioskSignIn = new ParameterizedApi("/kiosk/signIn", this);
                             this.update = new CollectionApi("/update", this);
+                            this.register = new ParameterizedApi("/register", this);
+                            this.addContact = new ParameterizedApi("/contact/add", this);
+                            this.editContact = new ParameterizedApi("/contact/edit", this);
+                            this.removeContact = new ParameterizedApi("/contact/remove", this);
+                            this.setPicture = new ParameterizedApi("/setPicture", this);
+                            this.rsvp = new ParameterizedApi("/event/rsvp", this);
+                            this.changePin = new ParameterizedApi("/changePin", this);
+                            this.addEvent = new GeneralApi("/event/add", this);
+                            this.editEvent = new ParameterizedApi("/event/edit", this);
+                            this.removeEvent = new ParameterizedApi("/event/remove", this);
+                            this.excuse = new ParameterizedApi("/attendance/excuse", this);
+                            this.verify = new ParameterizedApi("/verify", this);
+                            this.setSetting = new ParameterizedApi("/setSetting", this);
                         }
                         ApiController.prototype.setServerUrl = function (url) {
                             if (url.match(/^!.*$/)) {

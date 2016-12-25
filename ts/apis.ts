@@ -147,6 +147,15 @@ namespace org.usd232.robotics.management.apis {
         public time?: EventTime;
         public signup: EventSignup;
         public attended?: boolean;
+
+        public constructor(id?: number, type?: EventType, name?: string, date?: string, time?: EventTime, signup?: EventSignup) {
+            this.id = id;
+            this.type = type;
+            this.name = name;
+            this.date = date;
+            this.time = time;
+            this.signup = signup;
+        }
     }
 
     export enum DeviceRole {
@@ -217,6 +226,111 @@ namespace org.usd232.robotics.management.apis {
 
         public constructor(pin?: number) {
             this.pin = pin;
+        }
+    }
+
+    export class RegisterRequest {
+        public username: string;
+        public fname: string;
+        public lname: string;
+        public password: string;
+        public email: string;
+        public email2: string;
+        public phone: string;
+        public provider: string;
+
+        public constructor(username?: string, fname?: string, lname?: string, password?: string, email?: string, email2?: string, phone?: string, provider?: string) {
+            this.username = username;
+            this.fname = fname;
+            this.lname = lname;
+            this.password = password;
+            this.email = email;
+            this.email2 = email2;
+            this.phone = phone;
+            this.provider = provider;
+        }
+    }
+
+    export class AddContactRequest {
+        public type: ContactType;
+        public address: string;
+        public number: string;
+        public provider: string;
+
+        public constructor(type?: ContactType, value?: string, provider?: string) {
+            this.type = type;
+            if ( type == ContactType.phone ) {
+                this.number = value;
+                this.provider = provider;
+            } else if ( type == ContactType.email ) {
+                this.address = value;
+            }
+        }
+    }
+
+    export class EditContactRequest {
+        public type: ContactType;
+        public address: string;
+        public number: string;
+        public notifications: Notifications;
+
+        public constructor(type?: ContactType, value?: string, notifications?: Notifications) {
+            this.type = type;
+            if ( type == ContactType.phone ) {
+                this.number = value;
+            } else if ( type == ContactType.email ) {
+                this.address = value;
+            }
+            this.notifications = notifications;
+        }
+    }
+
+    export class RemoveContactRequest {
+        public type: ContactType;
+        public address: string;
+        public number: string;
+
+        public constructor(type?: ContactType, value?: string) {
+            this.type = type;
+            if ( type == ContactType.phone ) {
+                this.number = value;
+            } else if ( type == ContactType.email ) {
+                this.address = value;
+            }
+        }
+    }
+
+    export class RsvpRequest {
+        public event: number;
+        public rsvp?: boolean;
+
+        public constructor(event?: number, rsvp?: boolean) {
+            this.event = event;
+            this.rsvp = rsvp;
+        }
+    }
+
+    export class StatusIdResponse extends StatusResponse {
+        public id: number;
+    }
+
+    export class ExcuseRequest {
+        public user: number;
+        public excused: boolean;
+
+        public constructor(user?: number, excused?: boolean) {
+            this.user = user;
+            this.excused = excused;
+        }
+    }
+
+    export class SetSettingRequest {
+        public key: string;
+        public value: string;
+
+        public constructor(key?: string, value?: string) {
+            this.key = key;
+            this.value = value;
         }
     }
 
@@ -320,6 +434,19 @@ namespace org.usd232.robotics.management.apis {
         public kiosk = new CollectionApi<User, number>("/kiosk", this);
         public kioskSignIn = new ParameterizedApi<StatusResponse, KioskSignInRequest>("/kiosk/signIn", this);
         public update = new CollectionApi<StatusResponse, string>("/update", this);
+        public register = new ParameterizedApi<StatusResponse, RegisterRequest>("/register", this);
+        public addContact = new ParameterizedApi<StatusResponse, AddContactRequest>("/contact/add", this);
+        public editContact = new ParameterizedApi<StatusResponse, EditContactRequest>("/contact/edit", this);
+        public removeContact = new ParameterizedApi<StatusResponse, RemoveContactRequest>("/contact/remove", this);
+        public setPicture = new ParameterizedApi<StatusResponse, string>("/setPicture", this);
+        public rsvp = new ParameterizedApi<StatusResponse, RsvpRequest>("/event/rsvp", this);
+        public changePin = new ParameterizedApi<StatusResponse, number>("/changePin", this);
+        public addEvent = new GeneralApi<StatusIdResponse>("/event/add", this);
+        public editEvent = new ParameterizedApi<StatusResponse, Event>("/event/edit", this);
+        public removeEvent = new ParameterizedApi<StatusResponse, number>("/event/remove", this);
+        public excuse = new ParameterizedApi<StatusResponse, ExcuseRequest>("/attendance/excuse", this);
+        public verify = new ParameterizedApi<StatusResponse, number>("/verify", this);
+        public setSetting = new ParameterizedApi<StatusResponse, SetSettingRequest>("/setSetting", this);
 
         public setServerUrl(url: string) {
             if ( url.match(/^!.*$/) ) {
