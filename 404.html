@@ -108,6 +108,108 @@
 
         </div>
     
+        <div ng-show="name == 'register'" id="page-register" ng-controller="page-register">
+            <input type="hidden" name="navbarTitle" value="" />
+            <input type="hidden" name="pageTitle" value="Create Account" />
+            <input type="hidden" name="pageUrl" value="/register" />
+            <div class="valign-wrapper login-container">
+    <div class="valign">
+        <div class="row">
+            <div class="col s12">
+                <h1 class="center">
+                    Create an Account
+                </h1>
+            </div>
+        </div>
+        <form onsubmit="return false" ng-submit="register()">
+<div class="row">
+    <div class="col s12 input-field">
+        <input name="server" type="text" ng-model="server" />
+        <label for="server">Server</label>
+    </div>
+</div>
+<div class="row">
+    <div class="col s12 input-field">
+        <input name="user" type="text" ng-model="username" />
+        <label for="user">Username</label>
+    </div>
+</div>
+<div class="row">
+    <div class="col s6 input-field">
+        <input name="firstname" type="text" ng-model="firstname" />
+        <label for="firstname">First Name</label>
+    </div>
+    <div class="col s6 input-field">
+        <input name="lastname" type="text" ng-model="lastname" />
+        <label for="lastname">Last Name</label>
+    </div>
+</div>
+<div class="row">
+    <div class="col s6 input-field">
+        <input name="pass" type="password" ng-model="password" />
+        <label for="pass">Password</label>
+    </div>
+    <div class="col s6 input-field">
+        <input name="passconf" type="password" ng-model="passconf" />
+        <label for="passconf">Confirm password</label>
+    </div>
+</div>
+<div class="row">
+    <div class="col s6 input-field">
+        <input name="email" type="email" ng-model="email" class="validate" />
+        <label for="email">Email Address</label>
+    </div>
+    <div class="col s6 input-field">
+        <input name="parentemail" type="email" ng-model="parentemail" class="validate" />
+        <label for="parentemail">Parent Email</label>
+    </div>
+</div>
+<div class="row">
+    <div class="col s6 input-field">
+        <input name="phonenumber" type="text" ng-model="phonenumber" />
+        <label for="phonenumber">Phone Number</label>
+    </div>
+    <div class="col s6 input-field">
+        <select name="provider" ng-model="provider">
+            <option value="" disabled selected>Choose a provider</option>
+            <option value="1">T-Mobile</option>
+            <option value="2">Verizon Wireless</option>
+            <option value="3">AT&T</option>
+            <option value="4">Sprint</option>
+            <option value="5">Metro PCS</option>
+            <option value="6">Boost Mobile</option>
+            <option value="7">Virgin Mobile</option>
+            <option value="8">Straight Talk</option>
+            <option value="9">Cricket Wireless</option>
+            <option value="10">Consumer Cellular</option>
+            <option value="11">U.S Cellular</option>
+            <option value="12">Trackphone</option>
+            <option value="13">Other</option>
+            <option value="14">I don't have a phone</option>
+        </select>
+        <label for="provider">Cell Phone Provider</label>
+    </div>
+</div>
+<div class="row">
+    <div class="col s6">
+        <button class="waves-effect waves-light btn left" ng-click="back()">
+                        I already have an account
+                    </button>
+    </div>
+    <div class="col s6">
+        <button class="waves-effect waves-light btn right" ng-click="register()">
+                        Submit
+                        <i class="material-icons">
+                            add
+                        </i>
+                    </button>
+    </div>
+</div>
+</form>
+</div>
+</div>
+        </div>
+    
 </div>
 <div class="loading"></div>
 

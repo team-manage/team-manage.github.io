@@ -8,7 +8,7 @@ namespace org.usd232.robotics.management.pages {
 
     export class LoginController extends AbstractPage {
         protected init(): void {
-            this.$scope.create = () => HistoryController.load("/create");
+            this.$scope.create = () => HistoryController.load("/register");
             this.$scope.login = () => {
                 ApiController.instance.setServerUrl(this.$scope.server);
                 ApiController.instance.login.request(new LoginRequest(this.$scope.username, this.$scope.password), res => {

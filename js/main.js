@@ -523,7 +523,7 @@ var org;
                         }
                         LoginController.prototype.init = function () {
                             var _this = this;
-                            this.$scope.create = function () { return management.HistoryController.load("/create"); };
+                            this.$scope.create = function () { return management.HistoryController.load("/register"); };
                             this.$scope.login = function () {
                                 ApiController.instance.setServerUrl(_this.$scope.server);
                                 ApiController.instance.login.request(new LoginRequest(_this.$scope.username, _this.$scope.password), function (res) {
@@ -577,9 +577,42 @@ var org;
         })(robotics = usd232.robotics || (usd232.robotics = {}));
     })(usd232 = org.usd232 || (org.usd232 = {}));
 })(org || (org = {}));
+/// <reference path="../page.ts" />
+/// <reference path="../navigation.ts" />
+/// <reference path="../apis.ts" />
+var org;
+(function (org) {
+    var usd232;
+    (function (usd232) {
+        var robotics;
+        (function (robotics) {
+            var management;
+            (function (management) {
+                var pages;
+                (function (pages) {
+                    var RegisterController = (function (_super) {
+                        __extends(RegisterController, _super);
+                        function RegisterController() {
+                            return _super.apply(this, arguments) || this;
+                        }
+                        RegisterController.prototype.init = function () {
+                            $(document).ready(function () {
+                                $('select').material_select();
+                            });
+                            this.$scope.back = function () { return management.HistoryController.load("/"); };
+                        };
+                        return RegisterController;
+                    }(management.AbstractPage));
+                    pages.RegisterController = RegisterController;
+                })(pages = management.pages || (management.pages = {}));
+            })(management = robotics.management || (robotics.management = {}));
+        })(robotics = usd232.robotics || (usd232.robotics = {}));
+    })(usd232 = org.usd232 || (org.usd232 = {}));
+})(org || (org = {}));
 /// <reference path="page.ts" />
 /// <reference path="pages/login.ts" />
 /// <reference path="pages/404.ts" />
+/// <reference path="pages/register.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -590,6 +623,7 @@ var org;
             (function (management) {
                 var LoginController = org.usd232.robotics.management.pages.LoginController;
                 var NotFoundController = org.usd232.robotics.management.pages.NotFoundController;
+                var RegisterController = org.usd232.robotics.management.pages.RegisterController;
                 var PageFactory = (function () {
                     function PageFactory() {
                     }
@@ -597,6 +631,7 @@ var org;
                         return [
                             new LoginController("login"),
                             new NotFoundController("404"),
+                            new RegisterController("register"),
                         ];
                     };
                     return PageFactory;
