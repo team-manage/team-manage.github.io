@@ -638,8 +638,14 @@ var org;
                             this.$scope.$apply(function () {
                                 _this.$scope.server = localStorage.getItem("serverUrl");
                                 _this.$scope.username = localStorage.getItem("username");
-                                if (_this.$scope.server && _this.$scope.username) {
-                                    setTimeout(function () { return $(".login-container input[name='pass']").select(); }, 0);
+                                if (_this.$scope.server) {
+                                    $(".login-container label[for='server']").addClass("active");
+                                }
+                                if (_this.$scope.username) {
+                                    $(".login-container label[for='user']").addClass("active");
+                                    if (_this.$scope.server) {
+                                        setTimeout(function () { return $(".login-container input[name='pass']").select(); }, 0);
+                                    }
                                 }
                             });
                         };

@@ -19,8 +19,14 @@ namespace org.usd232.robotics.management.pages {
             this.$scope.$apply(() => {
                 this.$scope.server = localStorage.getItem("serverUrl");
                 this.$scope.username = localStorage.getItem("username");
-                if ( this.$scope.server && this.$scope.username ) {
-                    setTimeout(() => $(".login-container input[name='pass']").select(), 0);
+                if ( this.$scope.server ) {
+                    $(".login-container label[for='server']").addClass("active");
+                }
+                if ( this.$scope.username ) {
+                    $(".login-container label[for='user']").addClass("active");
+                    if ( this.$scope.server ) {
+                        setTimeout(() => $(".login-container input[name='pass']").select(), 0);
+                    }
                 }
             });
         }
