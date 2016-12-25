@@ -628,8 +628,24 @@ var org;
                         function LoginController() {
                             return _super.apply(this, arguments) || this;
                         }
+                        LoginController.readStorage = function () {
+                            for (var i = 0; i < LoginController.instances.length; ++i) {
+                                LoginController.instances[i].instanceReadStorage();
+                            }
+                        };
+                        LoginController.prototype.instanceReadStorage = function () {
+                            var _this = this;
+                            this.$scope.$apply(function () {
+                                _this.$scope.server = localStorage.getItem("serverUrl");
+                                _this.$scope.username = localStorage.getItem("username");
+                                if (_this.$scope.server && _this.$scope.username) {
+                                    setTimeout(function () { return $(".login-container input[name='pass']").select(); }, 0);
+                                }
+                            });
+                        };
                         LoginController.prototype.init = function () {
                             var _this = this;
+                            LoginController.instances.push(this);
                             this.$scope.create = function () { return management.HistoryController.load("/register"); };
                             this.$scope.login = function () {
                                 ApiController.instance.setServerUrl(_this.$scope.server);
@@ -644,14 +660,11 @@ var org;
                                     }
                                 });
                             };
-                            this.$scope.server = localStorage.getItem("serverUrl");
-                            this.$scope.username = localStorage.getItem("username");
-                            if (this.$scope.server && this.$scope.username) {
-                                setTimeout(function () { return $(".login-container input[name='pass']").select(); }, 0);
-                            }
+                            setTimeout(function () { return _this.instanceReadStorage(); }, 0);
                         };
                         return LoginController;
                     }(management.AbstractPage));
+                    LoginController.instances = [];
                     pages.LoginController = LoginController;
                 })(pages = management.pages || (management.pages = {}));
             })(management = robotics.management || (robotics.management = {}));
@@ -999,6 +1012,7 @@ var org;
 /// <reference path="../navigation.ts" />
 /// <reference path="../apis.ts" />
 /// <reference path="../providers.ts" />
+/// <reference path="login.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -1009,6 +1023,8 @@ var org;
             (function (management) {
                 var pages;
                 (function (pages) {
+                    var ApiController = org.usd232.robotics.management.apis.ApiController;
+                    var RegisterRequest = org.usd232.robotics.management.apis.RegisterRequest;
                     var Providers = org.usd232.robotics.management.Providers; // VS doesn't like Liquid
                     var RegisterController = (function (_super) {
                         __extends(RegisterController, _super);
@@ -1027,7 +1043,24 @@ var org;
                             return _this;
                         }
                         RegisterController.prototype.init = function () {
+                            var _this = this;
                             this.$scope.back = function () { return management.HistoryController.back(); };
+                            this.$scope.register = function () {
+                                ApiController.instance.setServerUrl(_this.$scope.server);
+                                ApiController.instance.register.request(new RegisterRequest(_this.$scope.username, _this.$scope.firstname, _this.$scope.lastname, _this.$scope.password, _this.$scope.email, _this.$scope.parentemail, _this.$scope.phonenumber, _this.$scope.provider), function (res) {
+                                    if (res.success) {
+                                        localStorage.setItem("serverUrl", _this.$scope.server);
+                                        localStorage.setItem("username", _this.$scope.username);
+                                        pages.LoginController.readStorage();
+                                        management.HistoryController.load("/");
+                                        Materialize.toast("Your account has been created!", 4000);
+                                    }
+                                    else {
+                                        Materialize.toast("There was an error creating your account.", 4000);
+                                    }
+                                });
+                            };
+                            this.$scope.server = localStorage.getItem("serverUrl");
                         };
                         return RegisterController;
                     }(management.AbstractPage));
