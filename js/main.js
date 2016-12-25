@@ -77,6 +77,7 @@ var org;
                         AngularController.registerController("header", function ($scope) {
                             _this.$scope = $scope;
                             $scope.goBack = function () { return HistoryController.back(); };
+                            $scope.goProfile = function () { return HistoryController.load("/profile"); };
                         });
                     }
                     NavBar.prototype.loadPage = function (name) {
@@ -930,10 +931,39 @@ var org;
         })(robotics = usd232.robotics || (usd232.robotics = {}));
     })(usd232 = org.usd232 || (org.usd232 = {}));
 })(org || (org = {}));
+/// <reference path="../page.ts" />
+/// <reference path="../navigation.ts" />
+/// <reference path="../apis.ts" />
+var org;
+(function (org) {
+    var usd232;
+    (function (usd232) {
+        var robotics;
+        (function (robotics) {
+            var management;
+            (function (management) {
+                var pages;
+                (function (pages) {
+                    var ProfileController = (function (_super) {
+                        __extends(ProfileController, _super);
+                        function ProfileController() {
+                            return _super.apply(this, arguments) || this;
+                        }
+                        ProfileController.prototype.init = function () {
+                        };
+                        return ProfileController;
+                    }(management.AbstractPage));
+                    pages.ProfileController = ProfileController;
+                })(pages = management.pages || (management.pages = {}));
+            })(management = robotics.management || (robotics.management = {}));
+        })(robotics = usd232.robotics || (usd232.robotics = {}));
+    })(usd232 = org.usd232 || (org.usd232 = {}));
+})(org || (org = {}));
 /// <reference path="page.ts" />
 /// <reference path="pages/login.ts" />
 /// <reference path="pages/404.ts" />
 /// <reference path="pages/register.ts" />
+/// <reference path="pages/profile.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -945,6 +975,7 @@ var org;
                 var LoginController = org.usd232.robotics.management.pages.LoginController;
                 var NotFoundController = org.usd232.robotics.management.pages.NotFoundController;
                 var RegisterController = org.usd232.robotics.management.pages.RegisterController;
+                var ProfileController = org.usd232.robotics.management.pages.ProfileController;
                 var PageFactory = (function () {
                     function PageFactory() {
                     }
@@ -953,6 +984,7 @@ var org;
                             new LoginController("login"),
                             new NotFoundController("404"),
                             new RegisterController("register"),
+                            new ProfileController("profile"),
                         ];
                     };
                     return PageFactory;
@@ -981,6 +1013,9 @@ var org;
                     Main.main = function () {
                         var nav = new management.NavBar();
                         var page = new management.PageController(nav);
+                        $(document).ready(function () {
+                            $("ul.tabs").tabs();
+                        });
                         management.HistoryController.setPageController(page);
                         PageFactory.construct();
                     };

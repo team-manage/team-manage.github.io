@@ -35,6 +35,10 @@
                 </a>
             </li>
         </ul>
+        <ul class="right">
+            <li><a href="admin/meetings">Meetings</a></li>
+            <li><a ng-click="goProfile()">Profile</a></li>
+        </ul>
     </div>
 </nav>
 <div class="container" ng-controller="pages">
@@ -193,6 +197,28 @@
     </div>
 </div>
 
+        </div>
+    
+        <div ng-show="name == 'profile'" id="page-profile" ng-controller="page-profile">
+            <input type="hidden" name="navbarTitle" value="Your Profile" />
+            <input type="hidden" name="pageTitle" value="" />
+            <input type="hidden" name="pageUrl" value="/profile" />
+              <div class="row">
+    <div class="col s12">
+      <ul class="tabs">
+        <li class="tab col s3"><a href="#profile-tab-contact">Contact</a></li>
+        <li class="tab col s3"><a href="#profile-tab-picture">Picture</a></li>
+        <li class="tab col s3"><a href="#profile-tab-rsvp">RSVP</a></li>
+        <li class="tab col s3"><a href="#profile-tab-pin">Pin</a></li>
+        <li class="tab col s3"><a href="#profile-tab-records">Records</a></li>
+      </ul>
+    </div>
+    <div id="profile-tab-contact" class="col s12">Test 1</div>
+    <div id="profile-tab-picture" class="col s12">Test 2</div>
+    <div id="profile-tab-rsvp" class="col s12">Test 3</div>
+    <div id="profile-tab-pin" class="col s12">Test 4</div>
+    <div id="profile-tab-records" class="col s12">Test 5</div>
+  </div>
         </div>
     
 </div>

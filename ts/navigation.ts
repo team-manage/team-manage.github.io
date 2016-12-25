@@ -25,6 +25,7 @@ namespace org.usd232.robotics.management {
             AngularController.registerController("header", $scope => {
                 this.$scope = $scope;
                 $scope.goBack = () => HistoryController.back();
+                $scope.goProfile = () => HistoryController.load("/profile");
             });
         }
     }

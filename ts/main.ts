@@ -11,6 +11,9 @@ namespace org.usd232.robotics.management {
         public static main(): void {
             let nav: NavBar = new NavBar();
             let page: PageController = new PageController(nav);
+            $(document).ready(() => {
+                ($("ul.tabs") as any).tabs();
+            });
             HistoryController.setPageController(page);
             PageFactory.construct();
         }

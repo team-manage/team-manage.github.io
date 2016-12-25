@@ -6,6 +6,8 @@
 
     /// <reference path="pages/register.ts" />
 
+    /// <reference path="pages/profile.ts" />
+
 
 namespace org.usd232.robotics.management {
     
@@ -14,6 +16,8 @@ namespace org.usd232.robotics.management {
         import NotFoundController = org.usd232.robotics.management.pages.NotFoundController;
     
         import RegisterController = org.usd232.robotics.management.pages.RegisterController;
+    
+        import ProfileController = org.usd232.robotics.management.pages.ProfileController;
     
 
     export class PageFactory {
@@ -25,6 +29,8 @@ namespace org.usd232.robotics.management {
                     new NotFoundController("404"),
                 
                     new RegisterController("register"),
+                
+                    new ProfileController("profile"),
                 
             ];
         }
