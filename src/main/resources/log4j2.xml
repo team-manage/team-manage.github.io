@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+		<Console name="Console">
+			<PatternLayout pattern="[%d{HH:mm:ss.SSS}] [%t/%level] %msg%n" />
+		</Console>
+		<RollingRandomAccessFile name="LogFile"
+			fileName="latest.log" filePattern="logs/%d{yyyy.MM.dd-HH:mm:ss}.log.gz">
+			<PatternLayout pattern="[%d{HH:mm:ss.SSS}] [%t/%level/%logger] %msg%n" />
+			<Policies>
+				<OnStartupTriggeringPolicy />
+			</Policies>
+		</RollingRandomAccessFile>
+	</Appenders>
+	<Loggers>
+		<Root level="all">
+			<AppenderRef ref="Console" level="info" />
+			<AppenderRef ref="LogFile" level="debug" />
+		</Root>
+		<!--
+			How to debug a certain class (or package):
+			
+			<Logger name="FULLY QUALIFIED CLASS OR PACKAGE HERE" level="all" additivity="false">
+				<AppenderRef ref="Console" level="info" />
+				<AppenderRef ref="LogFile" level="trace" />
+			</Logger>
+			
+			All logging statements from that class (even trace) will be logged into latest.log
+			Please do not commit these changes EVER!
+		-->
+	</Loggers>
+</Configuration>
