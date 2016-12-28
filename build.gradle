@@ -34,6 +34,17 @@ build {
 	dependsOn shadowJar
 }
 
-task stage {
+task stage(type: Copy) {
+	dependsOn clean
 	dependsOn build
+	mustRunAfter clean
+	from shadowJar.archivePath
+	into project.rootDir
+	rename {
+		"app.jar"
+	}
+}
+
+clean << {
+	project.file("app.jar").delete()
 }

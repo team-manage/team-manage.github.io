@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -jar build/libs/management-system-all.jar
+web: java $JAVA_OPTS -jar app.jar
