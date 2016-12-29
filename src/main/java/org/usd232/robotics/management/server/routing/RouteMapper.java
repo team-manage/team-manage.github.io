@@ -34,7 +34,7 @@ public class RouteMapper
         {
             if ((method.getModifiers() & REQUIRED_MODIFIERS) == REQUIRED_MODIFIERS && method.getParameterCount() == 0)
             {
-                String path = method.getAnnotation(GetApi.class).value();
+                String path = method.getAnnotation(GetApi.class).value().concat(".json");
                 Spark.get(path, new GetRoute(method));
                 Spark.options(path, new OptionsRoute());
             }
@@ -43,7 +43,7 @@ public class RouteMapper
         {
             if ((method.getModifiers() & REQUIRED_MODIFIERS) == REQUIRED_MODIFIERS && method.getParameterCount() == 1)
             {
-                String path = method.getAnnotation(PostApi.class).value();
+                String path = method.getAnnotation(PostApi.class).value().concat(".json");
                 Spark.post(path, new PostRoute(method));
                 Spark.options(path, new OptionsRoute());
             }
