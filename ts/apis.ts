@@ -202,7 +202,7 @@ namespace org.usd232.robotics.management.apis {
 
     export enum SettingType {
         string,
-        int,
+        integer,
         number
     }
 
@@ -219,14 +219,6 @@ namespace org.usd232.robotics.management.apis {
         public verified?: boolean;
         public unexcused: number;
         public late?: number;
-    }
-
-    export class KioskSignInRequest {
-        public pin: number;
-
-        public constructor(pin?: number) {
-            this.pin = pin;
-        }
     }
 
     export class RegisterRequest {
@@ -316,10 +308,12 @@ namespace org.usd232.robotics.management.apis {
 
     export class ExcuseRequest {
         public user: number;
+        public event: number;
         public excused: boolean;
 
-        public constructor(user?: number, excused?: boolean) {
+        public constructor(user?: number, event?: number, excused?: boolean) {
             this.user = user;
+            this.event = event;
             this.excused = excused;
         }
     }
@@ -432,7 +426,7 @@ namespace org.usd232.robotics.management.apis {
         public attendance = new CollectionApi<Event[], number>("/attendance", this);
         public event = new CollectionApi<Event, number>("/event", this);
         public kiosk = new CollectionApi<User, number>("/kiosk", this);
-        public kioskSignIn = new ParameterizedApi<StatusResponse, KioskSignInRequest>("/kiosk/signIn", this);
+        public kioskSignIn = new ParameterizedApi<StatusResponse, number>("/kiosk/signIn", this);
         public update = new CollectionApi<StatusResponse, string>("/update", this);
         public register = new ParameterizedApi<StatusResponse, RegisterRequest>("/register", this);
         public addContact = new ParameterizedApi<StatusResponse, AddContactRequest>("/contact/add", this);

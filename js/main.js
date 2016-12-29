@@ -339,7 +339,7 @@ var org;
                     var SettingType;
                     (function (SettingType) {
                         SettingType[SettingType["string"] = 0] = "string";
-                        SettingType[SettingType["int"] = 1] = "int";
+                        SettingType[SettingType["integer"] = 1] = "integer";
                         SettingType[SettingType["number"] = 2] = "number";
                     })(SettingType = apis.SettingType || (apis.SettingType = {}));
                     var Setting = (function () {
@@ -354,13 +354,6 @@ var org;
                         return User;
                     }());
                     apis.User = User;
-                    var KioskSignInRequest = (function () {
-                        function KioskSignInRequest(pin) {
-                            this.pin = pin;
-                        }
-                        return KioskSignInRequest;
-                    }());
-                    apis.KioskSignInRequest = KioskSignInRequest;
                     var RegisterRequest = (function () {
                         function RegisterRequest(username, fname, lname, password, email, email2, phone, provider) {
                             this.username = username;
@@ -433,8 +426,9 @@ var org;
                     }(StatusResponse));
                     apis.StatusIdResponse = StatusIdResponse;
                     var ExcuseRequest = (function () {
-                        function ExcuseRequest(user, excused) {
+                        function ExcuseRequest(user, event, excused) {
                             this.user = user;
+                            this.event = event;
                             this.excused = excused;
                         }
                         return ExcuseRequest;
