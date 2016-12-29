@@ -1,6 +1,9 @@
 package org.usd232.robotics.management.server.routing;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.google.gson.Gson;
@@ -67,6 +70,9 @@ abstract class BaseRoute implements Route
             {
                 return "";
             }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            res.header("Last-Modified", dateFormat.format(Calendar.getInstance().getTime()));
             return GSON.toJson(performRequest(req));
         }
         catch (Exception ex)
