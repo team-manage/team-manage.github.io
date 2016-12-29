@@ -6,6 +6,10 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.usd232.robotics.management.server.session.RequirePermissions;
+import org.usd232.robotics.management.server.session.Session;
+import org.usd232.robotics.management.server.session.SessionManager;
+import org.usd232.robotics.management.server.session.StartedSessionResponse;
 import com.google.gson.Gson;
 import spark.Request;
 import spark.Response;
@@ -13,31 +17,39 @@ import spark.Route;
 
 abstract class BaseRoute implements Route
 {
-    private static final Logger LOG  = LogManager.getLogger();
+    private static final Logger      LOG  = LogManager.getLogger();
     /**
      * The gson converter
      * 
      * @since 1.0
      */
-    protected static final Gson GSON = new Gson();
+    protected static final Gson      GSON = new Gson();
     /**
      * The method that this route represents
      * 
      * @since 1.0
      */
-    protected final Method      method;
+    protected final Method           method;
+    /**
+     * The permissions the method requires
+     * 
+     * @since 1.0
+     */
+    private final RequirePermissions permissions;
 
     /**
      * Calls the method and returns the result
      * 
      * @param req
      *            The request the client sent
+     * @param session
+     *            The session the client is in
      * @return The result of the request
      * @since 1.0
      * @throws Exception
      *             If an error occurs
      */
-    protected abstract Object performRequest(Request req) throws Exception;
+    protected abstract Object performRequest(Request req, Session session) throws Exception;
 
     /**
      * Adds the CORS headers
@@ -70,10 +82,21 @@ abstract class BaseRoute implements Route
             {
                 return "";
             }
+            Session session = SessionManager.getSession(req.headers("X-Session-Token"));
+            if (!Session.checkPermissions(permissions, session))
+            {
+                throw new IllegalAccessException("The user does not have permission to access this api");
+            }
             SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
             dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
             res.header("Last-Modified", dateFormat.format(Calendar.getInstance().getTime()));
-            return GSON.toJson(performRequest(req));
+            Object result = performRequest(req, session);
+            if (result instanceof StartedSessionResponse)
+            {
+                res.header("X-Session-Token", ((StartedSessionResponse) result).session.uuid.toString());
+                result = ((StartedSessionResponse) result).res;
+            }
+            return GSON.toJson(result);
         }
         catch (Exception ex)
         {
@@ -92,5 +115,13 @@ abstract class BaseRoute implements Route
     protected BaseRoute(Method method)
     {
         this.method = method;
+        if (method == null)
+        {
+            permissions = null;
+        }
+        else
+        {
+            permissions = method.getAnnotation(RequirePermissions.class);
+        }
     }
 }

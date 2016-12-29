@@ -1,5 +1,6 @@
 package org.usd232.robotics.management.server.routing;
 
+import org.usd232.robotics.management.server.session.Session;
 import spark.Request;
 import spark.Route;
 
@@ -13,7 +14,7 @@ import spark.Route;
 class OptionsRoute extends BaseRoute implements Route
 {
     @Override
-    protected Object performRequest(Request req) throws Exception
+    protected Object performRequest(Request req, Session session) throws Exception
     {
         return null;
     }

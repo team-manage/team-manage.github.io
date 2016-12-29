@@ -36,6 +36,7 @@ import org.usd232.robotics.management.apis.permissions.SignInPermissions;
 import org.usd232.robotics.management.apis.permissions.UserPermissions;
 import org.usd232.robotics.management.server.database.Database;
 import org.usd232.robotics.management.server.routing.PostApi;
+import org.usd232.robotics.management.server.session.StartedSessionResponse;
 
 /**
  * The apis relating to authentication
@@ -85,7 +86,7 @@ public abstract class AuthenticationApis
      *             If the string encoding could not be found
      */
     @PostApi("/authenticate")
-    public static LoginResponse login(LoginRequest req)
+    public static Object login(LoginRequest req)
                     throws SQLException, NoSuchAlgorithmException, UnsupportedEncodingException
     {
         Set<String> permissions;
@@ -121,9 +122,9 @@ public abstract class AuthenticationApis
                         "SELECT `type`, `value`, `carrier`, `notifications` FROM `contacts` WHERE `userid` = ?"))
         {
             st.setInt(1, userId);
+            List<UserContact> contact = new ArrayList<UserContact>();
             try (ResultSet res = st.executeQuery())
             {
-                List<UserContact> contact = new ArrayList<UserContact>();
                 while (res.next())
                 {
                     ContactType type = ContactType.valueOf(res.getString(1));
@@ -138,31 +139,30 @@ public abstract class AuthenticationApis
                                                     new MeetingNotifications(notifications.contains("meeting.missed"),
                                                                     notifications.contains("meeting.reminders")))));
                 }
-                return new LoginResponse("success", new Permissions(
-                                new KioskPermissions(permissions.contains("kiosk.open")),
-                                new MessagePermissions(permissions.contains("message.send")),
-                                new EventPermissions(permissions.contains("event.view"),
-                                                permissions.contains("event.add"),
-                                                new EventEditPermissions(permissions.contains("event.edit.type"),
-                                                                permissions.contains("event.edit.name"),
-                                                                permissions.contains("event.edit.datetime")),
-                                                permissions.contains("event.remove")),
-                                new AttendancePermissions(permissions.contains("attendance.view"),
-                                                permissions.contains("attendance.modify"),
-                                                permissions.contains("attendance.excuse")),
-                                new UserPermissions(permissions.contains("user.view"),
-                                                permissions.contains("user.verify"),
-                                                permissions.contains("user.unverify")),
-                                new DevicePermissions(permissions.contains("device.add"),
-                                                permissions.contains("device.update"),
-                                                permissions.contains("device.remove")),
-                                new SettingsPermissions(permissions.contains("settings.view"),
-                                                permissions.contains("settings.edit")),
-                                new SignInPermissions(permissions.contains("signin.kiosk"),
-                                                permissions.contains("signin.code"),
-                                                permissions.contains("signin.auto"))),
-                                new UserProfile(contact, picture, pin));
             }
+            StartedSessionResponse res = new StartedSessionResponse(new LoginResponse("success", new Permissions(
+                            new KioskPermissions(permissions.contains("kiosk.open")),
+                            new MessagePermissions(permissions.contains("message.send")),
+                            new EventPermissions(permissions.contains("event.view"), permissions.contains("event.add"),
+                                            new EventEditPermissions(permissions.contains("event.edit.type"),
+                                                            permissions.contains("event.edit.name"),
+                                                            permissions.contains("event.edit.datetime")),
+                                            permissions.contains("event.remove")),
+                            new AttendancePermissions(permissions.contains("attendance.view"),
+                                            permissions.contains("attendance.modify"),
+                                            permissions.contains("attendance.excuse")),
+                            new UserPermissions(permissions.contains("user.view"), permissions.contains("user.verify"),
+                                            permissions.contains("user.unverify")),
+                            new DevicePermissions(permissions.contains("device.add"),
+                                            permissions.contains("device.update"),
+                                            permissions.contains("device.remove")),
+                            new SettingsPermissions(permissions.contains("settings.view"),
+                                            permissions.contains("settings.edit")),
+                            new SignInPermissions(permissions.contains("signin.kiosk"),
+                                            permissions.contains("signin.code"), permissions.contains("signin.auto"))),
+                            new UserProfile(contact, picture, pin)));
+            res.session.permissions = permissions;
+            return res;
         }
     }
 

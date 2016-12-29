@@ -1,6 +1,7 @@
 package org.usd232.robotics.management.server.routing;
 
 import java.lang.reflect.Method;
+import org.usd232.robotics.management.server.session.Session;
 import spark.Request;
 import spark.Route;
 
@@ -14,6 +15,12 @@ import spark.Route;
 class PostRoute extends BaseRoute implements Route
 {
     /**
+     * If the method wants a session object as a parameter
+     * 
+     * @since 1.0
+     */
+    private final boolean  wantsSession;
+    /**
      * The class of the model object that is a parameter to the api
      * 
      * @since 1.0
@@ -21,9 +28,10 @@ class PostRoute extends BaseRoute implements Route
     private final Class<?> parameterClass;
 
     @Override
-    protected Object performRequest(Request req) throws Exception
+    protected Object performRequest(Request req, Session session) throws Exception
     {
-        return method.invoke(null, GSON.fromJson(req.raw().getReader(), parameterClass));
+        Object deser = GSON.fromJson(req.raw().getReader(), parameterClass);
+        return method.invoke(null, wantsSession ? new Object[] { deser, session } : new Object[] { deser });
     }
 
     /**
@@ -37,5 +45,6 @@ class PostRoute extends BaseRoute implements Route
     {
         super(method);
         this.parameterClass = method.getParameterTypes()[0];
+        wantsSession = method.getParameterCount() == 2;
     }
 }

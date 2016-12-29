@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
+import com.mysql.cj.api.Session;
 import spark.Spark;
 
 /**
@@ -32,7 +33,8 @@ public class RouteMapper
         Reflections refl = new Reflections("org.usd232.robotics.management.server", new MethodAnnotationsScanner());
         for (Method method : refl.getMethodsAnnotatedWith(GetApi.class))
         {
-            if ((method.getModifiers() & REQUIRED_MODIFIERS) == REQUIRED_MODIFIERS && method.getParameterCount() == 0)
+            if ((method.getModifiers() & REQUIRED_MODIFIERS) == REQUIRED_MODIFIERS && (method.getParameterCount() == 0
+                            || (method.getParameterCount() == 1 && method.getParameterTypes()[0] == Session.class)))
             {
                 String path = method.getAnnotation(GetApi.class).value().concat(".json");
                 Spark.get(path, new GetRoute(method));
@@ -41,7 +43,8 @@ public class RouteMapper
         }
         for (Method method : refl.getMethodsAnnotatedWith(PostApi.class))
         {
-            if ((method.getModifiers() & REQUIRED_MODIFIERS) == REQUIRED_MODIFIERS && method.getParameterCount() == 1)
+            if ((method.getModifiers() & REQUIRED_MODIFIERS) == REQUIRED_MODIFIERS && (method.getParameterCount() == 1
+                            || (method.getParameterCount() == 2 && method.getParameterTypes()[1] == Session.class)))
             {
                 String path = method.getAnnotation(PostApi.class).value().concat(".json");
                 Spark.post(path, new PostRoute(method));
