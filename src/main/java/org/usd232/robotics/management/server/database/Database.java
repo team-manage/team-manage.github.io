@@ -21,6 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.usd232.robotics.management.server.database.migrations.DatabaseMigrator;
 
 /**
  * The main class representing the database
@@ -57,6 +58,14 @@ public abstract class Database
             tmp = null;
         }
         DB = tmp;
+        try
+        {
+            DatabaseMigrator.runMigrations();
+        }
+        catch (Exception ex)
+        {
+            LOG.catching(ex);
+        }
     }
 
     public static void startTransaction(String... tables) throws SQLException

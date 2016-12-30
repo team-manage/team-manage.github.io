@@ -334,6 +334,16 @@ namespace org.usd232.robotics.management.apis {
         private lastResponse: T;
         private lastModified: number = 0;
 
+        protected isMock(callback: (isMock: boolean) => void) {
+            if ( this.ctrlr.isMock == null ) {
+                this.ctrlr.isMockListeners.push(() => {
+                    callback(this.ctrlr.isMock);
+                });
+            } else {
+                callback(this.ctrlr.isMock);
+            }
+        }
+
         protected handleSuccess(data: any, xhr: JQueryXHR, callback: (res: T) => void, lateCallback: (res: T) => void): void {
             let lastModified: number = Date.parse(xhr.getResponseHeader("Last-Modified"));
             if ( lastModified > this.lastModified ) {
@@ -380,8 +390,9 @@ namespace org.usd232.robotics.management.apis {
 
     export class ParameterizedApi<T, P> extends ApiBase<T> {
         public request(param: P, callback: (res: T) => void, lateCallback: (res: T) => void = callback): void {
-            // TODO Change to POST when the real API server is used
-            this.sendRequest(".json", param, "GET", callback, lateCallback);
+            this.isMock(isMock =>
+                this.sendRequest(".json", JSON.stringify(param), isMock ? "GET" : "POST", callback, lateCallback)
+            );
         }
     }
 
@@ -415,6 +426,8 @@ namespace org.usd232.robotics.management.apis {
 
         public baseUrl: string;
         public sessionToken: string;
+        public isMock?: boolean;
+        public isMockListeners: (() => void)[] = [];
 
         public login = new LoginApi("/authenticate", this);
         public events = new GeneralApi<Event[]>("/events", this);
@@ -460,6 +473,24 @@ namespace org.usd232.robotics.management.apis {
             } else {
                 this.baseUrl = url;
             }
+            this.isMock = null;
+            $.ajax(this.baseUrl + "/isMock.json", {
+                "cache": false,
+                "contentType": "application/json; charset=utf-8",
+                "dataType": "json",
+                "error": (xhr: JQueryXHR, status: string, error: string) => {
+                    console.error(error);
+                },
+                "jsonp": false,
+                "method": "GET",
+                "success": data => {
+                    this.isMock = data;
+                    for ( var i: number = 0; i < this.isMockListeners.length; ++i ) {
+                        this.isMockListeners[i]();
+                    }
+                    this.isMockListeners = [];
+                }
+            });
         }
     }
 }

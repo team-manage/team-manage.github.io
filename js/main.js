@@ -448,6 +448,17 @@ var org;
                             this.url = url;
                             this.ctrlr = ctrlr;
                         }
+                        ApiBase.prototype.isMock = function (callback) {
+                            var _this = this;
+                            if (this.ctrlr.isMock == null) {
+                                this.ctrlr.isMockListeners.push(function () {
+                                    callback(_this.ctrlr.isMock);
+                                });
+                            }
+                            else {
+                                callback(this.ctrlr.isMock);
+                            }
+                        };
                         ApiBase.prototype.handleSuccess = function (data, xhr, callback, lateCallback) {
                             var lastModified = Date.parse(xhr.getResponseHeader("Last-Modified"));
                             if (lastModified > this.lastModified) {
@@ -494,9 +505,11 @@ var org;
                             return _super.apply(this, arguments) || this;
                         }
                         ParameterizedApi.prototype.request = function (param, callback, lateCallback) {
+                            var _this = this;
                             if (lateCallback === void 0) { lateCallback = callback; }
-                            // TODO Change to POST when the real API server is used
-                            this.sendRequest(".json", param, "GET", callback, lateCallback);
+                            this.isMock(function (isMock) {
+                                return _this.sendRequest(".json", JSON.stringify(param), isMock ? "GET" : "POST", callback, lateCallback);
+                            });
                         };
                         return ParameterizedApi;
                     }(ApiBase));
@@ -543,6 +556,7 @@ var org;
                     apis.CollectionApi = CollectionApi;
                     var ApiController = (function () {
                         function ApiController() {
+                            this.isMockListeners = [];
                             this.login = new LoginApi("/authenticate", this);
                             this.events = new GeneralApi("/events", this);
                             this.infrastructure = new GeneralApi("/infrastructure", this);
@@ -570,6 +584,7 @@ var org;
                             this.setSetting = new ParameterizedApi("/setSetting", this);
                         }
                         ApiController.prototype.setServerUrl = function (url) {
+                            var _this = this;
                             if (url.match(/^!.*$/)) {
                                 this.baseUrl = "https://" + url.substr(1) + ".herokuapp.com";
                             }
@@ -592,6 +607,24 @@ var org;
                             else {
                                 this.baseUrl = url;
                             }
+                            this.isMock = null;
+                            $.ajax(this.baseUrl + "/isMock.json", {
+                                "cache": false,
+                                "contentType": "application/json; charset=utf-8",
+                                "dataType": "json",
+                                "error": function (xhr, status, error) {
+                                    console.error(error);
+                                },
+                                "jsonp": false,
+                                "method": "GET",
+                                "success": function (data) {
+                                    _this.isMock = data;
+                                    for (var i = 0; i < _this.isMockListeners.length; ++i) {
+                                        _this.isMockListeners[i]();
+                                    }
+                                    _this.isMockListeners = [];
+                                }
+                            });
                         };
                         return ApiController;
                     }());
