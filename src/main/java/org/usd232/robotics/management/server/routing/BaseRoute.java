@@ -2,7 +2,6 @@ package org.usd232.robotics.management.server.routing;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.TimeZone;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +9,8 @@ import org.usd232.robotics.management.server.session.RequirePermissions;
 import org.usd232.robotics.management.server.session.Session;
 import org.usd232.robotics.management.server.session.SessionManager;
 import org.usd232.robotics.management.server.session.StartedSessionResponse;
+import org.usd232.robotics.management.server.session.caching.CacheData;
+import org.usd232.robotics.management.server.session.caching.CacheManager;
 import com.google.gson.Gson;
 import spark.Request;
 import spark.Response;
@@ -17,25 +18,41 @@ import spark.Route;
 
 abstract class BaseRoute implements Route
 {
-    private static final Logger      LOG  = LogManager.getLogger();
+    private static final Logger           LOG         = LogManager.getLogger();
     /**
      * The gson converter
      * 
      * @since 1.0
      */
-    protected static final Gson      GSON = new Gson();
+    protected static final Gson           GSON        = new Gson();
+    /**
+     * The format for the date in the Last-Modified header
+     * 
+     * @since 1.0
+     */
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
     /**
      * The method that this route represents
      * 
      * @since 1.0
      */
-    protected final Method           method;
+    protected final Method                method;
+    /**
+     * An array of all of the parameter types of the method
+     * 
+     * @since 1.0
+     */
+    protected final Class<?>[]            params;
     /**
      * The permissions the method requires
      * 
      * @since 1.0
      */
-    private final RequirePermissions permissions;
+    private final RequirePermissions      permissions;
+    static
+    {
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
 
     /**
      * Calls the method and returns the result
@@ -85,17 +102,22 @@ abstract class BaseRoute implements Route
             Session session = SessionManager.getSession(req.headers("X-Session-Token"));
             if (!Session.checkPermissions(permissions, session))
             {
-                throw new IllegalAccessException("The user does not have permission to access this api");
+                LOG.catching(new IllegalAccessException("The user does not have permission to access this api"));
+                res.status(403);
+                return "{\"error\":403}";
             }
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
-            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-            res.header("Last-Modified", dateFormat.format(Calendar.getInstance().getTime()));
             Object result = performRequest(req, session);
             if (result instanceof StartedSessionResponse)
             {
                 res.header("X-Session-Token", ((StartedSessionResponse) result).session.uuid.toString());
                 result = ((StartedSessionResponse) result).res;
             }
+            CacheData cache = CacheManager.cache(session, this, result);
+            if (!cache.sendResponse)
+            {
+                result = new Object();
+            }
+            res.header("Last-Modified", DATE_FORMAT.format(cache.lastModified));
             return GSON.toJson(result);
         }
         catch (Exception ex)
@@ -118,10 +140,12 @@ abstract class BaseRoute implements Route
         if (method == null)
         {
             permissions = null;
+            params = null;
         }
         else
         {
             permissions = method.getAnnotation(RequirePermissions.class);
+            params = method.getParameterTypes();
         }
     }
 }

@@ -54,7 +54,9 @@ public abstract class SessionManager
     {
         if (SESSIONS.containsKey(uuid))
         {
-            return SESSIONS.get(uuid);
+            Session session = SESSIONS.get(uuid);
+            session.touch();
+            return session;
         }
         else
         {
@@ -72,6 +74,10 @@ public abstract class SessionManager
      */
     public static Session getSession(String uuid)
     {
+        if (uuid == null)
+        {
+            return null;
+        }
         try
         {
             return getSession(UUID.fromString(uuid));
@@ -94,6 +100,7 @@ public abstract class SessionManager
         {
             UUID uuid = generateToken();
             Session session = new Session(uuid);
+            session.touch();
             SESSIONS.put(uuid, session);
             return session;
         }

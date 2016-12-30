@@ -1,7 +1,9 @@
 package org.usd232.robotics.management.server.session;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,19 +21,38 @@ public class Session
      * 
      * @since 1.0
      */
-    public final UUID  uuid;
+    public final UUID            uuid;
     /**
      * The permissions the user has
      * 
      * @since 1.0
      */
-    public Set<String> permissions;
+    public Set<String>           permissions;
     /**
      * The last time this object was touched (used to determine when to end a session)
      * 
      * @since 1.0
      */
-    private Date       lastTouch;
+    private Date                 lastTouch;
+    /**
+     * A list of the callbacks to run when this session is terminated
+     * 
+     * @since 1.0
+     */
+    private final List<Runnable> terminatedCallbacks;
+
+    /**
+     * Calls all of the termination callbacks
+     * 
+     * @since 1.0
+     */
+    void onTermination()
+    {
+        for (Runnable r : terminatedCallbacks)
+        {
+            r.run();
+        }
+    }
 
     /**
      * Called after a request reaches the server for this session (used to determine when to end a session)
@@ -52,6 +73,18 @@ public class Session
     long timeUntilTermination()
     {
         return System.currentTimeMillis() - lastTouch.getTime() - SessionTerminationThread.MAX_INACTIVE_TIME;
+    }
+
+    /**
+     * Adds a new listener to the terminated callbacks list
+     * 
+     * @param listener
+     *            The listener to call after this session is terminated
+     * @since 1.0
+     */
+    public void addTerminatedListener(Runnable listener)
+    {
+        terminatedCallbacks.add(listener);
     }
 
     /**
@@ -120,5 +153,6 @@ public class Session
     Session(UUID uuid)
     {
         this.uuid = uuid;
+        terminatedCallbacks = new ArrayList<Runnable>();
     }
 }

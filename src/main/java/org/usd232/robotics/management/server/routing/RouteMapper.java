@@ -31,22 +31,72 @@ public class RouteMapper
     public static void map()
     {
         Reflections refl = new Reflections("org.usd232.robotics.management.server", new MethodAnnotationsScanner());
-        for (Method method : refl.getMethodsAnnotatedWith(GetApi.class))
+        search: for (Method method : refl.getMethodsAnnotatedWith(GetApi.class))
         {
-            if ((method.getModifiers() & REQUIRED_MODIFIERS) == REQUIRED_MODIFIERS && (method.getParameterCount() == 0
-                            || (method.getParameterCount() == 1 && method.getParameterTypes()[0] == Session.class)))
+            if ((method.getModifiers() & REQUIRED_MODIFIERS) == REQUIRED_MODIFIERS)
             {
-                String path = method.getAnnotation(GetApi.class).value().concat(".json");
+                Class<?>[] params = method.getParameterTypes();
+                switch (params.length)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        if (params[0] == Session.class || params[0] == String.class)
+                        {
+                            break;
+                        }
+                        continue search;
+                    case 2:
+                        if ((params[0] == Session.class && params[1] == String.class)
+                                        || (params[0] == String.class && params[1] == Session.class))
+                        {
+                            break;
+                        }
+                        continue search;
+                    default:
+                        continue search;
+                }
+                String path = method.getAnnotation(GetApi.class).value();
+                if (!path.endsWith("*"))
+                {
+                    path = path.concat(".json");
+                }
                 Spark.get(path, new GetRoute(method));
                 Spark.options(path, new OptionsRoute());
             }
         }
-        for (Method method : refl.getMethodsAnnotatedWith(PostApi.class))
+        search: for (Method method : refl.getMethodsAnnotatedWith(PostApi.class))
         {
-            if ((method.getModifiers() & REQUIRED_MODIFIERS) == REQUIRED_MODIFIERS && (method.getParameterCount() == 1
-                            || (method.getParameterCount() == 2 && method.getParameterTypes()[1] == Session.class)))
+            if ((method.getModifiers() & REQUIRED_MODIFIERS) == REQUIRED_MODIFIERS)
             {
-                String path = method.getAnnotation(PostApi.class).value().concat(".json");
+                Class<?>[] params = method.getParameterTypes();
+                switch (params.length)
+                {
+                    case 1:
+                        break;
+                    case 2:
+                        if (params[0] == Session.class || params[0] == String.class || params[1] == Session.class
+                                        || params[1] == String.class)
+                        {
+                            break;
+                        }
+                        continue search;
+                    case 3:
+                        if ((params[0] == Session.class || params[1] == Session.class || params[2] == Session.class)
+                                        && (params[0] == String.class || params[1] == String.class
+                                                        || params[2] == String.class))
+                        {
+                            break;
+                        }
+                        continue search;
+                    default:
+                        continue search;
+                }
+                String path = method.getAnnotation(PostApi.class).value();
+                if (!path.endsWith("*"))
+                {
+                    path = path.concat(".json");
+                }
                 Spark.post(path, new PostRoute(method));
                 Spark.options(path, new OptionsRoute());
             }

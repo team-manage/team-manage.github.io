@@ -29,5 +29,8 @@ public abstract class Main
         {
         }
         RouteMapper.map();
+        Spark.internalServerError("{\"error\":500}");
+        Spark.notFound("{\"error\":404}");
+        Spark.redirect.get("/", "https://team-manage.github.io/");
     }
 }

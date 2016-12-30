@@ -1,6 +1,8 @@
 package org.usd232.robotics.management.server.routing;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import org.usd232.robotics.management.server.session.Session;
 import spark.Request;
 import spark.Route;
@@ -14,24 +16,26 @@ import spark.Route;
  */
 class PostRoute extends BaseRoute implements Route
 {
-    /**
-     * If the method wants a session object as a parameter
-     * 
-     * @since 1.0
-     */
-    private final boolean  wantsSession;
-    /**
-     * The class of the model object that is a parameter to the api
-     * 
-     * @since 1.0
-     */
-    private final Class<?> parameterClass;
-
     @Override
     protected Object performRequest(Request req, Session session) throws Exception
     {
-        Object deser = GSON.fromJson(req.raw().getReader(), parameterClass);
-        return method.invoke(null, wantsSession ? new Object[] { deser, session } : new Object[] { deser });
+        List<Object> params = new ArrayList<Object>();
+        for (Class<?> param : this.params)
+        {
+            if (param == String.class)
+            {
+                params.add(req.pathInfo());
+            }
+            else if (param == Session.class)
+            {
+                params.add(session);
+            }
+            else
+            {
+                params.add(GSON.fromJson(req.raw().getReader(), param));
+            }
+        }
+        return method.invoke(null, params.toArray());
     }
 
     /**
@@ -44,7 +48,5 @@ class PostRoute extends BaseRoute implements Route
     public PostRoute(Method method)
     {
         super(method);
-        this.parameterClass = method.getParameterTypes()[0];
-        wantsSession = method.getParameterCount() == 2;
     }
 }

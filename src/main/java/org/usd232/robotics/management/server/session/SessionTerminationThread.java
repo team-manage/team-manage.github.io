@@ -38,6 +38,7 @@ class SessionTerminationThread extends Thread
                         long time = session.timeUntilTermination();
                         if (time <= 0)
                         {
+                            session.onTermination();
                             expired.add(session);
                         }
                         else
