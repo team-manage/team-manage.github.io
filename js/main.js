@@ -1151,6 +1151,7 @@ var org;
                             return _super.apply(this, arguments) || this;
                         }
                         KioskController.prototype.init = function () {
+                            this.$scope.go = function () { return console.log("Test"); };
                         };
                         return KioskController;
                     }(management.AbstractPage));
