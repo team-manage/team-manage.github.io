@@ -26,6 +26,7 @@ namespace org.usd232.robotics.management {
                 this.$scope = $scope;
                 $scope.goBack = () => HistoryController.back();
                 $scope.goProfile = () => HistoryController.load("/profile");
+                $scope.goKiosk = () => HistoryController.load("/kiosk");
             });
         }
     }

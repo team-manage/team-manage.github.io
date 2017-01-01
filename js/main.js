@@ -78,6 +78,7 @@ var org;
                             _this.$scope = $scope;
                             $scope.goBack = function () { return HistoryController.back(); };
                             $scope.goProfile = function () { return HistoryController.load("/profile"); };
+                            $scope.goKiosk = function () { return HistoryController.load("/kiosk"); };
                         });
                     }
                     NavBar.prototype.loadPage = function (name) {
