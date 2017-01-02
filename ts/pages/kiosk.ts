@@ -8,8 +8,19 @@ namespace org.usd232.robotics.management.pages {
 
     export class KioskController extends AbstractPage {
         protected init(): void {
-            this.$scope.go = () => console.log("Test");
-    
+            this.$scope.pinpad = true;
+            this.$scope.go = () => ApiController.instance.kiosk.request(this.$scope.pin, user => {
+                this.$scope.$apply(() => {
+                    this.$scope.confirm = true;
+                    this.$scope.user = user;
+                    console.log(user.picture);
+                });
+            });
+            this.$scope.notme = () => {
+                    this.$scope.confirm = false;
+                    this.$scope.pin = '';
+                    this.$scope.pinpad = true;
+            };
         }
     }
 }

@@ -239,73 +239,79 @@
             <input type="hidden" name="navbarTitle" value="" />
             <input type="hidden" name="pageTitle" value="Kiosk" />
             <input type="hidden" name="pageUrl" value="/kiosk" />
-            <style>
-.button {
-    height: 120px;
-    font-size: 30px;
-}
-.inputa {
-    text-align: center;
-}
-</style>
+            <div ng-hide="confirm" ng-show="pinpad">
+    <h1 class="center">Welcome</h1>
+    <h3 class="center">Please enter your pin or scan a code</h3>
+    <br/>
 
-<h1 class="center">Welcome</h1>
-<h3 class="center">Please enter your pin or scan a code</h3>
-
-<input disabled class="inputa" type="number" maxlength="3" style="font-size:25px" ng-value="pin" ng-init="pin=''">
+    <input disabled class="inputa" type="number" maxlength="3" style="font-size: 50px" ng-value="pin" ng-init="pin=''">
 
 <div class="row">
     <div class="col s12">
         <div class="col s4">
-            <button value="1" class="btn col s12 button blue waves-effect waves-(color)" ng-disabled="pin.length > 2" ng-click="pin = pin + '1'">1</button>
+            <button value="1" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin + '1'">1</button>
         </div>
         <div class="col s4">
-            <button value="2" class="btn col s12 button blue waves-effect waves-(color)" ng-disabled="pin.length > 2" ng-click="pin = pin + '2'">2</button>
+            <button value="2" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin + '2'">2</button>
         </div>
         <div class="col s4">
-            <button value="3" class="btn col s12 button blue waves-effect waves-(color)" ng-disabled="pin.length > 2" ng-click="pin = pin +  '3'">3</button>
+            <button value="3" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '3'">3</button>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col s12">
         <div class="col s4">
-            <button value="4" class="btn col s12 button blue waves-effect waves-(color)"  ng-disabled="pin.length > 2" ng-click="pin = pin +  '4'">4</button>
+            <button value="4" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '4'">4</button>
         </div>
         <div class="col s4">
-            <button value="5" class="btn col s12 button blue waves-effect waves-(color)" ng-disabled="pin.length > 2" ng-click="pin = pin +  '5'">5</button>
+            <button value="5" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '5'">5</button>
         </div>
         <div class="col s4">
-            <button value="6" class="btn col s12 button blue waves-effect waves-(color)" ng-disabled="pin.length > 2" ng-click="pin = pin +  '6'">6</button>
+            <button value="6" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '6'">6</button>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col s12">
         <div class="col s4">
-            <button value="7" class="btn col s12 button blue waves-effect waves-(color)" ng-disabled="pin.length > 2" ng-click="pin = pin +  '7'">7</button>
+            <button value="7" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '7'">7</button>
         </div>
         <div class="col s4">
-            <button value="8" class="btn col s12 button blue waves-effect waves-(color)" ng-disabled="pin.length > 2" ng-click="pin = pin +  '8'">8</button>
+            <button value="8" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '8'">8</button>
         </div>
         <div class="col s4">
-            <button value="9" class="btn col s12 button blue waves-effect waves-(color)" ng-disabled="pin.length > 2" ng-click="pin = pin +  '9'">9</button>
+            <button value="9" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '9'">9</button>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col s12">
         <div class="col s4">
-            <button value="back" class="btn col s12 button blue waves-effect waves-(color)" ng-click="pin = pin.substring(0,pin.length - 1);">Backspace</button>
+            <button value="back" class="btn col s12 button blue waves-effect waves-blue" ng-click="pin = pin.substring(0,pin.length - 1);">Backspace</button>
         </div>
         <div class="col s4">
-            <button value="0" class="btn col s12 button blue waves-effect waves-(color)" ng-disabled="pin.length > 2" ng-click="pin = pin +  '0'">0</button>
+            <button value="0" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '0'">0</button>
         </div>
         <div class="col s4">
-            <button value="go" class="btn col s12 button blue waves-effect waves-(color)" ng-click"go()">Go</button>
+            <button value="go" class="btn col s12 button blue waves-effect waves-blue" ng-click="go()">Go</button>
         </div>
     </div>
 </div>
+</div>
+
+<div ng-show="confirm" ng-hide="pinpad">
+    <h1 class="center">Are you <span ng-bind="user.name"></span>?</h1>
+    <h3 class="center">You have <span ng-bind="user.unexcused"></span> unexcused absenses.</h3>
+    <h6 class="center">Picture goes here</h6>
+    <div class="row">
+        <div class="col s6">
+            <button value="notme" class="btn col s12 button red waves-effect waves-red" ng-click="notme()">No</button>
+        </div>
+        <div class="col s6">
+            <button value="me" class="btn col s12 button blue waves-effect waves-blue">Yes</button>
+        </div>
+    </div>
         </div>
     
 </div>

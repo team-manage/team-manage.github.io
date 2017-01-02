@@ -1145,13 +1145,27 @@ var org;
             (function (management) {
                 var pages;
                 (function (pages) {
+                    var ApiController = org.usd232.robotics.management.apis.ApiController;
                     var KioskController = (function (_super) {
                         __extends(KioskController, _super);
                         function KioskController() {
                             return _super.apply(this, arguments) || this;
                         }
                         KioskController.prototype.init = function () {
-                            this.$scope.go = function () { return console.log("Test"); };
+                            var _this = this;
+                            this.$scope.pinpad = true;
+                            this.$scope.go = function () { return ApiController.instance.kiosk.request(_this.$scope.pin, function (user) {
+                                _this.$scope.$apply(function () {
+                                    _this.$scope.confirm = true;
+                                    _this.$scope.user = user;
+                                    console.log(user.picture);
+                                });
+                            }); };
+                            this.$scope.notme = function () {
+                                _this.$scope.confirm = false;
+                                _this.$scope.pin = '';
+                                _this.$scope.pinpad = true;
+                            };
                         };
                         return KioskController;
                     }(management.AbstractPage));
