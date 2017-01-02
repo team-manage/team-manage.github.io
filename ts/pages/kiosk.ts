@@ -10,13 +10,13 @@ namespace org.usd232.robotics.management.pages {
         
         protected init(): void {
             this.$scope.pinpad = true;
-            this.$scope.go = () => ApiController.instance.kiosk.request(this.$scope.pin, user => {
-                this.$scope.$apply(() => {
-                    this.$scope.confirm = true;
-                    this.$scope.user = user;
-                    console.log(user.picture);
-                });
-            });
+            this.$scope.go = () => ApiController.instance.kiosk.request(this.$scope.pin, user => this.$scope.$apply(() => {
+    this.$scope.user = user;
+    this.$scope.confirm = user != null;
+    if (!this.$scope.confirm) {
+        Materialize.toast("Invalid pin number", 4000);
+            }
+            }));
             this.$scope.notme = () => {
                 this.$scope.confirm = false;
                 this.$scope.pin = '';

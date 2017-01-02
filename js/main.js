@@ -1154,13 +1154,13 @@ var org;
                         KioskController.prototype.init = function () {
                             var _this = this;
                             this.$scope.pinpad = true;
-                            this.$scope.go = function () { return ApiController.instance.kiosk.request(_this.$scope.pin, function (user) {
-                                _this.$scope.$apply(function () {
-                                    _this.$scope.confirm = true;
-                                    _this.$scope.user = user;
-                                    console.log(user.picture);
-                                });
-                            }); };
+                            this.$scope.go = function () { return ApiController.instance.kiosk.request(_this.$scope.pin, function (user) { return _this.$scope.$apply(function () {
+                                _this.$scope.user = user;
+                                _this.$scope.confirm = user != null;
+                                if (!_this.$scope.confirm) {
+                                    Materialize.toast("Invalid pin number", 4000);
+                                }
+                            }); }); };
                             this.$scope.notme = function () {
                                 _this.$scope.confirm = false;
                                 _this.$scope.pin = '';
