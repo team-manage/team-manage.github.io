@@ -476,7 +476,7 @@ var org;
                         ApiBase.prototype.sendRequest = function (url, content, method, callback, lateCallback) {
                             var _this = this;
                             if (this.lastResponse) {
-                                callback(this.lastResponse);
+                                setTimeout(function () { return callback(_this.lastResponse); }, 0);
                             }
                             $.ajax(this.ctrlr.baseUrl + this.url + url, {
                                 "cache": false,

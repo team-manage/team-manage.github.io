@@ -359,7 +359,7 @@ namespace org.usd232.robotics.management.apis {
 
         protected sendRequest(url: string, content: any, method: string, callback: (res: T) => void, lateCallback: (res: T) => void): void {
             if ( this.lastResponse ) {
-                callback(this.lastResponse);
+                setTimeout(() => callback(this.lastResponse), 0);
             }
             $.ajax(this.ctrlr.baseUrl + this.url + url, {
                 "cache": false,
