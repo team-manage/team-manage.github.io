@@ -294,7 +294,7 @@
             <button value="0" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '0'">0</button>
         </div>
         <div class="col s4">
-            <button value="go" class="btn col s12 button blue waves-effect waves-blue" ng-click="go()">Go</button>
+            <button value="go" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length < 3" ng-click="go()">Go</button>
         </div>
     </div>
 </div>
@@ -309,7 +309,7 @@
             <button value="notme" class="btn col s12 button red waves-effect waves-red" ng-click="notme()">No</button>
         </div>
         <div class="col s6">
-            <button value="me" class="btn col s12 button blue waves-effect waves-blue" ng-click="me()">Yes</button>
+            <button value="me" class="btn col s12 button blue waves-effect waves-blue"ng-click="me()">Yes</button>
         </div>
     </div>
         </div>
