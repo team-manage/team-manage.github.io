@@ -7,6 +7,7 @@ namespace org.usd232.robotics.management.pages {
     import LoginRequest = org.usd232.robotics.management.apis.LoginRequest;
 
     export class KioskController extends AbstractPage {
+        
         protected init(): void {
             this.$scope.pinpad = true;
             this.$scope.go = () => ApiController.instance.kiosk.request(this.$scope.pin, user => {
@@ -17,9 +18,15 @@ namespace org.usd232.robotics.management.pages {
                 });
             });
             this.$scope.notme = () => {
-                    this.$scope.confirm = false;
-                    this.$scope.pin = '';
-                    this.$scope.pinpad = true;
+                this.$scope.confirm = false;
+                this.$scope.pin = '';
+                this.$scope.pinpad = true;
+            };
+            this.$scope.me = () => {
+                this.$scope.confirm = false;
+                this.$scope.pin = '';
+                this.$scope.pinpad = true;
+                Materialize.toast("You have been signed in!", 4000);
             };
         }
     }

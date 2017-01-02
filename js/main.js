@@ -1166,6 +1166,12 @@ var org;
                                 _this.$scope.pin = '';
                                 _this.$scope.pinpad = true;
                             };
+                            this.$scope.me = function () {
+                                _this.$scope.confirm = false;
+                                _this.$scope.pin = '';
+                                _this.$scope.pinpad = true;
+                                Materialize.toast("You have been signed in!", 4000);
+                            };
                         };
                         return KioskController;
                     }(management.AbstractPage));

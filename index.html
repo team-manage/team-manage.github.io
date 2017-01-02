@@ -300,7 +300,7 @@
 </div>
 </div>
 
-<div ng-show="confirm" ng-hide="pinpad">
+<div ng-show="confirm">
     <h1 class="center">Are you <span ng-bind="user.name"></span>?</h1>
     <h3 class="center">You have <span ng-bind="user.unexcused"></span> unexcused absenses.</h3>
     <h6 class="center">Picture goes here</h6>
@@ -309,7 +309,7 @@
             <button value="notme" class="btn col s12 button red waves-effect waves-red" ng-click="notme()">No</button>
         </div>
         <div class="col s6">
-            <button value="me" class="btn col s12 button blue waves-effect waves-blue">Yes</button>
+            <button value="me" class="btn col s12 button blue waves-effect waves-blue" ng-click="me()">Yes</button>
         </div>
     </div>
         </div>
