@@ -48,6 +48,7 @@ namespace org.usd232.robotics.management.apis {
         public contact: UserContact[];
         public picture: string;
         public pin: number;
+        public name: string;
     }
 
     export namespace permissions {

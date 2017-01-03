@@ -1,7 +1,6 @@
 package org.usd232.robotics.management.apis;
 
 import java.io.Serializable;
-
 import java.util.List;
 
 /**
@@ -19,19 +18,25 @@ public class UserProfile implements Cloneable, Serializable, Comparable<UserProf
      * 
      * @since 1.0
      */
-    public List<UserContact> contact;
+    public List<UserContact>  contact;
     /**
      * The url to the picture of the user
      * 
      * @since 1.0
      */
-    public String            picture;
+    public String             picture;
     /**
      * The pin number for the user to sign in to the kiosk with
      * 
      * @since 1.0
      */
-    public int               pin;
+    public int                pin;
+    /**
+     * The name of the user
+     * 
+     * @since 1.0
+     */
+    public String             name;
 
     @Override
     public UserProfile clone()
@@ -47,6 +52,7 @@ public class UserProfile implements Cloneable, Serializable, Comparable<UserProf
         result = prime * result + ((contact == null) ? 0 : contact.hashCode());
         result = prime * result + ((picture == null) ? 0 : picture.hashCode());
         result = prime * result + pin;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
@@ -92,8 +98,19 @@ public class UserProfile implements Cloneable, Serializable, Comparable<UserProf
         {
             return false;
         }
+        if (name == null)
+        {
+            if (other.name != null)
+            {
+                return false;
+            }
+        }
+        else if (!name.equals(other.name))
+        {
+            return false;
+        }
         return true;
-   }
+    }
 
     @Override
     public int compareTo(UserProfile o)
@@ -104,7 +121,7 @@ public class UserProfile implements Cloneable, Serializable, Comparable<UserProf
     @Override
     public String toString()
     {
-        return String.format("UserProfile [contact=%s, picture=%s, pin=%s]", contact, picture, pin);
+        return String.format("UserProfile [contact=%s, picture=%s, pin=%s, name=%s]", contact, picture, pin, name);
     }
 
     /**
@@ -120,18 +137,21 @@ public class UserProfile implements Cloneable, Serializable, Comparable<UserProf
      * Default constructor
      *
      * @param contact
-     *            The methods of contacting the user      
+     *            The methods of contacting the user
      * @param picture
-     *            The url to the picture of the user      
+     *            The url to the picture of the user
      * @param pin
-     *            The pin number for the user to sign in to the kiosk with      
+     *            The pin number for the user to sign in to the kiosk with
+     * @param name
+     *            The name of the user
      * @since 1.0
      */
-    public UserProfile(List<UserContact> contact, String picture, int pin)
+    public UserProfile(List<UserContact> contact, String picture, int pin, String name)
     {
         this.contact = contact;
         this.picture = picture;
         this.pin = pin;
+        this.name = name;
     }
 
     /**
@@ -143,6 +163,6 @@ public class UserProfile implements Cloneable, Serializable, Comparable<UserProf
      */
     public UserProfile(UserProfile obj)
     {
-        this(obj.contact, obj.picture, obj.pin);
+        this(obj.contact, obj.picture, obj.pin, obj.name);
     }
 }

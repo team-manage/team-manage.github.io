@@ -93,8 +93,9 @@ public abstract class AuthenticationApis
         String picture;
         int pin;
         int userId;
+        String name;
         try (PreparedStatement st = Database.prepareStatement(
-                        "SELECT `id`, `password`, `salt`, `pin`, `picture`, `permissions` FROM `users` WHERE `username` = ?"))
+                        "SELECT `id`, `password`, `salt`, `pin`, `picture`, `permissions`, `name` FROM `users` WHERE `username` = ?"))
         {
             st.setString(1, req.username);
             try (ResultSet res = st.executeQuery())
@@ -116,6 +117,7 @@ public abstract class AuthenticationApis
                 picture = res.getString(5);
                 pin = res.getInt(4);
                 userId = res.getInt(1);
+                name = res.getString(7);
             }
         }
         try (PreparedStatement st = Database.prepareStatement(
@@ -160,7 +162,7 @@ public abstract class AuthenticationApis
                                             permissions.contains("settings.edit")),
                             new SignInPermissions(permissions.contains("signin.kiosk"),
                                             permissions.contains("signin.code"), permissions.contains("signin.auto"))),
-                            new UserProfile(contact, picture, pin)));
+                            new UserProfile(contact, picture, pin, name)));
             res.session.permissions = permissions;
             return res;
         }
