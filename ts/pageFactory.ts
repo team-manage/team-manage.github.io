@@ -10,6 +10,8 @@
 
     /// <reference path="pages/kiosk.ts" />
 
+    /// <reference path="pages/home.ts" />
+
 
 namespace org.usd232.robotics.management {
     
@@ -22,6 +24,8 @@ namespace org.usd232.robotics.management {
         import ProfileController = org.usd232.robotics.management.pages.ProfileController;
     
         import KioskController = org.usd232.robotics.management.pages.KioskController;
+    
+        import HomeController = org.usd232.robotics.management.pages.HomeController;
     
 
     export class PageFactory {
@@ -37,6 +41,8 @@ namespace org.usd232.robotics.management {
                     new ProfileController("profile"),
                 
                     new KioskController("kiosk"),
+                
+                    new HomeController("home"),
                 
             ];
         }
