@@ -1186,6 +1186,7 @@ var org;
 /// <reference path="../page.ts" />
 /// <reference path="../navigation.ts" />
 /// <reference path="../apis.ts" />
+/// <reference path="login.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -1221,7 +1222,14 @@ var org;
                                 _this.$scope.confirm = false;
                                 _this.$scope.pin = '';
                                 _this.$scope.pinpad = true;
-                                Materialize.toast("You have been signed in!", 4000);
+                                ApiController.instance.kioskSignIn.request(_this.$scope.user.id, function (response) {
+                                    if (response.success) {
+                                        Materialize.toast("You have been signed in!", 4000);
+                                    }
+                                    else {
+                                        Materialize.toast("There was an error in signing in your account", 4000);
+                                    }
+                                });
                             };
                         };
                         return KioskController;

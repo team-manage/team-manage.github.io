@@ -1,6 +1,7 @@
 /// <reference path="../page.ts" />
 /// <reference path="../navigation.ts" />
 /// <reference path="../apis.ts" />
+/// <reference path="login.ts" />
 
 namespace org.usd232.robotics.management.pages {
     import ApiController = org.usd232.robotics.management.apis.ApiController;
@@ -25,7 +26,13 @@ namespace org.usd232.robotics.management.pages {
                 this.$scope.confirm = false;
                 this.$scope.pin = '';
                 this.$scope.pinpad = true;
-                Materialize.toast("You have been signed in!", 4000);
+                ApiController.instance.kioskSignIn.request(this.$scope.user.id, response => { 
+                    if (response.success){
+                        Materialize.toast("You have been signed in!", 4000);
+                    } else {
+                        Materialize.toast("There was an error in signing in your account", 4000);
+                    }
+                });
             };
         }
     }
