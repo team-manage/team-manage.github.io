@@ -24,9 +24,9 @@ namespace org.usd232.robotics.management {
         public constructor() {
             AngularController.registerController("header", $scope => {
                 this.$scope = $scope;
-                $scope.goBack = () => HistoryController.back();
-                $scope.goProfile = () => HistoryController.load("/profile");
-                $scope.goKiosk = () => HistoryController.load("/kiosk");
+                $scope.back = () => HistoryController.back();
+                $scope.go = (url: string) => HistoryController.load(url);
+                $scope.LoginController = (management as any).pages.LoginController; // Cyclic dependency
             });
         }
     }

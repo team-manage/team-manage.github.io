@@ -79,9 +79,9 @@ var org;
                         var _this = this;
                         AngularController.registerController("header", function ($scope) {
                             _this.$scope = $scope;
-                            $scope.goBack = function () { return HistoryController.back(); };
-                            $scope.goProfile = function () { return HistoryController.load("/profile"); };
-                            $scope.goKiosk = function () { return HistoryController.load("/kiosk"); };
+                            $scope.back = function () { return HistoryController.back(); };
+                            $scope.go = function (url) { return HistoryController.load(url); };
+                            $scope.LoginController = management.pages.LoginController; // Cyclic dependency
                         });
                     }
                     NavBar.prototype.loadPage = function (name) {

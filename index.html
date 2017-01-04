@@ -30,18 +30,26 @@
         <a class="brand-logo center" ng-bind="title"></a>
         <ul class="left">
             <li>
-                <a ng-click="goBack()">
+                <a ng-click="back()">
                     <i class="material-icons">
                         arrow_back
                     </i>
                 </a>
             </li>
         </ul>
-        <ul class="right">
-            <li><a href="admin/meetings">Meetings</a></li>
-            <li><a ng-click="goProfile()">Profile</a></li>
-            <li><a ng-click="goKiosk()">Kiosk</a></li>
-        </ul>
+        <div class="container">
+            <ul class="right">
+                <li ng-show="LoginController.user.permissions.events.view">
+                    <a ng-click="go('/admin/meetings')">Meetings</a>
+                </li>
+                <li>
+                    <a ng-click="go('/profile')" onclick="setTimeout(function() { $('.profile-tabs').tabs('select_tab', 'profile-tab-contact'); }, 0)">Profile</a>
+                </li>
+                <li ng-show="LoginController.user.permissions.kiosk.open">
+                    <a ng-click="go('/kiosk')">Kiosk</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
 <div class="container" ng-controller="pages">
@@ -206,33 +214,33 @@
             <input type="hidden" name="navbarTitle" value="Your Profile" />
             <input type="hidden" name="pageTitle" value="" />
             <input type="hidden" name="pageUrl" value="/profile" />
-            <div class="valign-wrapper profile-container">
-  <div class="valign">
-    <div class="row">
-      <div class="col s12">
-        <h1 class="center">
-          
-        </h1>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col s12">
-        <ul class="tabs">
-          <li class="tab col s3"><a href="#profile-tab-contact">Contact</a></li>
-          <li class="tab col s3"><a href="#profile-tab-picture">Picture</a></li>
-          <li class="tab col s3"><a href="#profile-tab-rsvp">RSVP</a></li>
-          <li class="tab col s3"><a href="#profile-tab-pin">Pin</a></li>
-          <li class="tab col s3"><a href="#profile-tab-records">Records</a></li>
+            <div class="row">
+    <div class="col s12">
+        <ul class="tabs tabs-fixed-width profile-tabs">
+            <li class="tab col s3">
+                <a href="#profile-tab-contact">Contact</a>
+            </li>
+            <li class="tab col s3">
+                <a href="#profile-tab-picture">Picture</a>
+            </li>
+            <li class="tab col s3">
+                <a href="#profile-tab-rsvp">RSVP</a>
+            </li>
+            <li class="tab col s3">
+                <a href="#profile-tab-pin">Pin</a>
+            </li>
+            <li class="tab col s3">
+                <a href="#profile-tab-records">Records</a>
+            </li>
         </ul>
-      </div>
-      <div id="profile-tab-contact" class="col s12">Test 1</div>
-      <div id="profile-tab-picture" class="col s12">Test 2</div>
-      <div id="profile-tab-rsvp" class="col s12">Test 3</div>
-      <div id="profile-tab-pin" class="col s12">Test 4</div>
-      <div id="profile-tab-records" class="col s12">Test 5</div>
     </div>
-  </div>
+    <div id="profile-tab-contact" class="col s12">Test 1</div>
+    <div id="profile-tab-picture" class="col s12">Test 2</div>
+    <div id="profile-tab-rsvp" class="col s12">Test 3</div>
+    <div id="profile-tab-pin" class="col s12">Test 4</div>
+    <div id="profile-tab-records" class="col s12">Test 5</div>
 </div>
+
         </div>
     
         <div ng-show="name == 'kiosk'" id="page-kiosk" ng-controller="page-kiosk">
