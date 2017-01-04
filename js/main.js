@@ -1173,6 +1173,7 @@ var org;
                             return _super.apply(this, arguments) || this;
                         }
                         ProfileController.prototype.init = function () {
+                            this.$scope.LoginController = pages.LoginController;
                         };
                         return ProfileController;
                     }(management.AbstractPage));

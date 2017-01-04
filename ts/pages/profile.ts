@@ -8,7 +8,8 @@ namespace org.usd232.robotics.management.pages {
 
     export class ProfileController extends AbstractPage {
         protected init(): void {
-           
+            this.$scope.LoginController = LoginController;
+
         }
     }
 }
