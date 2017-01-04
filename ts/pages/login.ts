@@ -5,9 +5,11 @@
 namespace org.usd232.robotics.management.pages {
     import ApiController = org.usd232.robotics.management.apis.ApiController;
     import LoginRequest = org.usd232.robotics.management.apis.LoginRequest;
+    import LoginResponse = org.usd232.robotics.management.apis.LoginResponse;
 
     export class LoginController extends AbstractPage {
         private static instances: LoginController[] = [];
+        public static user: LoginResponse;
 
         public static readStorage(): void {
             for ( var i: number = 0; i < LoginController.instances.length; ++i ) {
@@ -40,6 +42,7 @@ namespace org.usd232.robotics.management.pages {
                     if ( res.authentication == "success" ) {
                         localStorage.setItem("serverUrl", this.$scope.server);
                         localStorage.setItem("username", this.$scope.username);
+                        LoginController.user = res;
                         HistoryController.load("/home");
                     } else {
                         Materialize.toast("Invalid username or password!", 4000);

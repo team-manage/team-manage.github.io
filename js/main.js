@@ -53,7 +53,10 @@ var org;
                             _this.$http = $http;
                             _this.init();
                         });
+                        management.HistoryController.getPageController().onLoad(name, function () { return _this.open(); });
                     }
+                    AbstractPage.prototype.open = function () {
+                    };
                     return AbstractPage;
                 }());
                 management.AbstractPage = AbstractPage;
@@ -105,6 +108,9 @@ var org;
                     HistoryController.setPageController = function (ctrlr) {
                         HistoryController.page = ctrlr;
                     };
+                    HistoryController.getPageController = function () {
+                        return HistoryController.page;
+                    };
                     HistoryController.load = function (url) {
                         var tmp = $("input[name='pageUrl'][value='" + url + "']").parent("div");
                         var page = tmp.length > 0 ? tmp[0].id.substr(5) : "404";
@@ -123,6 +129,7 @@ var org;
                 var PageController = (function () {
                     function PageController(nav) {
                         var _this = this;
+                        this.listeners = {};
                         this.nav = nav;
                         AngularController.registerController("pages", function ($scope) {
                             _this.$scope = $scope;
@@ -132,6 +139,12 @@ var org;
                     PageController.prototype.loadPage = function (name) {
                         this.$scope.name = name;
                         this.nav.loadPage(name);
+                        if (this.listeners[name]) {
+                            this.listeners[name]();
+                        }
+                    };
+                    PageController.prototype.onLoad = function (name, callback) {
+                        this.listeners[name] = callback;
                     };
                     return PageController;
                 }());
@@ -723,6 +736,7 @@ var org;
                                     if (res.authentication == "success") {
                                         localStorage.setItem("serverUrl", _this.$scope.server);
                                         localStorage.setItem("username", _this.$scope.username);
+                                        LoginController.user = res;
                                         management.HistoryController.load("/home");
                                     }
                                     else {
@@ -1220,6 +1234,7 @@ var org;
 /// <reference path="../page.ts" />
 /// <reference path="../navigation.ts" />
 /// <reference path="../apis.ts" />
+/// <reference path="login.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -1230,12 +1245,20 @@ var org;
             (function (management) {
                 var pages;
                 (function (pages) {
+                    var ApiController = org.usd232.robotics.management.apis.ApiController;
                     var HomeController = (function (_super) {
                         __extends(HomeController, _super);
                         function HomeController() {
                             return _super.apply(this, arguments) || this;
                         }
                         HomeController.prototype.init = function () {
+                            this.$scope.LoginController = pages.LoginController;
+                        };
+                        HomeController.prototype.open = function () {
+                            var _this = this;
+                            ApiController.instance.recent.request(function (messages) { return _this.$scope.$apply(function () {
+                                _this.$scope.messages = messages;
+                            }); });
                         };
                         return HomeController;
                     }(management.AbstractPage));
