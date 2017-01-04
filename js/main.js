@@ -449,6 +449,16 @@ var org;
                             this.url = url;
                             this.ctrlr = ctrlr;
                         }
+                        ApiBase.prototype.getLastResponse = function (content) {
+                            return this.lastResponse;
+                        };
+                        ApiBase.prototype.getLastModified = function (content) {
+                            return this.lastModified;
+                        };
+                        ApiBase.prototype.setLastResponse = function (content, lastResponse, lastModified) {
+                            this.lastResponse = lastResponse;
+                            this.lastModified = lastModified;
+                        };
                         ApiBase.prototype.isMock = function (callback) {
                             var _this = this;
                             if (this.ctrlr.isMock == null) {
@@ -460,23 +470,23 @@ var org;
                                 callback(this.ctrlr.isMock);
                             }
                         };
-                        ApiBase.prototype.handleSuccess = function (data, xhr, callback, lateCallback) {
+                        ApiBase.prototype.handleSuccess = function (data, xhr, content, callback, lateCallback) {
                             var lastModified = Date.parse(xhr.getResponseHeader("Last-Modified"));
-                            if (lastModified > this.lastModified) {
+                            if (lastModified > this.getLastModified(content)) {
                                 if (this.lastResponse) {
                                     lateCallback(data);
                                 }
                                 else {
                                     callback(data);
                                 }
-                                this.lastResponse = data;
-                                this.lastModified = lastModified;
+                                this.setLastResponse(content, data, lastModified);
                             }
                         };
                         ApiBase.prototype.sendRequest = function (url, content, method, callback, lateCallback) {
                             var _this = this;
-                            if (this.lastResponse) {
-                                setTimeout(function () { return callback(_this.lastResponse); }, 0);
+                            var lastResponse = this.getLastResponse(content);
+                            if (lastResponse) {
+                                setTimeout(function () { return callback(lastResponse); }, 0);
                             }
                             $.ajax(this.ctrlr.baseUrl + this.url + url, {
                                 "cache": false,
@@ -485,17 +495,17 @@ var org;
                                 "dataType": "json",
                                 "error": function (xhr, status, error) {
                                     console.error(error);
-                                    if (!_this.lastResponse) {
+                                    if (!lastResponse) {
                                         callback(null);
                                     }
                                 },
                                 "headers": {
                                     "X-Session-Token": this.ctrlr.sessionToken
                                 },
-                                "ifModified": this.lastResponse != null,
+                                "ifModified": lastResponse != null,
                                 "jsonp": false,
                                 "method": method,
-                                "success": function (data, status, xhr) { return _this.handleSuccess(data, xhr, callback, lateCallback); }
+                                "success": function (data, status, xhr) { return _this.handleSuccess(data, xhr, content, callback, lateCallback); }
                             });
                         };
                         return ApiBase;
@@ -503,8 +513,21 @@ var org;
                     var ParameterizedApi = (function (_super) {
                         __extends(ParameterizedApi, _super);
                         function ParameterizedApi() {
-                            return _super.apply(this, arguments) || this;
+                            var _this = _super.apply(this, arguments) || this;
+                            _this.lastResponses = {};
+                            _this.lastModifieds = {};
+                            return _this;
                         }
+                        ParameterizedApi.prototype.getLastResponse = function (content) {
+                            return this.lastResponses[content];
+                        };
+                        ParameterizedApi.prototype.getLastModified = function (content) {
+                            return this.lastModifieds[content] || 0;
+                        };
+                        ParameterizedApi.prototype.setLastResponse = function (content, lastResponse, lastModified) {
+                            this.lastResponses[content] = lastResponse;
+                            this.lastModifieds[content] = lastModified;
+                        };
                         ParameterizedApi.prototype.request = function (param, callback, lateCallback) {
                             var _this = this;
                             if (lateCallback === void 0) { lateCallback = callback; }
@@ -520,10 +543,10 @@ var org;
                         function LoginApi(url, ctrlr) {
                             var _this = _super.call(this, url, ctrlr) || this;
                             var base = _this.handleSuccess;
-                            _this.handleSuccess = function (data, xhr, callback, lateCallback) {
+                            _this.handleSuccess = function (data, xhr, content, callback, lateCallback) {
                                 ctrlr.sessionToken = xhr.getResponseHeader("X-Session-Token");
                                 base.apply(_this, [
-                                    data, xhr, callback, lateCallback
+                                    data, xhr, content, callback, lateCallback
                                 ]);
                             };
                             return _this;
@@ -546,11 +569,24 @@ var org;
                     var CollectionApi = (function (_super) {
                         __extends(CollectionApi, _super);
                         function CollectionApi() {
-                            return _super.apply(this, arguments) || this;
+                            var _this = _super.apply(this, arguments) || this;
+                            _this.lastResponses = {};
+                            _this.lastModifieds = {};
+                            return _this;
                         }
+                        CollectionApi.prototype.getLastResponse = function (content) {
+                            return this.lastResponses[content];
+                        };
+                        CollectionApi.prototype.getLastModified = function (content) {
+                            return this.lastModifieds[content] || 0;
+                        };
+                        CollectionApi.prototype.setLastResponse = function (content, lastResponse, lastModified) {
+                            this.lastResponses[content] = lastResponse;
+                            this.lastModifieds[content] = lastModified;
+                        };
                         CollectionApi.prototype.request = function (id, callback, lateCallback) {
                             if (lateCallback === void 0) { lateCallback = callback; }
-                            this.sendRequest("/" + id + ".json", null, "GET", callback, lateCallback);
+                            this.sendRequest("/" + id + ".json", "" + id, "GET", callback, lateCallback);
                         };
                         return CollectionApi;
                     }(ApiBase));

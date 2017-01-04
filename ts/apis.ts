@@ -335,6 +335,19 @@ namespace org.usd232.robotics.management.apis {
         private lastResponse: T;
         private lastModified: number = 0;
 
+        protected getLastResponse(content: any): T {
+            return this.lastResponse;
+        }
+
+        protected getLastModified(content: any): number {
+            return this.lastModified;
+        }
+
+        protected setLastResponse(content: any, lastResponse: T, lastModified: number) {
+            this.lastResponse = lastResponse;
+            this.lastModified = lastModified;
+        }
+
         protected isMock(callback: (isMock: boolean) => void) {
             if ( this.ctrlr.isMock == null ) {
                 this.ctrlr.isMockListeners.push(() => {
@@ -345,22 +358,22 @@ namespace org.usd232.robotics.management.apis {
             }
         }
 
-        protected handleSuccess(data: any, xhr: JQueryXHR, callback: (res: T) => void, lateCallback: (res: T) => void): void {
+        protected handleSuccess(data: any, xhr: JQueryXHR, content: any, callback: (res: T) => void, lateCallback: (res: T) => void): void {
             let lastModified: number = Date.parse(xhr.getResponseHeader("Last-Modified"));
-            if ( lastModified > this.lastModified ) {
+            if ( lastModified > this.getLastModified(content) ) {
                 if ( this.lastResponse ) {
                     lateCallback(data);
                 } else {
                     callback(data);
                 }
-                this.lastResponse = data;
-                this.lastModified = lastModified;
+                this.setLastResponse(content, data, lastModified);
             }
         }
 
         protected sendRequest(url: string, content: any, method: string, callback: (res: T) => void, lateCallback: (res: T) => void): void {
-            if ( this.lastResponse ) {
-                setTimeout(() => callback(this.lastResponse), 0);
+            let lastResponse: T = this.getLastResponse(content);
+            if ( lastResponse ) {
+                setTimeout(() => callback(lastResponse), 0);
             }
             $.ajax(this.ctrlr.baseUrl + this.url + url, {
                 "cache": false,
@@ -369,17 +382,17 @@ namespace org.usd232.robotics.management.apis {
                 "dataType": "json",
                 "error": (xhr: JQueryXHR, status: string, error: string) => {
                     console.error(error);
-                    if ( !this.lastResponse ) {
+                    if ( !lastResponse ) {
                         callback(null);
                     }
                 },
                 "headers": {
                     "X-Session-Token": this.ctrlr.sessionToken
                 },
-                "ifModified": this.lastResponse != null,
+                "ifModified": lastResponse != null,
                 "jsonp": false,
                 "method": method,
-                "success": (data: any, status: string, xhr: JQueryXHR) => this.handleSuccess(data, xhr, callback, lateCallback)
+                "success": (data: any, status: string, xhr: JQueryXHR) => this.handleSuccess(data, xhr, content, callback, lateCallback)
             });
         }
 
@@ -390,6 +403,22 @@ namespace org.usd232.robotics.management.apis {
     }
 
     export class ParameterizedApi<T, P> extends ApiBase<T> {
+        private lastResponses: { [json: string]: T } = {};
+        private lastModifieds: { [json: string]: number } = {};
+
+        protected getLastResponse(content: any): T {
+            return this.lastResponses[content];
+        }
+
+        protected getLastModified(content: any): number {
+            return this.lastModifieds[content] || 0;
+        }
+
+        protected setLastResponse(content: any, lastResponse: T, lastModified: number) {
+            this.lastResponses[content] = lastResponse;
+            this.lastModifieds[content] = lastModified;
+        }
+
         public request(param: P, callback: (res: T) => void, lateCallback: (res: T) => void = callback): void {
             this.isMock(isMock =>
                 this.sendRequest(".json", JSON.stringify(param), isMock ? "GET" : "POST", callback, lateCallback)
@@ -401,10 +430,10 @@ namespace org.usd232.robotics.management.apis {
         public constructor(url: string, ctrlr: ApiController) {
             super(url, ctrlr);
             let base = this.handleSuccess;
-            this.handleSuccess = (data: any, xhr: JQueryXHR, callback: (res: LoginResponse) => void, lateCallback: (res: LoginResponse) => void) => {
+            this.handleSuccess = (data: any, xhr: JQueryXHR, content: any, callback: (res: LoginResponse) => void, lateCallback: (res: LoginResponse) => void) => {
                 ctrlr.sessionToken = xhr.getResponseHeader("X-Session-Token");
                 base.apply(this, [
-                    data, xhr, callback, lateCallback
+                    data, xhr, content, callback, lateCallback
                 ]);
             };
         }
@@ -417,8 +446,24 @@ namespace org.usd232.robotics.management.apis {
     }
 
     export class CollectionApi<T, TIndex> extends ApiBase<T> {
+        private lastResponses: { [json: string]: T } = {};
+        private lastModifieds: { [json: string]: number } = {};
+
+        protected getLastResponse(content: any): T {
+            return this.lastResponses[content];
+        }
+
+        protected getLastModified(content: any): number {
+            return this.lastModifieds[content] || 0;
+        }
+
+        protected setLastResponse(content: any, lastResponse: T, lastModified: number) {
+            this.lastResponses[content] = lastResponse;
+            this.lastModifieds[content] = lastModified;
+        }
+
         public request(id: TIndex, callback: (res: T) => void, lateCallback: (res: T) => void = callback): void {
-            this.sendRequest("/" + id + ".json", null, "GET", callback, lateCallback);
+            this.sendRequest("/" + id + ".json", "" + id, "GET", callback, lateCallback);
         }
     }
 

@@ -7,15 +7,14 @@ namespace org.usd232.robotics.management.pages {
     import LoginRequest = org.usd232.robotics.management.apis.LoginRequest;
 
     export class KioskController extends AbstractPage {
-        
         protected init(): void {
             this.$scope.pinpad = true;
             this.$scope.go = () => ApiController.instance.kiosk.request(this.$scope.pin, user => this.$scope.$apply(() => {
-    this.$scope.user = user;
-    this.$scope.confirm = user != null;
-    if (!this.$scope.confirm) {
-        Materialize.toast("Invalid pin number", 4000);
-            }
+                this.$scope.user = user;
+                this.$scope.confirm = user != null;
+                if (!this.$scope.confirm) {
+                    Materialize.toast("Invalid pin number", 4000);
+                }
             }));
             this.$scope.notme = () => {
                 this.$scope.confirm = false;
