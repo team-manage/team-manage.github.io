@@ -19,6 +19,10 @@
 <!-- Material Icons -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 
+<!-- QR Code Scanner -->
+<script type="text/javascript" src="/js/qrcodelib.js"></script>
+<script type="text/javascript" src="/js/webcodecamjquery.js"></script>
+
 <!-- Our stuff -->
 <link rel="stylesheet" href="/css/main.css" />
 <script src="/js/main.js"></script>
@@ -591,58 +595,59 @@
 
     <input disabled class="inputa" type="number" maxlength="3" style="font-size: 50px" ng-value="pin" ng-init="pin=''">
 
-<div class="row">
-    <div class="col s12">
-        <div class="col s4">
-            <button value="1" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin + '1'">1</button>
-        </div>
-        <div class="col s4">
-            <button value="2" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin + '2'">2</button>
-        </div>
-        <div class="col s4">
-            <button value="3" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '3'">3</button>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col s12">
-        <div class="col s4">
-            <button value="4" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '4'">4</button>
-        </div>
-        <div class="col s4">
-            <button value="5" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '5'">5</button>
-        </div>
-        <div class="col s4">
-            <button value="6" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '6'">6</button>
+    <div class="row">
+        <div class="col s12">
+            <div class="col s4">
+                <button value="1" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin + '1'">1</button>
+            </div>
+            <div class="col s4">
+                <button value="2" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin + '2'">2</button>
+            </div>
+            <div class="col s4">
+                <button value="3" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '3'">3</button>
+            </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col s12">
-        <div class="col s4">
-            <button value="7" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '7'">7</button>
-        </div>
-        <div class="col s4">
-            <button value="8" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '8'">8</button>
-        </div>
-        <div class="col s4">
-            <button value="9" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '9'">9</button>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col s12">
-        <div class="col s4">
-            <button value="back" class="btn col s12 button blue waves-effect waves-blue" ng-click="pin = pin.substring(0,pin.length - 1);">Backspace</button>
-        </div>
-        <div class="col s4">
-            <button value="0" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '0'">0</button>
-        </div>
-        <div class="col s4">
-            <button value="go" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length < 3" ng-click="go()">Go</button>
+    <div class="row">
+        <div class="col s12">
+            <div class="col s4">
+                <button value="4" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '4'">4</button>
+            </div>
+            <div class="col s4">
+                <button value="5" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '5'">5</button>
+            </div>
+            <div class="col s4">
+                <button value="6" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '6'">6</button>
+            </div>
         </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col s12">
+            <div class="col s4">
+                <button value="7" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '7'">7</button>
+            </div>
+            <div class="col s4">
+                <button value="8" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '8'">8</button>
+            </div>
+            <div class="col s4">
+                <button value="9" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '9'">9</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <div class="col s4">
+                <button value="back" class="btn col s12 button blue waves-effect waves-blue" ng-click="pin = pin.substring(0,pin.length - 1);">Backspace</button>
+            </div>
+            <div class="col s4">
+                <button value="0" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length > 2" ng-click="pin = pin +  '0'">0</button>
+            </div>
+            <div class="col s4">
+                <button value="go" class="btn col s12 button blue waves-effect waves-blue" ng-disabled="pin.length < 3" ng-click="go()">Go</button>
+            </div>
+        </div>
+    </div>
+    <canvas class="kiosk-qr-video"></canvas>
 </div>
 
 <div ng-show="confirm">
@@ -661,6 +666,7 @@
         </div>
     </div>
 </div>
+
         </div>
     
         <div ng-show="name == 'home'" id="page-home" ng-controller="page-home">

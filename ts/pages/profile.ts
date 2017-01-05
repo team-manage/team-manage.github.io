@@ -87,11 +87,6 @@ namespace org.usd232.robotics.management.pages {
                     this.media = media;
                     let video: HTMLVideoElement = $("video.profile-upload-image")[0] as HTMLVideoElement;
                     video.srcObject = media;
-                    let listener = () => {
-                        video.removeEventListener("canplay", listener);
-                        
-                    };
-                    video.addEventListener("canplay", listener);
                     video.play();
                     ($(".profile-take-picture") as any).modal("open");
                 }) as any).catch(ex => {

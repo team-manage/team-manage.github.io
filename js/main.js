@@ -1272,10 +1272,6 @@ var org;
                                     _this.media = media;
                                     var video = $("video.profile-upload-image")[0];
                                     video.srcObject = media;
-                                    var listener = function () {
-                                        video.removeEventListener("canplay", listener);
-                                    };
-                                    video.addEventListener("canplay", listener);
                                     video.play();
                                     $(".profile-take-picture").modal("open");
                                 })["catch"](function (ex) {
@@ -1363,16 +1359,25 @@ var org;
                         function KioskController() {
                             return _super.apply(this, arguments) || this;
                         }
+                        KioskController.prototype.signIn = function (pin, verify) {
+                            var _this = this;
+                            ApiController.instance.kiosk.request(pin, function (user) { return _this.$scope.$apply(function () {
+                                _this.$scope.user = user;
+                                _this.$scope.confirm = user != null;
+                                if (_this.$scope.confirm) {
+                                    if (!verify) {
+                                        _this.$scope.me();
+                                    }
+                                }
+                                else {
+                                    Materialize.toast("Invalid pin number", 4000);
+                                }
+                            }); });
+                        };
                         KioskController.prototype.init = function () {
                             var _this = this;
                             this.$scope.pinpad = true;
-                            this.$scope.go = function () { return ApiController.instance.kiosk.request(_this.$scope.pin, function (user) { return _this.$scope.$apply(function () {
-                                _this.$scope.user = user;
-                                _this.$scope.confirm = user != null;
-                                if (!_this.$scope.confirm) {
-                                    Materialize.toast("Invalid pin number", 4000);
-                                }
-                            }); }); };
+                            this.$scope.go = function () { return _this.signIn(_this.$scope.pin, true); };
                             this.$scope.notme = function () {
                                 _this.$scope.confirm = false;
                                 _this.$scope.pin = '';
@@ -1384,13 +1389,50 @@ var org;
                                 _this.$scope.pinpad = true;
                                 ApiController.instance.kioskSignIn.request(_this.$scope.user.id, function (response) {
                                     if (response.success) {
-                                        Materialize.toast("You have been signed in!", 4000);
+                                        Materialize.toast(_this.$scope.user.name + " has been signed in!", 4000);
                                     }
                                     else {
                                         Materialize.toast("There was an error in signing in your account", 4000);
                                     }
                                 });
                             };
+                        };
+                        KioskController.prototype.open = function () {
+                            var _this = this;
+                            var decoder = $(".kiosk-qr-video").WebCodeCamJQuery({
+                                "DecodeQRCodeRate": 5,
+                                "DecodeBarCodeRate": null,
+                                "successTimeout": 500,
+                                "codeRepetition": true,
+                                "tryVertical": false,
+                                "frameRate": 15,
+                                "width": 640,
+                                "height": 480,
+                                "constraints": {
+                                    "video": {
+                                        "facingMode": "user"
+                                    }
+                                },
+                                "flipVertical": false,
+                                "flipHorizontal": false,
+                                "zoom": -1,
+                                "beep": "audio/beep.mp3",
+                                "decoderWorker": "js/DecoderWorker.js",
+                                "brightness": 0,
+                                "autoBrightnessValue": false,
+                                "grayScale": false,
+                                "contrast": 0,
+                                "threshold": 0,
+                                "sharpness": [],
+                                "resultFunction": function (result) { return _this.signIn(parseInt(result.code), false); },
+                                "cameraSuccess": function () { },
+                                "canPlayFunction": function () { },
+                                "getDevicesError": function (error) { return Materialize.toast(error, 4000); },
+                                "getUserMediaError": function (error) { return Materialize.toast(error, 4000); },
+                                "cameraError": function (error) { return Materialize.toast(error, 4000); }
+                            }).data().plugin_WebCodeCamJQuery;
+                            decoder.init();
+                            decoder.play();
                         };
                         return KioskController;
                     }(management.AbstractPage));
