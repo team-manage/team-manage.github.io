@@ -53,6 +53,22 @@
                 </li>
             </ul>
         </div>
+        <div class="container">
+            <ul id="slide-out" class="side-nav">
+                <li ng-show="LoginController.user.permissions.events.view">
+                    <a ng-click="go('/admin/meetings')">Meetings</a>
+                </li>
+                <li>
+                    <a ng-click="go('/profile')" onclick="setTimeout(function() { $('.profile-tabs').tabs('select_tab', 'profile-tab-contact'); }, 0)">Profile</a>
+                </li>
+                <li ng-show="LoginController.user.permissions.kiosk.open">
+                    <a ng-click="go('/kiosk')">Kiosk</a>
+                </li>
+                <li ng-show="LoginController.user.permissions.users.view">
+                    <a ng-click="go('/admin/users')">Users</a>
+                </li>  
+            </ul>
+        </div>
     </div>
 </nav>
 <div class="container" ng-controller="pages">
@@ -711,7 +727,7 @@
                   <div class="switch">
                     <label>
                      Yes
-                    <input type="checkbox" ng-value="user.verified" value="user.verified">
+                    <input type="checkbox" ng-model="user.verified" value="user.verified">
                     <span class="lever"></span>
                     No
                      </label>
