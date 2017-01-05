@@ -172,34 +172,41 @@ var org;
                         return LoginRequest;
                     }());
                     apis.LoginRequest = LoginRequest;
-                    var ContactType;
-                    (function (ContactType) {
-                        ContactType[ContactType["email"] = 0] = "email";
-                        ContactType[ContactType["phone"] = 1] = "phone";
-                    })(ContactType = apis.ContactType || (apis.ContactType = {}));
                     var notificiations;
                     (function (notificiations) {
                         var SignInNotifications = (function () {
-                            function SignInNotifications() {
+                            function SignInNotifications(manual, auto) {
+                                this.manual = manual;
+                                this.auto = auto;
                             }
                             return SignInNotifications;
                         }());
                         notificiations.SignInNotifications = SignInNotifications;
                         var MeetingNotifications = (function () {
-                            function MeetingNotifications() {
+                            function MeetingNotifications(missed, reminders) {
+                                this.missed = missed;
+                                this.reminders = reminders;
                             }
                             return MeetingNotifications;
                         }());
                         notificiations.MeetingNotifications = MeetingNotifications;
                         var Notifications = (function () {
-                            function Notifications() {
+                            function Notifications(signIn, team, meetings) {
+                                this.signIn = signIn;
+                                this.team = team;
+                                this.meetings = meetings;
                             }
                             return Notifications;
                         }());
                         notificiations.Notifications = Notifications;
                     })(notificiations = apis.notificiations || (apis.notificiations = {}));
                     var UserContact = (function () {
-                        function UserContact() {
+                        function UserContact(type, address, number, provider, notifications) {
+                            this.type = type;
+                            this.address = address;
+                            this.number = number;
+                            this.provider = provider;
+                            this.notifications = notifications;
                         }
                         return UserContact;
                     }());
@@ -383,42 +390,30 @@ var org;
                     }());
                     apis.RegisterRequest = RegisterRequest;
                     var AddContactRequest = (function () {
-                        function AddContactRequest(type, value, provider) {
-                            this.type = type;
-                            if (type == ContactType.phone) {
-                                this.number = value;
-                                this.provider = provider;
-                            }
-                            else if (type == ContactType.email) {
-                                this.address = value;
-                            }
+                        function AddContactRequest(contact) {
+                            this.type = contact.type;
+                            this.address = contact.address;
+                            this.number = contact.number;
+                            this.provider = contact.provider;
                         }
                         return AddContactRequest;
                     }());
                     apis.AddContactRequest = AddContactRequest;
                     var EditContactRequest = (function () {
-                        function EditContactRequest(type, value, notifications) {
-                            this.type = type;
-                            if (type == ContactType.phone) {
-                                this.number = value;
-                            }
-                            else if (type == ContactType.email) {
-                                this.address = value;
-                            }
-                            this.notifications = notifications;
+                        function EditContactRequest(contact) {
+                            this.type = contact.type;
+                            this.address = contact.address;
+                            this.number = contact.number;
+                            this.notifications = contact.notifications;
                         }
                         return EditContactRequest;
                     }());
                     apis.EditContactRequest = EditContactRequest;
                     var RemoveContactRequest = (function () {
-                        function RemoveContactRequest(type, value) {
-                            this.type = type;
-                            if (type == ContactType.phone) {
-                                this.number = value;
-                            }
-                            else if (type == ContactType.email) {
-                                this.address = value;
-                            }
+                        function RemoveContactRequest(contact) {
+                            this.type = contact.type;
+                            this.address = contact.address;
+                            this.number = contact.number;
                         }
                         return RemoveContactRequest;
                     }());
@@ -1157,6 +1152,7 @@ var org;
 /// <reference path="../page.ts" />
 /// <reference path="../navigation.ts" />
 /// <reference path="../apis.ts" />
+/// <reference path="login.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -1167,13 +1163,70 @@ var org;
             (function (management) {
                 var pages;
                 (function (pages) {
+                    var ApiController = org.usd232.robotics.management.apis.ApiController;
+                    var UserContact = org.usd232.robotics.management.apis.UserContact;
+                    var Notifications = org.usd232.robotics.management.apis.notificiations.Notifications;
+                    var SignInNotifications = org.usd232.robotics.management.apis.notificiations.SignInNotifications;
+                    var MeetingNotifications = org.usd232.robotics.management.apis.notificiations.MeetingNotifications;
+                    var AddContactRequest = org.usd232.robotics.management.apis.AddContactRequest;
+                    var EditContactRequest = org.usd232.robotics.management.apis.EditContactRequest;
+                    var RemoveContactRequest = org.usd232.robotics.management.apis.RemoveContactRequest;
                     var ProfileController = (function (_super) {
                         __extends(ProfileController, _super);
                         function ProfileController() {
                             return _super.apply(this, arguments) || this;
                         }
                         ProfileController.prototype.init = function () {
+                            var _this = this;
                             this.$scope.LoginController = pages.LoginController;
+                            this.$scope.addEmail = function () {
+                                var contact = new UserContact("email", _this.$scope.newEmail, null, null, new Notifications(new SignInNotifications(_this.$scope.newNotificationsManualSignIn, _this.$scope.newNotificationsAutoSignIn), _this.$scope.newNotificationsTeam, new MeetingNotifications(_this.$scope.newNotificationsMissedMeeting, _this.$scope.newNotificationsMeetingReminders)));
+                                ApiController.instance.addContact.request(new AddContactRequest(contact), function (res) {
+                                    if (res.success) {
+                                        _this.$scope.$apply(function () {
+                                            pages.LoginController.user.profile.contact.push(contact);
+                                            _this.$scope.newEmail = "";
+                                        });
+                                    }
+                                    else {
+                                        Materialize.toast("An error occurred while adding email", 4000);
+                                    }
+                                });
+                            };
+                            this.$scope.addPhone = function () {
+                                var contact = new UserContact("phone", null, _this.$scope.newPhone, _this.$scope.newPhoneProvider, new Notifications(new SignInNotifications(_this.$scope.newNotificationsManualSignIn, _this.$scope.newNotificationsAutoSignIn), _this.$scope.newNotificationsTeam, new MeetingNotifications(_this.$scope.newNotificationsMissedMeeting, _this.$scope.newNotificationsMeetingReminders)));
+                                ApiController.instance.addContact.request(new AddContactRequest(contact), function (res) {
+                                    if (res.success) {
+                                        _this.$scope.$apply(function () {
+                                            pages.LoginController.user.profile.contact.push(contact);
+                                            _this.$scope.newPhone = "";
+                                            _this.$scope.newPhoneProvider = "";
+                                        });
+                                    }
+                                    else {
+                                        Materialize.toast("An error occurred while adding phone number", 4000);
+                                    }
+                                });
+                            };
+                            this.$scope.changeContact = function ($index) {
+                                var contact = pages.LoginController.user.profile.contact[$index];
+                                ApiController.instance.editContact.request(new EditContactRequest(contact), function (res) {
+                                    if (!res.success) {
+                                        Materialize.toast("Unable to update notification settings", 4000);
+                                    }
+                                });
+                            };
+                            this.$scope.deleteContact = function ($index) {
+                                var contact = pages.LoginController.user.profile.contact[$index];
+                                ApiController.instance.removeContact.request(new RemoveContactRequest(contact), function (res) {
+                                    if (res.success) {
+                                        _this.$scope.$apply(function () { return pages.LoginController.user.profile.contact.splice($index, 1); });
+                                    }
+                                    else {
+                                        Materialize.toast("An error occurred while removing contact", 4000);
+                                    }
+                                });
+                            };
                         };
                         return ProfileController;
                     }(management.AbstractPage));
@@ -1339,6 +1392,7 @@ var org;
                         var page = new management.PageController(nav);
                         $(document).ready(function () {
                             $("ul.tabs").tabs();
+                            $(".modal").modal();
                         });
                         management.HistoryController.setPageController(page);
                         PageFactory.construct();

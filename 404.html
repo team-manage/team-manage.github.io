@@ -235,12 +235,239 @@
         </ul>
     </div>
     <div id="profile-tab-contact" class="col s12">
-        <span ng-bind="LoginController.user.profile.name"></span>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Method
+                    </th>
+                    <th>
+                        Manual Sign-In
+                    </th>
+                    <th>
+                        Automatic Sign-In
+                    </th>
+                    <th>
+                        Team Notifications
+                    </th>
+                    <th>
+                        Missed Meetings
+                    </th>
+                    <th>
+                        Meeting Reminders
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="contact in LoginController.user.profile.contact">
+                    <td ng-bind="contact.type == 'email' ? contact.address : contact.number"></td>
+                    <td>
+                        <div class="switch">
+                            <label>
+                                Off
+                                <input type="checkbox" ng-model="contact.notifications.signIn.manual" ng-change="changeContact($index)" />
+                                <span class="lever"></span>
+                                On
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="switch">
+                            <label>
+                                Off
+                                <input type="checkbox" ng-model="contact.notifications.signIn.auto" ng-change="changeContact($index)" />
+                                <span class="lever"></span>
+                                On
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="switch">
+                            <label>
+                                Off
+                                <input type="checkbox" ng-model="contact.notifications.team" ng-change="changeContact($index)" />
+                                <span class="lever"></span>
+                                On
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="switch">
+                            <label>
+                                Off
+                                <input type="checkbox" ng-model="contact.notifications.meetings.missed" ng-change="changeContact($index)" />
+                                <span class="lever"></span>
+                                On
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="switch">
+                            <label>
+                                Off
+                                <input type="checkbox" ng-model="contact.notifications.meetings.reminders" ng-change="changeContact($index)" />
+                                <span class="lever"></span>
+                                On
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <a class="btn-flat waves-effect waves-red" ng-click="deleteContact($index)">
+                            <i class="material-icons">
+                                delete_forever
+                            </i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red">
+                <i class="material-icons">
+                    add
+                </i>
+            </a>
+            <ul>
+                <li>
+                    <a class="btn-floating green" href="#profile-add-contact-email">
+                        <i class="material-icons">
+                            email
+                        </i>
+                    </a>
+                </li>
+                <li>
+                    <a class="btn-floating blue" href="#profile-add-contact-phone">
+                        <i class="material-icons">
+                            phone
+                        </i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="profile-add-contact-email" class="modal">
+            <form onsubmit="return false" ng-submit="addEmail()">
+                <div class="modal-content">
+                    <h4>
+                        Add Email Contact
+                    </h4>
+                    <div class="input-field">
+                        <input type="email" name="profile-new-email" ng-model="newEmail" />
+                        <label for="profile-new-email">
+                            Email
+                        </label>
+                    </div>
+                    <p>
+                        <input type="checkbox" name="profile-new-email-manual" ng-model="newNotificationsManualSignIn" />
+                        <label for="profile-new-email-manual">
+                            Send me an email every time I manually sign in
+                        </label>
+                    </p>
+                    <p>
+                        <input type="checkbox" name="profile-new-email-auto" ng-model="newNotificationsAutoSignIn" />
+                        <label for="profile-new-email-auto">
+                            Send me an email every time a device automatically signs me in
+                        </label>
+                    </p>
+                    <p>
+                        <input type="checkbox" name="profile-new-email-team" ng-model="newNotificationsTeam" />
+                        <label for="profile-new-email-team">
+                            Send me an email when I get a message from a team member
+                        </label>
+                    </p>
+                    <p>
+                        <input type="checkbox" name="profile-new-email-missed" ng-model="newNotificationsMissedMeeting" />
+                        <label for="profile-new-email-missed">
+                            Send me an email if I missed a meeting and it was an unexcused absense
+                        </label>
+                    </p>
+                    <p>
+                        <input type="checkbox" name="profile-new-email-reminder" ng-model="newNotificationsMeetingReminders" />
+                        <label for="profile-new-email-reminder">
+                            Send me an email before every meeting as a reminder that a meeting is coming up
+                        </label>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-action modal-close waves-effect waves-red btn-flat">
+                        Cancel
+                    </a>
+                    <button class="modal-action modal-close waves-effect waves-green btn-flat">
+                        Add
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div id="profile-add-contact-phone" class="modal">
+            <form onsubmit="return false" ng-submit="addPhone()">
+                <div class="modal-content">
+                    <h4>
+                        Add Phone Contact
+                    </h4>
+                    <div class="input-field">
+                        <input type="text" name="profile-new-phone" ng-model="newPhone" />
+                        <label for="profile-new-phone">
+                            Phone Number
+                        </label>
+                    </div>
+                    <div class="input-field">
+                        <input type="text" name="provider" ng-model="newPhoneProvider" class="autocomplete autocomplete-register-phone-provider" />
+                        <label for="provider">Cell Phone Provider</label>
+                    </div>
+                    <p>
+                        <input type="checkbox" name="profile-new-phone-manual" ng-model="newNotificationsManualSignIn" />
+                        <label for="profile-new-phone-manual">
+                            Send me a text every time I manually sign in
+                        </label>
+                    </p>
+                    <p>
+                        <input type="checkbox" name="profile-new-phone-auto" ng-model="newNotificationsAutoSignIn" />
+                        <label for="profile-new-phone-auto">
+                            Send me a text every time a device automatically signs me in
+                        </label>
+                    </p>
+                    <p>
+                        <input type="checkbox" name="profile-new-phone-team" ng-model="newNotificationsTeam" />
+                        <label for="profile-new-phone-team">
+                            Send me a text when I get a message from a team member
+                        </label>
+                    </p>
+                    <p>
+                        <input type="checkbox" name="profile-new-phone-missed" ng-model="newNotificationsMissedMeeting" />
+                        <label for="profile-new-phone-missed">
+                            Send me a text if I missed a meeting and it was an unexcused absense
+                        </label>
+                    </p>
+                    <p>
+                        <input type="checkbox" name="profile-new-phone-reminder" ng-model="newNotificationsMeetingReminders" />
+                        <label for="profile-new-phone-reminder">
+                            Send me a text before every meeting as a reminder that a meeting is coming up
+                        </label>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-action modal-close waves-effect waves-red btn-flat">
+                        Cancel
+                    </a>
+                    <button class="modal-action modal-close waves-effect waves-green btn-flat">
+                        Add
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-    <div id="profile-tab-picture" class="col s12">Test 2</div>
-    <div id="profile-tab-rsvp" class="col s12">Test 3</div>
-    <div id="profile-tab-pin" class="col s12">Test 4</div>
-    <div id="profile-tab-records" class="col s12">Test 5</div>
+    <div id="profile-tab-picture" class="col s12">
+
+    </div>
+    <div id="profile-tab-rsvp" class="col s12">
+
+    </div>
+    <div id="profile-tab-pin" class="col s12">
+
+    </div>
+    <div id="profile-tab-records" class="col s12">
+
+    </div>
 </div>
 
         </div>

@@ -11,37 +11,56 @@ namespace org.usd232.robotics.management.apis {
         }
     }
 
-    export enum ContactType {
-        email,
-        phone
-    }
-
     export namespace notificiations {
         export class SignInNotifications {
             public manual: boolean;
             public auto: boolean;
+
+            public constructor(manual: boolean, auto: boolean) {
+                this.manual = manual;
+                this.auto = auto;
+            }
         }
 
         export class MeetingNotifications {
             public missed: boolean;
             public reminders: boolean;
+
+            public constructor(missed?: boolean, reminders?: boolean) {
+                this.missed = missed;
+                this.reminders = reminders;
+            }
         }
 
         export class Notifications {
             public signIn: SignInNotifications;
             public team: boolean;
             public meetings: MeetingNotifications;
+
+            public constructor(signIn?: SignInNotifications, team?: boolean, meetings?: MeetingNotifications) {
+                this.signIn = signIn;
+                this.team = team;
+                this.meetings = meetings;
+            }
         }
     }
 
     import Notifications = notificiations.Notifications;
 
     export class UserContact {
-        public type: ContactType;
+        public type: string;
         public address: string;
         public number: string;
         public provider: string;
         public notifications: Notifications;
+
+        public constructor(type?: string, address?: string, number?: string, provider?: string, notifications?: Notifications) {
+            this.type = type;
+            this.address = address;
+            this.number = number;
+            this.provider = provider;
+            this.notifications = notifications;
+        }
     }
 
     export class UserProfile {
@@ -245,51 +264,42 @@ namespace org.usd232.robotics.management.apis {
     }
 
     export class AddContactRequest {
-        public type: ContactType;
+        public type: string;
         public address: string;
         public number: string;
         public provider: string;
 
-        public constructor(type?: ContactType, value?: string, provider?: string) {
-            this.type = type;
-            if ( type == ContactType.phone ) {
-                this.number = value;
-                this.provider = provider;
-            } else if ( type == ContactType.email ) {
-                this.address = value;
-            }
+        public constructor(contact: UserContact) {
+            this.type = contact.type;
+            this.address = contact.address;
+            this.number = contact.number;
+            this.provider = contact.provider;
         }
     }
 
     export class EditContactRequest {
-        public type: ContactType;
+        public type: string;
         public address: string;
         public number: string;
         public notifications: Notifications;
 
-        public constructor(type?: ContactType, value?: string, notifications?: Notifications) {
-            this.type = type;
-            if ( type == ContactType.phone ) {
-                this.number = value;
-            } else if ( type == ContactType.email ) {
-                this.address = value;
-            }
-            this.notifications = notifications;
+        public constructor(contact: UserContact) {
+            this.type = contact.type;
+            this.address = contact.address;
+            this.number = contact.number;
+            this.notifications = contact.notifications;
         }
     }
 
     export class RemoveContactRequest {
-        public type: ContactType;
+        public type: string;
         public address: string;
         public number: string;
 
-        public constructor(type?: ContactType, value?: string) {
-            this.type = type;
-            if ( type == ContactType.phone ) {
-                this.number = value;
-            } else if ( type == ContactType.email ) {
-                this.address = value;
-            }
+        public constructor(contact: UserContact) {
+            this.type = contact.type;
+            this.address = contact.address;
+            this.number = contact.number;
         }
     }
 

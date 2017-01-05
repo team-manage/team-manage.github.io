@@ -13,6 +13,7 @@ namespace org.usd232.robotics.management {
             let page: PageController = new PageController(nav);
             $(document).ready(() => {
                 ($("ul.tabs") as any).tabs();
+                ($(".modal") as any).modal();
             });
             HistoryController.setPageController(page);
             PageFactory.construct();
