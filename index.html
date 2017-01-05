@@ -602,9 +602,19 @@
     <tbody>
         <tr ng-repeat="user in users">
             <td ng-bind="user.name"></td>
-            <td ng-bind="user.verified"></td>
+            <td ng-bind="user.verified">
+                  <div class="switch">
+                    <label>
+                     Yes
+                    <input type="checkbox" ng-value="user.verified">
+                    <span class="lever"></span>
+                    No
+                     </label>
+                    </div>
+        
+            </td>
             <td ng-bind="user.unexcused"></td>
-            <td ng-bind="user.late">></td>
+            <td ng-bind="user.late"></td>
         </tr>
     </tbody>
 </table>
