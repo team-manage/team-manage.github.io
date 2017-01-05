@@ -1191,6 +1191,7 @@ var org;
                     var AddContactRequest = org.usd232.robotics.management.apis.AddContactRequest;
                     var EditContactRequest = org.usd232.robotics.management.apis.EditContactRequest;
                     var RemoveContactRequest = org.usd232.robotics.management.apis.RemoveContactRequest;
+                    var RsvpRequest = org.usd232.robotics.management.apis.RsvpRequest;
                     var ProfileController = (function (_super) {
                         __extends(ProfileController, _super);
                         function ProfileController() {
@@ -1305,6 +1306,20 @@ var org;
                                     _this.$scope.cleanupWebcam();
                                 });
                             };
+                            this.$scope.rsvp = function ($index, value) {
+                                ApiController.instance.rsvp.request(new RsvpRequest(_this.$scope.events[$index].id, value), function (res) {
+                                    if (!res.success) {
+                                        Materialize.toast("An error occurred while rsvping", 4000);
+                                    }
+                                });
+                            };
+                        };
+                        ProfileController.prototype.open = function () {
+                            var _this = this;
+                            ApiController.instance.events.request(function (events) { return _this.$scope.$apply(function () {
+                                _this.$scope.events = events;
+                                setTimeout(function () { return $(".indeterminate").prop("indeterminate", true); });
+                            }); });
                         };
                         return ProfileController;
                     }(management.AbstractPage));

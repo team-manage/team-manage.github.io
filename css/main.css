@@ -32,6 +32,9 @@
   line-height: 3rem;
   margin-left: 10px; }
 
+#profile-tab-rsvp p {
+  margin: 0; }
+
 .button {
   height: 120px;
   font-size: 30px; }

@@ -12,6 +12,7 @@ namespace org.usd232.robotics.management.pages {
     import AddContactRequest = org.usd232.robotics.management.apis.AddContactRequest;
     import EditContactRequest = org.usd232.robotics.management.apis.EditContactRequest;
     import RemoveContactRequest = org.usd232.robotics.management.apis.RemoveContactRequest;
+    import RsvpRequest = org.usd232.robotics.management.apis.RsvpRequest;
 
     export class ProfileController extends AbstractPage {
         private media: MediaStream;
@@ -120,6 +121,20 @@ namespace org.usd232.robotics.management.pages {
                     this.$scope.cleanupWebcam();
                 });
             };
+            this.$scope.rsvp = ($index: number, value: boolean) => {
+                ApiController.instance.rsvp.request(new RsvpRequest(this.$scope.events[$index].id, value), res => {
+                    if ( !res.success ) {
+                        Materialize.toast("An error occurred while rsvping", 4000);
+                    }
+                });
+            };
+        }
+
+        protected open(): void {
+            ApiController.instance.events.request(events => this.$scope.$apply(() => {
+                this.$scope.events = events;
+                setTimeout(() => $(".indeterminate").prop("indeterminate", true));
+            }));
         }
     }
 }

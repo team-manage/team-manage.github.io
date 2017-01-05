@@ -500,7 +500,41 @@
         </div>
     </div>
     <div id="profile-tab-rsvp" class="col s12">
-
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Location
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Deadline
+                    </th>
+                    <th>
+                        RSVP
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="event in events" ng-show="event.signup.required">
+                    <td ng-bind="event.name"></td>
+                    <td ng-bind="event.location"></td>
+                    <td ng-bind="event.date"></td>
+                    <td ng-bind="event.signup.deadline"></td>
+                    <td>
+                        <p>
+                            <input type="checkbox" ng-class="{ indeterminate: event.signup.rsvp == null }" id="profile-checkbox-{{ $index}}" ng-change="rsvp($index, value)" ng-model="value" />
+                            <label for="profile-checkbox-{{ $index}}"></label>
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div id="profile-tab-pin" class="col s12">
 
