@@ -562,11 +562,10 @@
             <h1>
     Hello,
     <span ng-bind="LoginController.user.profile.name"></span>
-</h1>
-<h5>Your pin number is:
+    (pin
     <span ng-bind="LoginController.user.profile.pin"></span>
-</h5>
-<h6>Page Content coming soon<h6>
+    )
+</h1>
 <div ng-repeat="message in messages">
     <b>
         <span ng-bind="message.date"></span>
