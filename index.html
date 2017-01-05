@@ -460,7 +460,44 @@
         </div>
     </div>
     <div id="profile-tab-picture" class="col s12">
-
+        <div class="col s12 m6">
+            <img ng-src="{{ LoginController.user.profile.picture }}" />
+        </div>
+        <div class="col s12 m6">
+            <div class="file-field input-field">
+                <div class="btn waves-effect waves-teal">
+                    <span>Upload</span>
+                    <input type="file" class="profile-upload-image" />
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path hide" type="text" ng-model="uploadPath" ng-change="uploadImage()">
+                </div>
+            </div>
+            <a class="btn waves-effect waves-teal take-picture-btn" ng-click="startWebcam()">
+                Take
+            </a>
+            <div class="hide">
+                <canvas class="profile-upload-image"></canvas>
+            </div>
+        </div>
+        <div class="modal modal-fixed-footer profile-take-picture">
+            <form onsubmit="return false" ng-submit="takePicture()">
+                <div class="modal-content">
+                    <h4>
+                        Take Profile Picture
+                    </h4>
+                    <video class="profile-upload-image"></video>
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-action modal-close waves-effect waves-red btn-flat" ng-click="cleanupWebcam()">
+                        Cancel
+                    </a>
+                    <button class="modal-action modal-close waves-effect waves-green btn-flat">
+                        Take
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
     <div id="profile-tab-rsvp" class="col s12">
 

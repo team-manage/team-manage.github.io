@@ -436,6 +436,18 @@ namespace org.usd232.robotics.management.apis {
         }
     }
 
+    export class BinaryParameterizedApi<T> extends ParameterizedApi<T, string> {
+        public request(param: string, callback: (res: T) => void, lateCallback: (res: T) => void = callback): void {
+            this.isMock(isMock => {
+                if ( isMock ) {
+                    this.sendRequest(".json", param.substr(0, 100), "GET", callback, lateCallback);
+                } else {
+                    this.sendRequest(".json", JSON.stringify(param), "POST", callback, lateCallback);
+                }
+            });
+        }
+    }
+
     export class LoginApi extends ParameterizedApi<LoginResponse, LoginRequest> {
         public constructor(url: string, ctrlr: ApiController) {
             super(url, ctrlr);
@@ -501,7 +513,7 @@ namespace org.usd232.robotics.management.apis {
         public addContact = new ParameterizedApi<StatusResponse, AddContactRequest>("/contact/add", this);
         public editContact = new ParameterizedApi<StatusResponse, EditContactRequest>("/contact/edit", this);
         public removeContact = new ParameterizedApi<StatusResponse, RemoveContactRequest>("/contact/remove", this);
-        public setPicture = new ParameterizedApi<StatusResponse, string>("/setPicture", this);
+        public setPicture = new BinaryParameterizedApi<StatusResponse>("/setPicture", this);
         public rsvp = new ParameterizedApi<StatusResponse, RsvpRequest>("/event/rsvp", this);
         public changePin = new ParameterizedApi<StatusResponse, number>("/changePin", this);
         public addEvent = new GeneralApi<StatusIdResponse>("/event/add", this);

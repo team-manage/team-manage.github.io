@@ -14,6 +14,8 @@ namespace org.usd232.robotics.management.pages {
     import RemoveContactRequest = org.usd232.robotics.management.apis.RemoveContactRequest;
 
     export class ProfileController extends AbstractPage {
+        private media: MediaStream;
+
         protected init(): void {
             this.$scope.LoginController = LoginController;
             this.$scope.addEmail = () => {
@@ -59,6 +61,63 @@ namespace org.usd232.robotics.management.pages {
                     } else {
                         Materialize.toast("An error occurred while removing contact", 4000);
                     }
+                });
+            };
+            this.$scope.uploadImage = () => {
+                let file: File = ($("input.profile-upload-image")[0] as HTMLInputElement).files[0];
+                let reader: FileReader = new FileReader();
+                reader.onload = () => {
+                    ApiController.instance.setPicture.request(reader.result, res => {
+                        if ( res.success ) {
+                            this.$scope.$apply(() => LoginController.user.profile.picture = reader.result);
+                        } else {
+                            Materialize.toast("An error occurred while setting picture", 4000);
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);
+            };
+            this.$scope.startWebcam = () => {
+                (navigator.mediaDevices.getUserMedia({
+                    "video": {
+                        "facingMode": "user"
+                    }
+                }).then(media => {
+                    this.media = media;
+                    let video: HTMLVideoElement = $("video.profile-upload-image")[0] as HTMLVideoElement;
+                    video.srcObject = media;
+                    let listener = () => {
+                        video.removeEventListener("canplay", listener);
+                        
+                    };
+                    video.addEventListener("canplay", listener);
+                    video.play();
+                    ($(".profile-take-picture") as any).modal("open");
+                }) as any).catch(ex => {
+                    Materialize.toast("Unable to take picture", 4000);
+                });
+            };
+            this.$scope.cleanupWebcam = () => {
+                let video: HTMLVideoElement = $("video.profile-upload-image")[0] as HTMLVideoElement;
+                video.pause();
+                this.media.stop();
+            };
+            this.$scope.takePicture = () => {
+                let video: HTMLVideoElement = $("video.profile-upload-image")[0] as HTMLVideoElement;
+                let canvas: HTMLCanvasElement = $("canvas.profile-upload-image")[0] as HTMLCanvasElement;
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                let context = canvas.getContext("2d");
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                let url: string = canvas.toDataURL();
+                ApiController.instance.setPicture.request(url, res => {
+                    if ( res.success ) {
+                        this.$scope.$apply(() => LoginController.user.profile.picture = url);
+                    } else {
+                        Materialize.toast("An error occurred while setting picture", 4000);
+                    }
+                    this.$scope.cleanupWebcam();
                 });
             };
         }

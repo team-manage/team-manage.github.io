@@ -23,11 +23,14 @@
 .tabs .indicator {
   background-color: #3f51b5; }
 
-.login-container {
-  height: 100vh; }
+#profile-tab-picture img {
+  max-width: 100%;
+  margin-top: 10px; }
 
-.login-container .valign {
-  width: 100%; }
+.take-picture-btn {
+  height: 3rem;
+  line-height: 3rem;
+  margin-left: 10px; }
 
 .button {
   height: 120px;

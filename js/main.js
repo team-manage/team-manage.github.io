@@ -546,6 +546,26 @@ var org;
                         return ParameterizedApi;
                     }(ApiBase));
                     apis.ParameterizedApi = ParameterizedApi;
+                    var BinaryParameterizedApi = (function (_super) {
+                        __extends(BinaryParameterizedApi, _super);
+                        function BinaryParameterizedApi() {
+                            return _super.apply(this, arguments) || this;
+                        }
+                        BinaryParameterizedApi.prototype.request = function (param, callback, lateCallback) {
+                            var _this = this;
+                            if (lateCallback === void 0) { lateCallback = callback; }
+                            this.isMock(function (isMock) {
+                                if (isMock) {
+                                    _this.sendRequest(".json", param.substr(0, 100), "GET", callback, lateCallback);
+                                }
+                                else {
+                                    _this.sendRequest(".json", JSON.stringify(param), "POST", callback, lateCallback);
+                                }
+                            });
+                        };
+                        return BinaryParameterizedApi;
+                    }(ParameterizedApi));
+                    apis.BinaryParameterizedApi = BinaryParameterizedApi;
                     var LoginApi = (function (_super) {
                         __extends(LoginApi, _super);
                         function LoginApi(url, ctrlr) {
@@ -618,7 +638,7 @@ var org;
                             this.addContact = new ParameterizedApi("/contact/add", this);
                             this.editContact = new ParameterizedApi("/contact/edit", this);
                             this.removeContact = new ParameterizedApi("/contact/remove", this);
-                            this.setPicture = new ParameterizedApi("/setPicture", this);
+                            this.setPicture = new BinaryParameterizedApi("/setPicture", this);
                             this.rsvp = new ParameterizedApi("/event/rsvp", this);
                             this.changePin = new ParameterizedApi("/changePin", this);
                             this.addEvent = new GeneralApi("/event/add", this);
@@ -1225,6 +1245,64 @@ var org;
                                     else {
                                         Materialize.toast("An error occurred while removing contact", 4000);
                                     }
+                                });
+                            };
+                            this.$scope.uploadImage = function () {
+                                var file = $("input.profile-upload-image")[0].files[0];
+                                var reader = new FileReader();
+                                reader.onload = function () {
+                                    ApiController.instance.setPicture.request(reader.result, function (res) {
+                                        if (res.success) {
+                                            _this.$scope.$apply(function () { return pages.LoginController.user.profile.picture = reader.result; });
+                                        }
+                                        else {
+                                            Materialize.toast("An error occurred while setting picture", 4000);
+                                        }
+                                    });
+                                };
+                                reader.readAsDataURL(file);
+                            };
+                            this.$scope.startWebcam = function () {
+                                navigator.mediaDevices.getUserMedia({
+                                    "video": {
+                                        "facingMode": "user"
+                                    }
+                                }).then(function (media) {
+                                    _this.media = media;
+                                    var video = $("video.profile-upload-image")[0];
+                                    video.srcObject = media;
+                                    var listener = function () {
+                                        video.removeEventListener("canplay", listener);
+                                    };
+                                    video.addEventListener("canplay", listener);
+                                    video.play();
+                                    $(".profile-take-picture").modal("open");
+                                })["catch"](function (ex) {
+                                    Materialize.toast("Unable to take picture", 4000);
+                                });
+                            };
+                            this.$scope.cleanupWebcam = function () {
+                                var video = $("video.profile-upload-image")[0];
+                                video.pause();
+                                _this.media.stop();
+                            };
+                            this.$scope.takePicture = function () {
+                                var video = $("video.profile-upload-image")[0];
+                                var canvas = $("canvas.profile-upload-image")[0];
+                                canvas.width = video.videoWidth;
+                                canvas.height = video.videoHeight;
+                                var context = canvas.getContext("2d");
+                                context.clearRect(0, 0, canvas.width, canvas.height);
+                                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                                var url = canvas.toDataURL();
+                                ApiController.instance.setPicture.request(url, function (res) {
+                                    if (res.success) {
+                                        _this.$scope.$apply(function () { return pages.LoginController.user.profile.picture = url; });
+                                    }
+                                    else {
+                                        Materialize.toast("An error occurred while setting picture", 4000);
+                                    }
+                                    _this.$scope.cleanupWebcam();
                                 });
                             };
                         };
