@@ -600,11 +600,11 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="users in users">
-            <td><span ng-bind="user.name"></span></td>
-            <td><span ng-bind="user.verified"></span></td>
-            <td><span ng-bind="user.unexcused"></span></td>
-            <td><span ng-bind="user.late"></span></td>
+        <tr ng-repeat="user in users">
+            <td ng-bind="user.name"></td>
+            <td ng-bind="user.verified"></td>
+            <td ng-bind="user.unexcused"></td>
+            <td ng-bind="user.late">></td>
         </tr>
     </tbody>
 </table>

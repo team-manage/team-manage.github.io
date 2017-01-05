@@ -1350,10 +1350,13 @@ var org;
                             return _super.apply(this, arguments) || this;
                         }
                         UsersController.prototype.init = function () {
+                            this.$scope.users = [];
+                        };
+                        UsersController.prototype.open = function () {
                             var _this = this;
-                            ApiController.instance.users.request(function (users) {
+                            ApiController.instance.users.request(function (users) { return _this.$scope.$apply(function () {
                                 _this.$scope.users = users;
-                            });
+                            }); });
                         };
                         return UsersController;
                     }(management.AbstractPage));

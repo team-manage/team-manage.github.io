@@ -8,9 +8,13 @@ namespace org.usd232.robotics.management.pages {
 
     export class UsersController extends AbstractPage {
         protected init(): void {
-            ApiController.instance.users.request(users => {  
+            this.$scope.users = [];
+        }
+
+        protected open(): void {
+            ApiController.instance.users.request(users => this.$scope.$apply(() => {
                 this.$scope.users = users;
-            });
+            }));
         }
     }
 }
