@@ -128,6 +128,19 @@ namespace org.usd232.robotics.management.pages {
                     }
                 });
             };
+            this.$scope.changePin = () => {
+                let pin: number = parseInt("" + this.$scope.newPin);
+                ApiController.instance.changePin.request(pin, res => {
+                    if ( res.success ) {
+                        this.$scope.$apply(() => {
+                            LoginController.user.profile.pin = pin;
+                            this.$scope.newPin = "";
+                        });
+                    } else {
+                        Materialize.toast("That pin has already been taken", 4000);
+                    }
+                });
+            };
         }
 
         protected open(): void {

@@ -537,10 +537,44 @@
         </table>
     </div>
     <div id="profile-tab-pin" class="col s12">
-
+        <h5>
+            Your current pin number is
+            <span ng-bind="LoginController.user.profile.pin"></span>
+            .
+        </h5>
+        <form onsubmit="return false" ng-submit="changePin()">
+            <div class="input-field">
+                <input type="number" ng-model="newPin" name="pin" />
+                <label for="pin">
+                    Request new number
+                </label>
+            </div>
+        </form>
     </div>
     <div id="profile-tab-records" class="col s12">
-
+        <table>
+            <tbody>
+                <tr ng-repeat="event in events" ng-hide="event.attended == null">
+                    <td>
+                        <span ng-bind="event.name" ng-show="event.type == 'event'"></span>
+                        <span ng-show="event.type == 'meeting'">
+                            Meeting
+                        </span>
+                        (
+                        <span ng-bind="event.date"></span>
+                        )
+                    </td>
+                    <td>
+                        <span ng-show="event.attended">
+                            Attended
+                        </span>
+                        <span ng-hide="event.attended">
+                            Missed
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

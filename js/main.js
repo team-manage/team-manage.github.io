@@ -1313,6 +1313,20 @@ var org;
                                     }
                                 });
                             };
+                            this.$scope.changePin = function () {
+                                var pin = parseInt("" + _this.$scope.newPin);
+                                ApiController.instance.changePin.request(pin, function (res) {
+                                    if (res.success) {
+                                        _this.$scope.$apply(function () {
+                                            pages.LoginController.user.profile.pin = pin;
+                                            _this.$scope.newPin = "";
+                                        });
+                                    }
+                                    else {
+                                        Materialize.toast("That pin has already been taken", 4000);
+                                    }
+                                });
+                            };
                         };
                         ProfileController.prototype.open = function () {
                             var _this = this;
