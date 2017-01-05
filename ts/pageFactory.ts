@@ -12,6 +12,8 @@
 
     /// <reference path="pages/home.ts" />
 
+    /// <reference path="pages/users.ts" />
+
 
 namespace org.usd232.robotics.management {
     
@@ -26,6 +28,8 @@ namespace org.usd232.robotics.management {
         import KioskController = org.usd232.robotics.management.pages.KioskController;
     
         import HomeController = org.usd232.robotics.management.pages.HomeController;
+    
+        import UsersController = org.usd232.robotics.management.pages.UsersController;
     
 
     export class PageFactory {
@@ -43,6 +47,8 @@ namespace org.usd232.robotics.management {
                     new KioskController("kiosk"),
                 
                     new HomeController("home"),
+                
+                    new UsersController("users"),
                 
             ];
         }

@@ -1330,6 +1330,39 @@ var org;
         })(robotics = usd232.robotics || (usd232.robotics = {}));
     })(usd232 = org.usd232 || (org.usd232 = {}));
 })(org || (org = {}));
+/// <reference path="../page.ts" />
+/// <reference path="../navigation.ts" />
+/// <reference path="../apis.ts" />
+var org;
+(function (org) {
+    var usd232;
+    (function (usd232) {
+        var robotics;
+        (function (robotics) {
+            var management;
+            (function (management) {
+                var pages;
+                (function (pages) {
+                    var ApiController = org.usd232.robotics.management.apis.ApiController;
+                    var UsersController = (function (_super) {
+                        __extends(UsersController, _super);
+                        function UsersController() {
+                            return _super.apply(this, arguments) || this;
+                        }
+                        UsersController.prototype.init = function () {
+                            var _this = this;
+                            ApiController.instance.users.request(function (users) {
+                                _this.$scope.users = users;
+                            });
+                        };
+                        return UsersController;
+                    }(management.AbstractPage));
+                    pages.UsersController = UsersController;
+                })(pages = management.pages || (management.pages = {}));
+            })(management = robotics.management || (robotics.management = {}));
+        })(robotics = usd232.robotics || (usd232.robotics = {}));
+    })(usd232 = org.usd232 || (org.usd232 = {}));
+})(org || (org = {}));
 /// <reference path="page.ts" />
 /// <reference path="pages/login.ts" />
 /// <reference path="pages/404.ts" />
@@ -1337,6 +1370,7 @@ var org;
 /// <reference path="pages/profile.ts" />
 /// <reference path="pages/kiosk.ts" />
 /// <reference path="pages/home.ts" />
+/// <reference path="pages/users.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -1351,6 +1385,7 @@ var org;
                 var ProfileController = org.usd232.robotics.management.pages.ProfileController;
                 var KioskController = org.usd232.robotics.management.pages.KioskController;
                 var HomeController = org.usd232.robotics.management.pages.HomeController;
+                var UsersController = org.usd232.robotics.management.pages.UsersController;
                 var PageFactory = (function () {
                     function PageFactory() {
                     }
@@ -1362,6 +1397,7 @@ var org;
                             new ProfileController("profile"),
                             new KioskController("kiosk"),
                             new HomeController("home"),
+                            new UsersController("users"),
                         ];
                     };
                     return PageFactory;

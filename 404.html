@@ -48,6 +48,9 @@
                 <li ng-show="LoginController.user.permissions.kiosk.open">
                     <a ng-click="go('/kiosk')">Kiosk</a>
                 </li>
+                <li ng-show="LoginController.user.permissions.users.view">
+                    <a ng-click="go('/admin/users')">Users</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -579,6 +582,32 @@
     <hr />
 </div>
 
+        </div>
+    
+        <div ng-show="name == 'users'" id="page-users" ng-controller="page-users">
+            <input type="hidden" name="navbarTitle" value="Users" />
+            <input type="hidden" name="pageTitle" value="Users" />
+            <input type="hidden" name="pageUrl" value="/admin/users" />
+            <h5 class="center">Manage Users</h5>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Verified</th>
+            <th>Unexcused</th>
+            <th>Late</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="users in users">
+            <td><span ng-bind="user.name"></span></td>
+            <td><span ng-bind="user.verified"></span></td>
+            <td><span ng-bind="user.unexcused"></span></td>
+            <td><span ng-bind="user.late"></span></td>
+        </tr>
+    </tbody>
+</table>
         </div>
     
 </div>
