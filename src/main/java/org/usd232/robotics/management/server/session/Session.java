@@ -29,6 +29,12 @@ public class Session
      */
     public Set<String>           permissions;
     /**
+     * The id of the user in the database
+     * 
+     * @since 1.0
+     */
+    public int                   userId;
+    /**
      * The last time this object was touched (used to determine when to end a session)
      * 
      * @since 1.0

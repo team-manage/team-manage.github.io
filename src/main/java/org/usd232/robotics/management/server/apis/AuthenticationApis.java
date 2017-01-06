@@ -164,6 +164,7 @@ public abstract class AuthenticationApis
                                             permissions.contains("signin.code"), permissions.contains("signin.auto"))),
                             new UserProfile(contact, picture, pin, name)));
             res.session.permissions = permissions;
+            res.session.userId = userId;
             return res;
         }
     }
