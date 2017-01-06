@@ -47,7 +47,7 @@
                     <a ng-click="go('/admin/meetings')">Meetings</a>
                 </li>
                 <li>
-                    <a ng-click="go('/profile')" onclick="setTimeout(function() { $('.profile-tabs').tabs('select_tab', 'profile-tab-contact'); }, 0)">Profile</a>
+                    <a ng-click="openProfile()">Profile</a>
                 </li>
                 <li ng-show="LoginController.user.permissions.kiosk.open">
                     <a ng-click="go('/kiosk')">Kiosk</a>
@@ -701,9 +701,7 @@
             <input type="hidden" name="navbarTitle" value="Users" />
             <input type="hidden" name="pageTitle" value="Users" />
             <input type="hidden" name="pageUrl" value="/admin/users" />
-            <h5 class="center">Manage Users</h5>
-
-<table>
+            <table class="highlight">
     <thead>
         <tr>
             <th>Name</th>
@@ -714,23 +712,23 @@
     </thead>
     <tbody>
         <tr ng-repeat="user in users">
-            <td ng-bind="user.name"></td>
+            <td ng-bind="user.name" ng-click="openProfile(user.id)"></td>
             <td>
-                  <div class="switch">
+                <div class="switch">
                     <label>
-                     Yes
-                    <input type="checkbox" ng-model="user.verified" value="user.verified">
-                    <span class="lever"></span>
-                    No
-                     </label>
-                    </div>
-        
+                        No
+                        <input type="checkbox" ng-model="user.verified" ng-change="updateVerification(user)">
+                        <span class="lever"></span>
+                        Yes
+                    </label>
+                </div>
             </td>
-            <td ng-bind="user.unexcused"></td>
-            <td ng-bind="user.late"></td>
+            <td ng-bind="user.unexcused" ng-click="openProfile(user.id)"></td>
+            <td ng-bind="user.late" ng-click="openProfile(user.id)"></td>
         </tr>
     </tbody>
 </table>
+
         </div>
     
 </div>

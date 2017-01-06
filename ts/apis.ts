@@ -523,6 +523,7 @@ namespace org.usd232.robotics.management.apis {
         public verify = new ParameterizedApi<StatusResponse, number>("/verify", this);
         public unverify = new ParameterizedApi<StatusResponse, number>("/unverify", this);
         public setSetting = new ParameterizedApi<StatusResponse, SetSettingRequest>("/setSetting", this);
+        public impersonate = new ParameterizedApi<LoginResponse, number>("/impersonate", this);
 
         public setServerUrl(url: string) {
             if ( url.match(/^!.*$/) ) {

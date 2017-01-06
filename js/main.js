@@ -81,6 +81,7 @@ var org;
                             _this.$scope = $scope;
                             $scope.back = function () { return HistoryController.back(); };
                             $scope.go = function (url) { return HistoryController.load(url); };
+                            $scope.openProfile = function () { return management.pages.ProfileController.show(); }; // Cyclic dependency
                             $scope.LoginController = management.pages.LoginController; // Cyclic dependency
                         });
                     }
@@ -648,6 +649,7 @@ var org;
                             this.verify = new ParameterizedApi("/verify", this);
                             this.unverify = new ParameterizedApi("/unverify", this);
                             this.setSetting = new ParameterizedApi("/setSetting", this);
+                            this.impersonate = new ParameterizedApi("/impersonate", this);
                         }
                         ApiController.prototype.setServerUrl = function (url) {
                             var _this = this;
@@ -1198,6 +1200,11 @@ var org;
                         function ProfileController() {
                             return _super.apply(this, arguments) || this;
                         }
+                        ProfileController.show = function (user) {
+                            if (user === void 0) { user = 0; }
+                            ProfileController.newUser = user;
+                            management.HistoryController.load("/profile");
+                        };
                         ProfileController.prototype.init = function () {
                             var _this = this;
                             this.$scope.LoginController = pages.LoginController;
@@ -1327,12 +1334,30 @@ var org;
                         };
                         ProfileController.prototype.open = function () {
                             var _this = this;
-                            ApiController.instance.events.request(function (events) { return _this.$scope.$apply(function () {
-                                _this.$scope.events = events;
-                                setTimeout(function () { return $(".indeterminate").prop("indeterminate", true); });
-                            }); });
-                            this.$scope.user = pages.LoginController.user;
-                            this.$scope.ro = false;
+                            if (ProfileController.newUser == 0) {
+                                this.$scope.ro = false;
+                                this.$scope.user = pages.LoginController.user;
+                                ApiController.instance.events.request(function (events) { return _this.$scope.$apply(function () {
+                                    _this.$scope.events = events;
+                                    setTimeout(function () {
+                                        $(".indeterminate").prop("indeterminate", true);
+                                        $(".profile-tabs").tabs("select_tab", "profile-tab-contact");
+                                    });
+                                }); });
+                            }
+                            else {
+                                this.$scope.ro = true;
+                                ApiController.instance.impersonate.request(ProfileController.newUser, function (res) { return _this.$scope.$apply(function () {
+                                    _this.$scope.user = res;
+                                }); });
+                                ApiController.instance.attendance.request(ProfileController.newUser, function (events) { return _this.$scope.$apply(function () {
+                                    _this.$scope.events = events;
+                                    setTimeout(function () {
+                                        $(".indeterminate").prop("indeterminate", true);
+                                        $(".profile-tabs").tabs("select_tab", "profile-tab-contact");
+                                    });
+                                }); });
+                            }
                         };
                         return ProfileController;
                     }(management.AbstractPage));
@@ -1485,6 +1510,7 @@ var org;
 /// <reference path="../page.ts" />
 /// <reference path="../navigation.ts" />
 /// <reference path="../apis.ts" />
+/// <reference path="profile.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -1502,7 +1528,27 @@ var org;
                             return _super.apply(this, arguments) || this;
                         }
                         UsersController.prototype.init = function () {
+                            var _this = this;
                             this.$scope.users = [];
+                            this.$scope.openProfile = function (id) { return pages.ProfileController.show(id); };
+                            this.$scope.updateVerification = function (user) {
+                                if (user.verified) {
+                                    ApiController.instance.verify.request(user.id, function (res) {
+                                        if (!res.success) {
+                                            Materialize.toast("Error verifying user", 4000);
+                                            _this.$scope.$apply(function () { return user.verified = false; });
+                                        }
+                                    });
+                                }
+                                else {
+                                    ApiController.instance.unverify.request(user.id, function (res) {
+                                        if (!res.success) {
+                                            Materialize.toast("Error unverifying user", 4000);
+                                            _this.$scope.$apply(function () { return user.verified = true; });
+                                        }
+                                    });
+                                }
+                            };
                         };
                         UsersController.prototype.open = function () {
                             var _this = this;

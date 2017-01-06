@@ -26,6 +26,7 @@ namespace org.usd232.robotics.management {
                 this.$scope = $scope;
                 $scope.back = () => HistoryController.back();
                 $scope.go = (url: string) => HistoryController.load(url);
+                $scope.openProfile = () => (management as any).pages.ProfileController.show(); // Cyclic dependency
                 $scope.LoginController = (management as any).pages.LoginController; // Cyclic dependency
             });
         }

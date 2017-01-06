@@ -13,9 +13,16 @@ namespace org.usd232.robotics.management.pages {
     import EditContactRequest = org.usd232.robotics.management.apis.EditContactRequest;
     import RemoveContactRequest = org.usd232.robotics.management.apis.RemoveContactRequest;
     import RsvpRequest = org.usd232.robotics.management.apis.RsvpRequest;
+    import LoginResponse = org.usd232.robotics.management.apis.LoginResponse;
 
     export class ProfileController extends AbstractPage {
+        private static newUser: number;
         private media: MediaStream;
+
+        public static show(user: number = 0) {
+            ProfileController.newUser = user;
+            HistoryController.load("/profile");
+        }
 
         protected init(): void {
             this.$scope.LoginController = LoginController;
@@ -139,12 +146,29 @@ namespace org.usd232.robotics.management.pages {
         }
 
         protected open(): void {
-            ApiController.instance.events.request(events => this.$scope.$apply(() => {
-                this.$scope.events = events;
-                setTimeout(() => $(".indeterminate").prop("indeterminate", true));
-            }));
-            this.$scope.user = LoginController.user;
-            this.$scope.ro = false;
+            if ( ProfileController.newUser == 0 ) {
+                this.$scope.ro = false;
+                this.$scope.user = LoginController.user;
+                ApiController.instance.events.request(events => this.$scope.$apply(() => {
+                    this.$scope.events = events;
+                    setTimeout(() => {
+                        $(".indeterminate").prop("indeterminate", true);
+                        $(".profile-tabs").tabs("select_tab", "profile-tab-contact");
+                    });
+                }));
+            } else {
+                this.$scope.ro = true;
+                ApiController.instance.impersonate.request(ProfileController.newUser, res => this.$scope.$apply(() => {
+                    this.$scope.user = res;
+                }));
+                ApiController.instance.attendance.request(ProfileController.newUser, events => this.$scope.$apply(() => {
+                    this.$scope.events = events;
+                    setTimeout(() => {
+                        $(".indeterminate").prop("indeterminate", true);
+                        $(".profile-tabs").tabs("select_tab", "profile-tab-contact");
+                    });
+                }));
+            }
         }
     }
 }

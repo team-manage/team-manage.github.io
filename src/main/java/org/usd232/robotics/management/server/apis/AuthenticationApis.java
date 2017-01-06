@@ -36,6 +36,7 @@ import org.usd232.robotics.management.apis.permissions.SignInPermissions;
 import org.usd232.robotics.management.apis.permissions.UserPermissions;
 import org.usd232.robotics.management.server.database.Database;
 import org.usd232.robotics.management.server.routing.PostApi;
+import org.usd232.robotics.management.server.session.RequirePermissions;
 import org.usd232.robotics.management.server.session.StartedSessionResponse;
 import spark.Request;
 
@@ -169,6 +170,90 @@ public abstract class AuthenticationApis
             res.session.permissions = permissions;
             res.session.userId = userId;
             return res;
+        }
+    }
+
+    /**
+     * Impersonates another user's login
+     * 
+     * @param userId
+     *            The user id
+     * @param http
+     *            The http request
+     * @return The impersonated login response
+     * @since 1.0
+     * @throws SQLException
+     *             If an error occurs while connecting to the database
+     */
+    @PostApi("/impersonate")
+    @RequirePermissions({ "attendance.view", "user.view" })
+    public static LoginResponse impersonate(int userId, Request http) throws SQLException
+    {
+        Set<String> permissions;
+        String picture;
+        int pin;
+        String name;
+        try (PreparedStatement st = Database
+                        .prepareStatement("SELECT `pin`, `picture`, `permissions`, `name` FROM `users` WHERE `id` = ?"))
+        {
+            st.setInt(1, userId);
+            try (ResultSet res = st.executeQuery())
+            {
+                if (!res.next())
+                {
+                    LOG.debug("User {} was not found", userId);
+                    return new LoginResponse("failure", null, null);
+                }
+                permissions = new HashSet<String>();
+                permissions.addAll(Arrays.asList(res.getString(3).split(",")));
+                picture = String.format("http://%s/pictures/%d", http.host(), res.getInt(2));
+                pin = res.getInt(1);
+                name = res.getString(4);
+            }
+        }
+        try (PreparedStatement st = Database.prepareStatement(
+                        "SELECT `type`, `value`, `carrier`, `notifications` FROM `contacts` WHERE `userid` = ?"))
+        {
+            st.setInt(1, userId);
+            List<UserContact> contact = new ArrayList<UserContact>();
+            try (ResultSet res = st.executeQuery())
+            {
+                while (res.next())
+                {
+                    ContactType type = ContactType.valueOf(res.getString(1));
+                    Set<String> notifications = new HashSet<String>();
+                    notifications.addAll(Arrays.asList(res.getString(4).split(",")));
+                    contact.add(new UserContact(type, type == ContactType.email ? res.getString(2) : null,
+                                    type == ContactType.phone ? res.getString(2) : null, res.getString(3),
+                                    new Notifications(
+                                                    new SignInNotifications(notifications.contains("signin.manual"),
+                                                                    notifications.contains("signin.auto")),
+                                                    notifications.contains("team"),
+                                                    new MeetingNotifications(notifications.contains("meeting.missed"),
+                                                                    notifications.contains("meeting.reminders")))));
+                }
+            }
+            return new LoginResponse("success", new Permissions(
+                            new KioskPermissions(permissions.contains("kiosk.open")),
+                            new MessagePermissions(permissions.contains("message.send")),
+                            new EventPermissions(permissions.contains("event.view"), permissions.contains("event.add"),
+                                            new EventEditPermissions(permissions.contains("event.edit.type"),
+                                                            permissions.contains("event.edit.name"),
+                                                            permissions.contains("event.edit.datetime")),
+                                            permissions.contains("event.remove")),
+                            new AttendancePermissions(permissions.contains("attendance.view"),
+                                            permissions.contains("attendance.modify"),
+                                            permissions.contains("attendance.excuse")),
+                            new UserPermissions(permissions.contains("user.view"), permissions.contains("user.verify"),
+                                            permissions.contains("user.unverify")),
+                            new DevicePermissions(permissions.contains("device.add"),
+                                            permissions.contains("device.update"),
+                                            permissions.contains("device.remove")),
+                            new SettingsPermissions(permissions.contains("settings.view"),
+                                            permissions.contains("settings.edit")),
+                            new SignInPermissions(permissions.contains("signin.kiosk"),
+                                            permissions.contains("signin.code"), permissions.contains("signin.auto"))),
+                            new UserProfile(contact, picture, pin, name));
         }
     }
 
