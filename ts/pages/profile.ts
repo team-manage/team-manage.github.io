@@ -143,6 +143,8 @@ namespace org.usd232.robotics.management.pages {
                 this.$scope.events = events;
                 setTimeout(() => $(".indeterminate").prop("indeterminate", true));
             }));
+            this.$scope.user = LoginController.user;
+            this.$scope.ro = false;
         }
     }
 }

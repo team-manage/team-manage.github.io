@@ -1331,6 +1331,8 @@ var org;
                                 _this.$scope.events = events;
                                 setTimeout(function () { return $(".indeterminate").prop("indeterminate", true); });
                             }); });
+                            this.$scope.user = pages.LoginController.user;
+                            this.$scope.ro = false;
                         };
                         return ProfileController;
                     }(management.AbstractPage));

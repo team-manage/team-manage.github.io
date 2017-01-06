@@ -263,17 +263,17 @@
                     <th>
                         Meeting Reminders
                     </th>
-                    <th></th>
+                    <th ng-hide="ro"></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="contact in LoginController.user.profile.contact">
+                <tr ng-repeat="contact in user.profile.contact">
                     <td ng-bind="contact.type == 'email' ? contact.address : contact.number"></td>
                     <td>
                         <div class="switch">
                             <label>
                                 Off
-                                <input type="checkbox" ng-model="contact.notifications.signIn.manual" ng-change="changeContact($index)" />
+                                <input type="checkbox" ng-model="contact.notifications.signIn.manual" ng-change="changeContact($index)" ng-disabled="ro" />
                                 <span class="lever"></span>
                                 On
                             </label>
@@ -283,7 +283,7 @@
                         <div class="switch">
                             <label>
                                 Off
-                                <input type="checkbox" ng-model="contact.notifications.signIn.auto" ng-change="changeContact($index)" />
+                                <input type="checkbox" ng-model="contact.notifications.signIn.auto" ng-change="changeContact($index)" ng-disabled="ro" />
                                 <span class="lever"></span>
                                 On
                             </label>
@@ -293,7 +293,7 @@
                         <div class="switch">
                             <label>
                                 Off
-                                <input type="checkbox" ng-model="contact.notifications.team" ng-change="changeContact($index)" />
+                                <input type="checkbox" ng-model="contact.notifications.team" ng-change="changeContact($index)" ng-disabled="ro" />
                                 <span class="lever"></span>
                                 On
                             </label>
@@ -303,7 +303,7 @@
                         <div class="switch">
                             <label>
                                 Off
-                                <input type="checkbox" ng-model="contact.notifications.meetings.missed" ng-change="changeContact($index)" />
+                                <input type="checkbox" ng-model="contact.notifications.meetings.missed" ng-change="changeContact($index)" ng-disabled="ro" />
                                 <span class="lever"></span>
                                 On
                             </label>
@@ -313,13 +313,13 @@
                         <div class="switch">
                             <label>
                                 Off
-                                <input type="checkbox" ng-model="contact.notifications.meetings.reminders" ng-change="changeContact($index)" />
+                                <input type="checkbox" ng-model="contact.notifications.meetings.reminders" ng-change="changeContact($index)" ng-disabled="ro" />
                                 <span class="lever"></span>
                                 On
                             </label>
                         </div>
                     </td>
-                    <td>
+                    <td ng-hide="ro">
                         <a class="btn-flat waves-effect waves-red" ng-click="deleteContact($index)">
                             <i class="material-icons">
                                 delete_forever
@@ -329,7 +329,7 @@
                 </tr>
             </tbody>
         </table>
-        <div class="fixed-action-btn">
+        <div class="fixed-action-btn" ng-hide="ro">
             <a class="btn-floating btn-large waves-effect waves-light red">
                 <i class="material-icons">
                     add
@@ -465,9 +465,9 @@
     </div>
     <div id="profile-tab-picture" class="col s12">
         <div class="col s12 m6">
-            <img ng-src="{{ LoginController.user.profile.picture }}" />
+            <img ng-src="{{ user.profile.picture }}" />
         </div>
-        <div class="col s12 m6">
+        <div class="col s12 m6" ng-hide="ro">
             <div class="file-field input-field">
                 <div class="btn waves-effect waves-teal">
                     <span>Upload</span>
@@ -532,7 +532,7 @@
                     <td ng-bind="event.signup.deadline"></td>
                     <td>
                         <p>
-                            <input type="checkbox" ng-class="{ indeterminate: event.signup.rsvp == null }" id="profile-checkbox-{{ $index}}" ng-change="rsvp($index, value)" ng-model="value" />
+                            <input type="checkbox" ng-class="{ indeterminate: event.signup.rsvp == null }" id="profile-checkbox-{{ $index}}" ng-change="rsvp($index, value)" ng-model="value" ng-disabled="ro" />
                             <label for="profile-checkbox-{{ $index}}"></label>
                         </p>
                     </td>
@@ -543,10 +543,10 @@
     <div id="profile-tab-pin" class="col s12">
         <h5>
             Your current pin number is
-            <span ng-bind="LoginController.user.profile.pin"></span>
+            <span ng-bind="user.profile.pin"></span>
             .
         </h5>
-        <form onsubmit="return false" ng-submit="changePin()">
+        <form onsubmit="return false" ng-submit="changePin()" ng-hide="ro">
             <div class="input-field">
                 <input type="number" ng-model="newPin" name="pin" />
                 <label for="pin">
