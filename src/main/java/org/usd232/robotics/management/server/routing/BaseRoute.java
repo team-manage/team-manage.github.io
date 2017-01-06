@@ -1,5 +1,6 @@
 package org.usd232.robotics.management.server.routing;
 
+import java.io.BufferedReader;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
@@ -61,12 +62,14 @@ abstract class BaseRoute implements Route
      *            The request the client sent
      * @param session
      *            The session the client is in
+     * @param body
+     *            The body of the request
      * @return The result of the request
      * @since 1.0
      * @throws Exception
      *             If an error occurs
      */
-    protected abstract Object performRequest(Request req, Session session) throws Exception;
+    protected abstract Object performRequest(Request req, Session session, String body) throws Exception;
 
     /**
      * Adds the CORS headers
@@ -106,13 +109,24 @@ abstract class BaseRoute implements Route
                 res.status(403);
                 return "{\"error\":403}";
             }
-            Object result = performRequest(req, session);
+            String bodyStr;
+            try (BufferedReader reader = req.raw().getReader())
+            {
+                StringBuilder body = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null)
+                {
+                    body.append(line);
+                }
+                bodyStr = body.toString();
+            }
+            Object result = performRequest(req, session, bodyStr);
             if (result instanceof StartedSessionResponse)
             {
                 res.header("X-Session-Token", ((StartedSessionResponse) result).session.uuid.toString());
                 result = ((StartedSessionResponse) result).res;
             }
-            CacheData cache = CacheManager.cache(session, this, result);
+            CacheData cache = CacheManager.cache(session, this, bodyStr, result);
             if (!cache.sendResponse)
             {
                 result = new Object();

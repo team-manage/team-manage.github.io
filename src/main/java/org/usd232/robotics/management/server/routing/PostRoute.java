@@ -17,7 +17,7 @@ import spark.Route;
 class PostRoute extends BaseRoute implements Route
 {
     @Override
-    protected Object performRequest(Request req, Session session) throws Exception
+    protected Object performRequest(Request req, Session session, String body) throws Exception
     {
         List<Object> params = new ArrayList<Object>();
         for (Class<?> param : this.params)
@@ -36,7 +36,7 @@ class PostRoute extends BaseRoute implements Route
             }
             else
             {
-                params.add(GSON.fromJson(req.raw().getReader(), param));
+                params.add(GSON.fromJson(body, param));
             }
         }
         return method.invoke(null, params.toArray());

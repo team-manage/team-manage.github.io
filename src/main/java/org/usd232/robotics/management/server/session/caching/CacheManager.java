@@ -19,7 +19,7 @@ public class CacheManager implements Runnable
      * 
      * @since 1.0
      */
-    private static final Map<Session, Map<Route, CacheEntry>> CACHES = new HashMap<Session, Map<Route, CacheEntry>>();
+    private static final Map<Session, Map<Route, Map<String, CacheEntry>>> CACHES = new HashMap<Session, Map<Route, Map<String, CacheEntry>>>();
     /**
      * The session this listener is watching
      * 
@@ -34,37 +34,49 @@ public class CacheManager implements Runnable
      *            The session that the route was handling for
      * @param route
      *            The route that handled the data
+     * @param parameter
+     *            The content of the POST body
      * @param data
      *            The result of the route
      * @return The information about the cache
      * @since 1.0
      */
-    public static CacheData cache(Session session, Route route, Object data)
+    public static CacheData cache(Session session, Route route, String parameter, Object data)
     {
-        if (session == null || route == null || data == null)
+        if (session == null || route == null || parameter == null || data == null)
         {
             return new CacheData();
         }
-        Map<Route, CacheEntry> sessionMap;
+        Map<Route, Map<String, CacheEntry>> sessionMap;
         if (CACHES.containsKey(session))
         {
             sessionMap = CACHES.get(session);
         }
         else
         {
-            sessionMap = new HashMap<Route, CacheEntry>();
+            sessionMap = new HashMap<Route, Map<String, CacheEntry>>();
             CACHES.put(session, sessionMap);
             session.addTerminatedListener(new CacheManager(session));
         }
-        CacheEntry cache;
+        Map<String, CacheEntry> requestCaches;
         if (sessionMap.containsKey(route))
         {
-            cache = sessionMap.get(route);
+            requestCaches = sessionMap.get(route);
+        }
+        else
+        {
+            requestCaches = new HashMap<String, CacheEntry>();
+            sessionMap.put(route, requestCaches);
+        }
+        CacheEntry cache;
+        if (requestCaches.containsKey(parameter))
+        {
+            cache = requestCaches.get(parameter);
         }
         else
         {
             cache = new CacheEntry();
-            sessionMap.put(route, cache);
+            requestCaches.put(parameter, cache);
         }
         return new CacheData(cache, data);
     }

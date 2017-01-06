@@ -14,7 +14,7 @@ import spark.Route;
 class OptionsRoute extends BaseRoute implements Route
 {
     @Override
-    protected Object performRequest(Request req, Session session) throws Exception
+    protected Object performRequest(Request req, Session session, String body) throws Exception
     {
         return null;
     }

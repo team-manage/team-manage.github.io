@@ -17,7 +17,7 @@ import spark.Route;
 class GetRoute extends BaseRoute implements Route
 {
     @Override
-    protected Object performRequest(Request req, Session session) throws Exception
+    protected Object performRequest(Request req, Session session, String body) throws Exception
     {
         List<Object> params = new ArrayList<Object>();
         for (Class<?> param : this.params)
