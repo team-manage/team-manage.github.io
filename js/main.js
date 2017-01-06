@@ -646,6 +646,7 @@ var org;
                             this.removeEvent = new ParameterizedApi("/event/remove", this);
                             this.excuse = new ParameterizedApi("/attendance/excuse", this);
                             this.verify = new ParameterizedApi("/verify", this);
+                            this.unverify = new ParameterizedApi("/unverify", this);
                             this.setSetting = new ParameterizedApi("/setSetting", this);
                         }
                         ApiController.prototype.setServerUrl = function (url) {

@@ -521,6 +521,7 @@ namespace org.usd232.robotics.management.apis {
         public removeEvent = new ParameterizedApi<StatusResponse, number>("/event/remove", this);
         public excuse = new ParameterizedApi<StatusResponse, ExcuseRequest>("/attendance/excuse", this);
         public verify = new ParameterizedApi<StatusResponse, number>("/verify", this);
+        public unverify = new ParameterizedApi<StatusResponse, number>("/unverify", this);
         public setSetting = new ParameterizedApi<StatusResponse, SetSettingRequest>("/setSetting", this);
 
         public setServerUrl(url: string) {
