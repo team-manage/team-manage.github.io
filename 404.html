@@ -43,21 +43,54 @@
         </ul>
         <div class="container">
             <ul class="right">
-                <li ng-show="LoginController.user.permissions.events.view">
-                    <a ng-click="go('/admin/meetings')">Meetings</a>
-                </li>
                 <li>
-                    <a ng-click="openProfile()">Profile</a>
+                    <a ng-click="openProfile()">
+                        Profile
+                    </a>
                 </li>
                 <li ng-show="LoginController.user.permissions.kiosk.open">
-                    <a ng-click="go('/kiosk')">Kiosk</a>
+                    <a ng-click="go('/kiosk')">
+                        Kiosk
+                    </a>
                 </li>
-                <li ng-show="LoginController.user.permissions.users.view">
-                    <a ng-click="go('/admin/users')">Users</a>
+                <li ng-show="LoginController.user.permissions.devices.add || LoginController.user.permissions.devices.update || LoginController.user.permissions.devices.remove || LoginController.user.permissions.events.view || LoginController.user.permissions.message.send || LoginController.user.permissions.settings.view || LoginController.user.permissions.users.view">
+                    <a class="dropdown-button" data-activates="navbar-admin-dropdown">
+                        Administration
+                        <i class="material-icons right">
+                            arrow_drop_down
+                        </i>
+                    </a>
                 </li>
             </ul>
         </div>
     </div>
+    <ul id="navbar-admin-dropdown" class="dropdown-content">
+        <li ng-show="LoginController.user.permissions.devices.add || LoginController.user.permissions.devices.update || LoginController.user.permissions.devices.remove">
+            <a ng-click="go('/admin/devices')">
+                Devices
+            </a>
+        </li>
+        <li ng-show="LoginController.user.permissions.events.view">
+            <a ng-click="go('/admin/events')">
+                Events
+            </a>
+        </li>
+        <li ng-show="LoginController.user.permissions.message.send">
+            <a ng-click="go('/send')">
+                Send Message
+            </a>
+        </li>
+        <li ng-show="LoginController.user.permissions.settings.view">
+            <a ng-click="go('/admin/settings')">
+                Settings
+            </a>
+        </li>
+        <li ng-show="LoginController.user.permissions.users.view">
+            <a ng-click="go('/admin/users')">
+                Users
+            </a>
+        </li>
+    <ul>
 </nav>
 <div class="container" ng-controller="pages">
     

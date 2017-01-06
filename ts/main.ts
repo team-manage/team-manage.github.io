@@ -14,6 +14,7 @@ namespace org.usd232.robotics.management {
             $(document).ready(() => {
                 ($("ul.tabs") as any).tabs();
                 ($(".modal") as any).modal();
+                $(".dropdown-button").dropdown();
             });
             HistoryController.setPageController(page);
             PageFactory.construct();

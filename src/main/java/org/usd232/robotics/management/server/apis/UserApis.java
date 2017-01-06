@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.usd232.robotics.management.apis.Event;
@@ -177,10 +178,39 @@ public class UserApis
     @RequirePermissions("user.verify")
     public static StatusResponse verify(int userId) throws SQLException
     {
-        try (PreparedStatement st = Database.prepareStatement("UPDATE `users` SET `verified` = 1 WHERE `id` = ?"))
+        Database.startTransaction("users");
+        try
         {
-            st.setInt(1, userId);
-            return new StatusResponse(st.executeUpdate() == 1);
+            int pin;
+            try (Statement st = Database.createStatement())
+            {
+                try (ResultSet res = st.executeQuery(
+                                "SELECT FLOOR(RAND() * 1000) AS `pin` FROM `users` WHERE 'pin' NOT IN (SELECT `pin` FROM `users`) LIMIT 1"))
+                {
+                    if (res.next())
+                    {
+                        pin = res.getInt(1);
+                    }
+                    else
+                    {
+                        pin = new Random().nextInt(1000);
+                    }
+                }
+            }
+            try (PreparedStatement st = Database
+                            .prepareStatement("UPDATE `users` SET `verified` = 1, `pin` = ? WHERE `id` = ?"))
+            {
+                st.setInt(1, pin);
+                st.setInt(2, userId);
+                Database.commitTransaction();
+                return new StatusResponse(st.executeUpdate() == 1);
+            }
+        }
+        catch (SQLException ex)
+        {
+            LOG.catching(ex);
+            Database.rollbackTransaction();
+            throw ex;
         }
     }
 
@@ -198,7 +228,8 @@ public class UserApis
     @RequirePermissions("user.unverify")
     public static StatusResponse unverify(int userId) throws SQLException
     {
-        try (PreparedStatement st = Database.prepareStatement("UPDATE `users` SET `verified` = 0 WHERE `id` = ?"))
+        try (PreparedStatement st = Database
+                        .prepareStatement("UPDATE `users` SET `verified` = 0, `pin` = NULL WHERE `id` = ?"))
         {
             st.setInt(1, userId);
             return new StatusResponse(st.executeUpdate() == 1);

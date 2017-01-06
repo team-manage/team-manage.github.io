@@ -1630,6 +1630,7 @@ var org;
                         $(document).ready(function () {
                             $("ul.tabs").tabs();
                             $(".modal").modal();
+                            $(".dropdown-button").dropdown();
                         });
                         management.HistoryController.setPageController(page);
                         PageFactory.construct();
