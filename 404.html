@@ -631,7 +631,7 @@
             <input type="hidden" name="navbarTitle" value="" />
             <input type="hidden" name="pageTitle" value="Kiosk" />
             <input type="hidden" name="pageUrl" value="/kiosk" />
-            <div ng-hide="confirm" ng-show="pinpad">
+            <div ng-hide="confirm">
     <h1 class="center">Welcome</h1>
     <h3 class="center">Please enter your pin or scan a code</h3>
     <br/>
@@ -692,10 +692,9 @@
     </div>
     <canvas class="kiosk-qr-video"></canvas>
 </div>
-
 <div ng-show="confirm">
     <h1 class="center">Are you <span ng-bind="user.name"></span>?</h1>
-    <h3 class="center">You have <span ng-bind="user.unexcused"></span> unexcused absenses.</h3>
+    <h3 class="center">You have <span ng-bind="user.unexcused"></span> unexcused absences.</h3>
     <br/>
     <h6 class="center"><img class="userpicture" ng-src="{{ user.picture }}" /></h6>
     <br/>
@@ -705,8 +704,40 @@
             <button value="notme" class="btn col s12 button red waves-effect waves-red" ng-click="notme()">No</button>
         </div>
         <div class="col s6">
-            <button value="me" class="btn col s12 button blue waves-effect waves-blue"ng-click="me()">Yes</button>
+            <button value="me" class="btn col s12 button blue waves-effect waves-blue" ng-click="me()">Yes</button>
         </div>
+    </div>
+</div>
+<div id="kiosk-absence-warning" class="modal">
+    <div class="modal-content">
+        <h4>
+            Warning!
+        </h4>
+        <p>
+            It looks like you have had a lot of unexcused absences!
+            Please contact a team administrator if you believe this is incorrect.
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a class="modal-action modal-close waves-effect waves-red btn-flat" ng-click="finish()">
+            Dismiss
+        </a>
+    </div>
+</div>
+<div id="kiosk-absence-error" class="modal">
+    <div class="modal-content">
+        <h4>
+            Sorry!
+        </h4>
+        <p>
+            It looks like you have had too many unexcused absences!
+            Please contact a team administrator as soon as you can.
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a class="modal-action modal-close waves-effect waves-red btn-flat">
+            Dismiss
+        </a>
     </div>
 </div>
 

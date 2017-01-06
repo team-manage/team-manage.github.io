@@ -1407,17 +1407,25 @@ var org;
                         };
                         KioskController.prototype.init = function () {
                             var _this = this;
-                            this.$scope.pinpad = true;
                             this.$scope.go = function () { return _this.signIn(_this.$scope.pin, true); };
                             this.$scope.notme = function () {
                                 _this.$scope.confirm = false;
                                 _this.$scope.pin = '';
-                                _this.$scope.pinpad = true;
                             };
                             this.$scope.me = function () {
+                                if (_this.$scope.user.unexcused > 10) {
+                                    $("#kiosk-absence-error").modal("open");
+                                }
+                                else if (_this.$scope.user.unexcused > 5) {
+                                    $("#kiosk-absence-warning").modal("open");
+                                }
+                                else {
+                                    _this.$scope.finish();
+                                }
                                 _this.$scope.confirm = false;
                                 _this.$scope.pin = '';
-                                _this.$scope.pinpad = true;
+                            };
+                            this.$scope.finish = function () {
                                 ApiController.instance.kioskSignIn.request(_this.$scope.user.id, function (response) {
                                     if (response.success) {
                                         Materialize.toast(_this.$scope.user.name + " has been signed in!", 4000);

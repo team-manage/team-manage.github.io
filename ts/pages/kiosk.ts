@@ -23,19 +23,25 @@ namespace org.usd232.robotics.management.pages {
         }
 
         protected init(): void {
-            this.$scope.pinpad = true;
             this.$scope.go = () => this.signIn(this.$scope.pin, true);
             this.$scope.notme = () => {
                 this.$scope.confirm = false;
                 this.$scope.pin = '';
-                this.$scope.pinpad = true;
             };
             this.$scope.me = () => {
+                if ( this.$scope.user.unexcused > 10 ) {
+                    ($("#kiosk-absence-error") as any).modal("open");
+                } else if ( this.$scope.user.unexcused > 5 ) {
+                    ($("#kiosk-absence-warning") as any).modal("open");
+                } else {
+                    this.$scope.finish();
+                }
                 this.$scope.confirm = false;
                 this.$scope.pin = '';
-                this.$scope.pinpad = true;
+            };
+            this.$scope.finish = () => {
                 ApiController.instance.kioskSignIn.request(this.$scope.user.id, response => { 
-                    if (response.success){
+                    if (response.success) {
                         Materialize.toast(this.$scope.user.name + " has been signed in!", 4000);
                     } else {
                         Materialize.toast("There was an error in signing in your account", 4000);
