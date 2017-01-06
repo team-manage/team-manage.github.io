@@ -49,7 +49,7 @@ public class EventApis
                     int attended = res.getInt(8);
                     events.add(new Event(res.getInt(1), EventType.valueOf(res.getString(2)), res.getString(3),
                                     res.getString(4), res.getDate(5), null,
-                                    new EventSignup(signupDeadline == null, signupDeadline, rsvp == null ? null : true),
+                                    new EventSignup(signupDeadline != null, signupDeadline, rsvp == null ? null : true),
                                     attended == -1 ? null : attended == 1));
                 }
                 return events.toArray(new Event[0]);

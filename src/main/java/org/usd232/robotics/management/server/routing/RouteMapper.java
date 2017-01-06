@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.usd232.robotics.management.server.session.Session;
+import spark.Request;
 import spark.Spark;
 
 /**
@@ -41,14 +42,15 @@ public class RouteMapper
                     case 0:
                         break;
                     case 1:
-                        if (params[0] == Session.class || params[0] == String.class)
+                        if (params[0] == Session.class || params[0] == String.class || params[0] == Request.class)
                         {
                             break;
                         }
                         continue search;
                     case 2:
-                        if ((params[0] == Session.class && params[1] == String.class)
-                                        || (params[0] == String.class && params[1] == Session.class))
+                        if ((params[0] == Session.class || params[0] == String.class || params[0] == Request.class)
+                                        && (params[1] == Session.class && params[1] == String.class
+                                                        || params[1] == Request.class))
                         {
                             break;
                         }
@@ -75,8 +77,9 @@ public class RouteMapper
                     case 1:
                         break;
                     case 2:
-                        if (params[0] == Session.class || params[0] == String.class || params[1] == Session.class
-                                        || params[1] == String.class)
+                        if (params[0] == Session.class || params[0] == String.class || params[0] == Request.class
+                                        || params[1] == Session.class || params[1] == String.class
+                                        || params[1] == Request.class)
                         {
                             break;
                         }
@@ -84,7 +87,9 @@ public class RouteMapper
                     case 3:
                         if ((params[0] == Session.class || params[1] == Session.class || params[2] == Session.class)
                                         && (params[0] == String.class || params[1] == String.class
-                                                        || params[2] == String.class))
+                                                        || params[2] == String.class)
+                                        && (params[0] == Request.class || params[1] == Request.class
+                                                        || params[2] == Request.class))
                         {
                             break;
                         }

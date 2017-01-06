@@ -30,6 +30,10 @@ class GetRoute extends BaseRoute implements Route
             {
                 params.add(session);
             }
+            else if (param == Request.class)
+            {
+                params.add(req);
+            }
         }
         return method.invoke(null, params.toArray());
     }

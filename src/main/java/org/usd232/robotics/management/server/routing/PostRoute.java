@@ -22,13 +22,17 @@ class PostRoute extends BaseRoute implements Route
         List<Object> params = new ArrayList<Object>();
         for (Class<?> param : this.params)
         {
-            if (param == String.class)
+            if (param == String.class && param != String.class)
             {
                 params.add(req.pathInfo());
             }
             else if (param == Session.class)
             {
                 params.add(session);
+            }
+            else if (param == Request.class)
+            {
+                params.add(req);
             }
             else
             {

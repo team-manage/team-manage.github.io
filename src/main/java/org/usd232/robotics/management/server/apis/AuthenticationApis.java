@@ -37,6 +37,7 @@ import org.usd232.robotics.management.apis.permissions.UserPermissions;
 import org.usd232.robotics.management.server.database.Database;
 import org.usd232.robotics.management.server.routing.PostApi;
 import org.usd232.robotics.management.server.session.StartedSessionResponse;
+import spark.Request;
 
 /**
  * The apis relating to authentication
@@ -76,6 +77,8 @@ public abstract class AuthenticationApis
      * 
      * @param req
      *            The request
+     * @param http
+     *            The http request
      * @return The response
      * @since 1.0
      * @throws SQLException
@@ -86,7 +89,7 @@ public abstract class AuthenticationApis
      *             If the string encoding could not be found
      */
     @PostApi("/authenticate")
-    public static Object login(LoginRequest req)
+    public static Object login(LoginRequest req, Request http)
                     throws SQLException, NoSuchAlgorithmException, UnsupportedEncodingException
     {
         Set<String> permissions;
@@ -114,7 +117,7 @@ public abstract class AuthenticationApis
                 }
                 permissions = new HashSet<String>();
                 permissions.addAll(Arrays.asList(res.getString(6).split(",")));
-                picture = res.getString(5);
+                picture = String.format("http://%s/pictures/%d", http.host(), res.getInt(5));
                 pin = res.getInt(4);
                 userId = res.getInt(1);
                 name = res.getString(7);
@@ -216,18 +219,21 @@ public abstract class AuthenticationApis
                 st.execute();
             }
             try (PreparedStatement st = Database.prepareStatement(
-                            "INSERT INTO `contacts` (`userid`, `type`, `value`, `carrier`) VALUES ((SELECT `id` FROM `users` WHERE `username` = ?), ?, ?, ?)"))
+                            "INSERT INTO `contacts` (`userid`, `type`, `value`, `carrier`, `notifications`) VALUES ((SELECT `id` FROM `users` WHERE `username` = ?), ?, ?, ?, ?)"))
             {
                 st.setString(1, req.username);
                 st.setString(2, "email");
                 st.setString(3, req.email);
                 st.setString(4, null);
+                st.setString(5, "team");
                 st.execute();
                 st.setString(3, req.email2);
+                st.setString(5, "team,meeting.missed");
                 st.execute();
                 st.setString(2, "phone");
                 st.setString(3, req.phone);
                 st.setString(4, req.provider);
+                st.setString(5, "team,meeting.missed,meeting.reminders");
                 st.execute();
             }
             Database.commitTransaction();

@@ -118,7 +118,15 @@ abstract class BaseRoute implements Route
                 result = new Object();
             }
             res.header("Last-Modified", DATE_FORMAT.format(cache.lastModified));
-            return GSON.toJson(result);
+            if (result instanceof BinaryResponse)
+            {
+                res.header("Content-Type", ((BinaryResponse) result).mime);
+                return ((BinaryResponse) result).data;
+            }
+            else
+            {
+                return GSON.toJson(result);
+            }
         }
         catch (Exception ex)
         {

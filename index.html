@@ -676,9 +676,11 @@
             <h1>
     Hello,
     <span ng-bind="LoginController.user.profile.name"></span>
-    (pin
-    <span ng-bind="LoginController.user.profile.pin"></span>
-    )
+    <span ng-hide="LoginController.user.profile.pin == 0">
+        (pin
+        <span ng-bind="LoginController.user.profile.pin"></span>
+        )
+    </span>
 </h1>
 <div ng-repeat="message in messages">
     <b>
