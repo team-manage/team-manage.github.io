@@ -14,6 +14,8 @@
 
     /// <reference path="pages/users.ts" />
 
+    /// <reference path="pages/send.ts" />
+
 
 namespace org.usd232.robotics.management {
     
@@ -30,6 +32,8 @@ namespace org.usd232.robotics.management {
         import HomeController = org.usd232.robotics.management.pages.HomeController;
     
         import UsersController = org.usd232.robotics.management.pages.UsersController;
+    
+        import MessageController = org.usd232.robotics.management.pages.MessageController;
     
 
     export class PageFactory {
@@ -49,6 +53,8 @@ namespace org.usd232.robotics.management {
                     new HomeController("home"),
                 
                     new UsersController("users"),
+                
+                    new MessageController("send"),
                 
             ];
         }

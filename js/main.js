@@ -21,7 +21,9 @@ var org;
                             AngularController.controllers[name] = callback;
                         };
                         AngularController.init = function () {
-                            AngularController.app = window.angular.module("team-manage", []);
+                            AngularController.app = window.angular.module("team-manage", [
+                                "ngSanitize"
+                            ]);
                             Object.getOwnPropertyNames(AngularController.controllers).forEach(function (name) {
                                 return AngularController.app.controller(name, AngularController.controllers[name]);
                             });
@@ -48,9 +50,10 @@ var org;
                 var AbstractPage = (function () {
                     function AbstractPage(name) {
                         var _this = this;
-                        AngularController.registerController("page-" + name, function ($scope, $http) {
+                        AngularController.registerController("page-" + name, function ($scope, $http, $sce) {
                             _this.$scope = $scope;
                             _this.$http = $http;
+                            _this.$sce = $sce;
                             _this.init();
                         });
                         management.HistoryController.getPageController().onLoad(name, function () { return _this.open(); });
@@ -1491,7 +1494,9 @@ var org;
                             return _super.apply(this, arguments) || this;
                         }
                         HomeController.prototype.init = function () {
+                            var _this = this;
                             this.$scope.LoginController = pages.LoginController;
+                            this.$scope.trust = function (content) { return _this.$sce.trustAsHtml(content); };
                         };
                         HomeController.prototype.open = function () {
                             var _this = this;
@@ -1564,6 +1569,52 @@ var org;
         })(robotics = usd232.robotics || (usd232.robotics = {}));
     })(usd232 = org.usd232 || (org.usd232 = {}));
 })(org || (org = {}));
+/// <reference path="../page.ts" />
+/// <reference path="../navigation.ts" />
+/// <reference path="../apis.ts" />
+var org;
+(function (org) {
+    var usd232;
+    (function (usd232) {
+        var robotics;
+        (function (robotics) {
+            var management;
+            (function (management) {
+                var pages;
+                (function (pages) {
+                    var ApiController = org.usd232.robotics.management.apis.ApiController;
+                    var NotificationRequest = org.usd232.robotics.management.apis.NotificationRequest;
+                    var HistoryController = org.usd232.robotics.management.HistoryController;
+                    var MessageController = (function (_super) {
+                        __extends(MessageController, _super);
+                        function MessageController() {
+                            return _super.apply(this, arguments) || this;
+                        }
+                        MessageController.prototype.init = function () {
+                            var _this = this;
+                            $("#send-notification-editor").on("materialnote.change", function (we, contents) {
+                                _this.$scope.content = contents;
+                            });
+                            this.$scope.send = function () {
+                                ApiController.instance.notify.request(new NotificationRequest(_this.$scope.content, _this.$scope.target), function (res) {
+                                    if (res.success) {
+                                        Materialize.toast("Message sent!", 4000);
+                                        HistoryController.back();
+                                    }
+                                    else {
+                                        Materialize.toast("Error sending message", 4000);
+                                    }
+                                });
+                            };
+                        };
+                        return MessageController;
+                    }(management.AbstractPage));
+                    pages.MessageController = MessageController;
+                })(pages = management.pages || (management.pages = {}));
+            })(management = robotics.management || (robotics.management = {}));
+        })(robotics = usd232.robotics || (usd232.robotics = {}));
+    })(usd232 = org.usd232 || (org.usd232 = {}));
+})(org || (org = {}));
 /// <reference path="page.ts" />
 /// <reference path="pages/login.ts" />
 /// <reference path="pages/404.ts" />
@@ -1572,6 +1623,7 @@ var org;
 /// <reference path="pages/kiosk.ts" />
 /// <reference path="pages/home.ts" />
 /// <reference path="pages/users.ts" />
+/// <reference path="pages/send.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -1587,6 +1639,7 @@ var org;
                 var KioskController = org.usd232.robotics.management.pages.KioskController;
                 var HomeController = org.usd232.robotics.management.pages.HomeController;
                 var UsersController = org.usd232.robotics.management.pages.UsersController;
+                var MessageController = org.usd232.robotics.management.pages.MessageController;
                 var PageFactory = (function () {
                     function PageFactory() {
                     }
@@ -1599,6 +1652,7 @@ var org;
                             new KioskController("kiosk"),
                             new HomeController("home"),
                             new UsersController("users"),
+                            new MessageController("send"),
                         ];
                     };
                     return PageFactory;
@@ -1631,6 +1685,22 @@ var org;
                             $("ul.tabs").tabs();
                             $(".modal").modal();
                             $(".dropdown-button").dropdown();
+                            $("select").material_select();
+                            $(".editor").materialnote({
+                                "toolbar": [
+                                    ["style", ["style", "bold", "italic", "underline", "strikethrough", "clear"]],
+                                    ["fonts", ["fontsize", "fontname"]],
+                                    ["color", ["color"]],
+                                    ["undo", ["undo", "redo", "help"]],
+                                    ["ckMedia", ["ckImageUploader", "ckVideoEmbeeder"]],
+                                    ["misc", ["link", "picture", "table", "hr", "codeview", "fullscreen"]],
+                                    ["para", ["ul", "ol", "paragraph", "leftButton", "centerButton", "rightButton", "justifyButton", "outdentButton", "indentButton"]],
+                                    ["height", ["lineheight"]],
+                                ],
+                                "height": 550,
+                                "minHeight": 100,
+                                "defaultBackColor": "#e0e0e0"
+                            });
                         });
                         management.HistoryController.setPageController(page);
                         PageFactory.construct();

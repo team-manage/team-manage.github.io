@@ -6,6 +6,7 @@ namespace org.usd232.robotics.management {
     export abstract class AbstractPage {
         protected $scope;
         protected $http;
+        protected $sce;
 
         protected abstract init(): void;
 
@@ -13,9 +14,10 @@ namespace org.usd232.robotics.management {
         }
 
         public constructor(name: string) {
-            AngularController.registerController("page-" + name, ($scope, $http) => {
+            AngularController.registerController("page-" + name, ($scope, $http, $sce) => {
                 this.$scope = $scope;
                 this.$http = $http;
+                this.$sce = $sce;
                 this.init();
             });
             HistoryController.getPageController().onLoad(name, () => this.open());

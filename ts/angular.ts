@@ -5,14 +5,16 @@ namespace org.usd232.robotics.management.ng {
         // TODO: Typings are broken for Angular
         // All of the `any` should be strongly typed once the Angular repository gets fixed
         private static app: any;
-        private static controllers: { [name: string]: ($scope: any, $http: any) => void } = {};
+        private static controllers: { [name: string]: ($scope: any, $http: any, $sce: any) => void } = {};
 
-        public static registerController(name: string, callback: ($scope: any, $http: any) => void): void {
+        public static registerController(name: string, callback: ($scope: any, $http: any, $sce: any) => void): void {
             AngularController.controllers[name] = callback;
         }
 
         public static init(): void {
-            AngularController.app = (window as any).angular.module("team-manage", []);
+            AngularController.app = (window as any).angular.module("team-manage", [
+                "ngSanitize"
+            ]);
             Object.getOwnPropertyNames(AngularController.controllers).forEach(name => 
                 AngularController.app.controller(name, AngularController.controllers[name])
             );

@@ -15,13 +15,23 @@
 
 <!-- Angular JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular-sanitize.js"></script>
 
 <!-- Material Icons -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 
 <!-- QR Code Scanner -->
-<script type="text/javascript" src="/js/qrcodelib.js"></script>
-<script type="text/javascript" src="/js/webcodecamjquery.js"></script>
+<script src="/js/qrcodelib.js"></script>
+<script src="/js/webcodecamjquery.js"></script>
+
+<!-- Material Note -->
+<link rel="stylesheet" href="/css/materialNote.css" />
+<link rel="stylesheet" href="/css/codemirror.css" />
+<link rel="stylesheet" href="/css/monokai.css" />
+<script src="/js/ckMaterializeOverrides.js"></script>
+<script src="/js/codemirror.js"></script>
+<script src="/js/xml.js"></script>
+<script src="/js/materialNote.js"></script>
 
 <!-- Our stuff -->
 <link rel="stylesheet" href="/css/main.css" />
@@ -720,7 +730,7 @@
         <span ng-bind="message.date"></span>
         <span ng-bind="message.time"></span>
     </b>
-    <p ng-bind="message.message"></p>
+    <p ng-bind-html="trust(message.message)"></p>
     <i>
         From
         <span ng-bind="message.from"></span>
@@ -761,6 +771,30 @@
         </tr>
     </tbody>
 </table>
+
+        </div>
+    
+        <div ng-show="name == 'send'" id="page-send" ng-controller="page-send">
+            <input type="hidden" name="navbarTitle" value="Send Notification" />
+            <input type="hidden" name="pageTitle" value="Send Notification" />
+            <input type="hidden" name="pageUrl" value="/send" />
+            <div class="input-field col s12">
+    <select ng-model="target" ng-init="target = 'team'">
+        <option value="team">Whole Team</option>
+        <option value="subteam">My Subteam</option>
+    </select>
+    <label>
+        Send Message To
+    </label>
+</div>
+<div class="editor" id="send-notification-editor"></div>
+<div class="fixed-action-btn">
+    <a class="btn-floating btn-large waves-effect waves-light red" ng-click="send()">
+        <i class="material-icons">
+            send
+        </i>
+    </a>
+</div>
 
         </div>
     

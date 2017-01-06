@@ -15,6 +15,22 @@ namespace org.usd232.robotics.management {
                 ($("ul.tabs") as any).tabs();
                 ($(".modal") as any).modal();
                 $(".dropdown-button").dropdown();
+                $("select").material_select();
+                ($(".editor") as any).materialnote({
+                    "toolbar": [
+                        ["style", ["style", "bold", "italic", "underline", "strikethrough", "clear"]],
+                        ["fonts", ["fontsize", "fontname"]],
+                        ["color", ["color"]],
+                        ["undo", ["undo", "redo", "help"]],
+                        ["ckMedia", ["ckImageUploader", "ckVideoEmbeeder"]],
+                        ["misc", ["link", "picture", "table", "hr", "codeview", "fullscreen"]],
+                        ["para", ["ul", "ol", "paragraph", "leftButton", "centerButton", "rightButton", "justifyButton", "outdentButton", "indentButton"]],
+                        ["height", ["lineheight"]],
+                    ],
+                    "height": 550,
+                    "minHeight": 100,
+                    "defaultBackColor": "#e0e0e0"
+                });
             });
             HistoryController.setPageController(page);
             PageFactory.construct();

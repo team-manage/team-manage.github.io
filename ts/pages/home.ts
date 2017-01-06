@@ -10,6 +10,7 @@ namespace org.usd232.robotics.management.pages {
     export class HomeController extends AbstractPage {
         protected init(): void {
             this.$scope.LoginController = LoginController;
+            this.$scope.trust = (content: string) => this.$sce.trustAsHtml(content);
         }
 
         protected open(): void {
