@@ -113,13 +113,46 @@
                     Kiosk
                 </a>
             </li>
-            <li ng-show="LoginController.user.permissions.devices.add || LoginController.user.permissions.devices.update || LoginController.user.permissions.devices.remove || LoginController.user.permissions.events.view || LoginController.user.permissions.message.send || LoginController.user.permissions.settings.view || LoginController.user.permissions.users.view">
-                <a class="dropdown-button" data-activates="navbar-admin-dropdown">
-                    Administration
-                    <i class="material-icons right">
-                        arrow_drop_down
-                    </i>
-                </a>
+            <li class="no-padding" ng-show="LoginController.user.permissions.devices.add || LoginController.user.permissions.devices.update || LoginController.user.permissions.devices.remove || LoginController.user.permissions.events.view || LoginController.user.permissions.message.send || LoginController.user.permissions.settings.view || LoginController.user.permissions.users.view">
+                <ul class="collapsible collapsible-accordion">
+                    <li>
+                        <a class="collapsible-header">
+                            Administration
+                            <i class="material-icons right">
+                                arrow_drop_down
+                            </i>
+                        </a>
+                        <div class="collapsible-body">
+                            <ul>
+                                <li ng-show="LoginController.user.permissions.devices.add || LoginController.user.permissions.devices.update || LoginController.user.permissions.devices.remove">
+                                    <a onclick="$('.button-collapse').sideNav('hide')" ng-click="go('/admin/devices')">
+                                        Devices
+                                    </a>
+                                </li>
+                                <li ng-show="LoginController.user.permissions.events.view">
+                                    <a onclick="$('.button-collapse').sideNav('hide')" ng-click="go('/admin/events')">
+                                        Events
+                                    </a>
+                                </li>
+                                <li ng-show="LoginController.user.permissions.message.send">
+                                    <a onclick="$('.button-collapse').sideNav('hide')" ng-click="go('/send')">
+                                        Send Message
+                                    </a>
+                                </li>
+                                <li ng-show="LoginController.user.permissions.settings.view">
+                                    <a onclick="$('.button-collapse').sideNav('hide')" ng-click="go('/admin/settings')">
+                                        Settings
+                                    </a>
+                                </li>
+                                <li ng-show="LoginController.user.permissions.users.view">
+                                    <a onclick="$('.button-collapse').sideNav('hide')" ng-click="go('/admin/users')">
+                                        Users
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
             </li>
         </ul>
         <ul id="navbar-admin-dropdown" class="dropdown-content">

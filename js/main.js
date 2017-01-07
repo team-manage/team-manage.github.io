@@ -1828,6 +1828,7 @@ var org;
                             $(".dropdown-button").dropdown();
                             $("select").material_select();
                             $(".button-collapse").sideNav();
+                            $(".collapsible").collapsible();
                             $(".editor").materialnote({
                                 "toolbar": [
                                     ["style", ["style", "bold", "italic", "underline", "strikethrough", "clear"]],
