@@ -737,12 +737,12 @@ var org;
                                 _this.$scope.server = localStorage.getItem("serverUrl");
                                 _this.$scope.username = localStorage.getItem("username");
                                 if (_this.$scope.server) {
-                                    $(".login-container label[for='server']").addClass("active");
+                                    $(".login label[for='server']").addClass("active");
                                 }
                                 if (_this.$scope.username) {
-                                    $(".login-container label[for='user']").addClass("active");
+                                    $(".login label[for='user']").addClass("active");
                                     if (_this.$scope.server) {
-                                        setTimeout(function () { return $(".login-container input[name='pass']").select(); }, 0);
+                                        setTimeout(function () { return $(".login input[name='pass']").select(); }, 0);
                                     }
                                 }
                             });

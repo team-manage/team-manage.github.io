@@ -35,6 +35,7 @@ import org.usd232.robotics.management.apis.permissions.SettingsPermissions;
 import org.usd232.robotics.management.apis.permissions.SignInPermissions;
 import org.usd232.robotics.management.apis.permissions.UserPermissions;
 import org.usd232.robotics.management.server.database.Database;
+import org.usd232.robotics.management.server.messaging.MessagingController;
 import org.usd232.robotics.management.server.routing.PostApi;
 import org.usd232.robotics.management.server.session.RequirePermissions;
 import org.usd232.robotics.management.server.session.StartedSessionResponse;
@@ -303,10 +304,20 @@ public abstract class AuthenticationApis
                 st.setBytes(2, hashPassword(req.password, salt));
                 st.execute();
             }
-            try (PreparedStatement st = Database.prepareStatement(
-                            "INSERT INTO `contacts` (`userid`, `type`, `value`, `carrier`, `notifications`) VALUES ((SELECT `id` FROM `users` WHERE `username` = ?), ?, ?, ?, ?)"))
+            int userId;
+            try (PreparedStatement st = Database.prepareStatement("SELECT `id` FROM `users` WHERE `username` = ?"))
             {
                 st.setString(1, req.username);
+                try (ResultSet res = st.executeQuery())
+                {
+                    res.next();
+                    userId = res.getInt(1);
+                }
+            }
+            try (PreparedStatement st = Database.prepareStatement(
+                            "INSERT INTO `contacts` (`userid`, `type`, `value`, `carrier`, `notifications`) VALUES (?, ?, ?, ?, ?)"))
+            {
+                st.setInt(1, userId);
                 st.setString(2, "email");
                 st.setString(3, req.email);
                 st.setString(4, null);
@@ -321,6 +332,7 @@ public abstract class AuthenticationApis
                 st.setString(5, "team,meeting.missed,meeting.reminders");
                 st.execute();
             }
+            MessagingController.sendMessage("Thank you for applying to this team.  An administrator will review your application shortly.", userId, null);
             Database.commitTransaction();
             return new StatusResponse(true);
         }
