@@ -334,6 +334,7 @@ public abstract class AuthenticationApis
             }
             MessagingController.sendMessage("Thank you for applying to this team.  An administrator will review your application shortly.", userId, null);
             Database.commitTransaction();
+            UserApis.verify(userId);
             return new StatusResponse(true);
         }
         catch (SQLException ex)
