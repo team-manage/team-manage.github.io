@@ -15,6 +15,10 @@ namespace org.usd232.robotics.management.pages {
         protected init(): void {
             this.$scope.back = () => HistoryController.back();
             this.$scope.register = () => {
+                if ( Providers.getProviderNames().indexOf(this.$scope.provider) < 0 ) {
+                    Materialize.toast("Please choose a provider from the list", 4000);
+                    return;
+                }
                 ApiController.instance.setServerUrl(this.$scope.server);
                 ApiController.instance.register.request(new RegisterRequest(
                     this.$scope.username, this.$scope.firstname, this.$scope.lastname, this.$scope.password,

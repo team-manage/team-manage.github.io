@@ -1151,6 +1151,10 @@ var org;
                             var _this = this;
                             this.$scope.back = function () { return management.HistoryController.back(); };
                             this.$scope.register = function () {
+                                if (Providers.getProviderNames().indexOf(_this.$scope.provider) < 0) {
+                                    Materialize.toast("Please choose a provider from the list", 4000);
+                                    return;
+                                }
                                 ApiController.instance.setServerUrl(_this.$scope.server);
                                 ApiController.instance.register.request(new RegisterRequest(_this.$scope.username, _this.$scope.firstname, _this.$scope.lastname, _this.$scope.password, _this.$scope.email, _this.$scope.parentemail, _this.$scope.phonenumber, _this.$scope.provider), function (res) {
                                     if (res.success) {
@@ -1178,6 +1182,7 @@ var org;
 /// <reference path="../page.ts" />
 /// <reference path="../navigation.ts" />
 /// <reference path="../apis.ts" />
+/// <reference path="../providers.ts" />
 /// <reference path="login.ts" />
 var org;
 (function (org) {
@@ -1198,6 +1203,7 @@ var org;
                     var EditContactRequest = org.usd232.robotics.management.apis.EditContactRequest;
                     var RemoveContactRequest = org.usd232.robotics.management.apis.RemoveContactRequest;
                     var RsvpRequest = org.usd232.robotics.management.apis.RsvpRequest;
+                    var Providers = org.usd232.robotics.management.Providers; // VS doesn't like Liquid
                     var ProfileController = (function (_super) {
                         __extends(ProfileController, _super);
                         function ProfileController() {
@@ -1226,6 +1232,10 @@ var org;
                                 });
                             };
                             this.$scope.addPhone = function () {
+                                if (Providers.getProviderNames().indexOf(_this.$scope.newPhoneProvider) < 0) {
+                                    Materialize.toast("Please choose a provider from the list", 4000);
+                                    return;
+                                }
                                 var contact = new UserContact("phone", null, _this.$scope.newPhone, _this.$scope.newPhoneProvider, new Notifications(new SignInNotifications(_this.$scope.newNotificationsManualSignIn, _this.$scope.newNotificationsAutoSignIn), _this.$scope.newNotificationsTeam, new MeetingNotifications(_this.$scope.newNotificationsMissedMeeting, _this.$scope.newNotificationsMeetingReminders)));
                                 ApiController.instance.addContact.request(new AddContactRequest(contact), function (res) {
                                     if (res.success) {
@@ -1623,6 +1633,123 @@ var org;
         })(robotics = usd232.robotics || (usd232.robotics = {}));
     })(usd232 = org.usd232 || (org.usd232 = {}));
 })(org || (org = {}));
+/// <reference path="../page.ts" />
+/// <reference path="../apis.ts" />
+/// <reference path="login.ts" />
+var org;
+(function (org) {
+    var usd232;
+    (function (usd232) {
+        var robotics;
+        (function (robotics) {
+            var management;
+            (function (management) {
+                var pages;
+                (function (pages) {
+                    var ApiController = org.usd232.robotics.management.apis.ApiController;
+                    var HistoryController = org.usd232.robotics.management.HistoryController;
+                    var EventController = (function (_super) {
+                        __extends(EventController, _super);
+                        function EventController() {
+                            return _super.apply(this, arguments) || this;
+                        }
+                        EventController.show = function (id) {
+                            EventController.newId = id;
+                            HistoryController.load("/admin/event");
+                        };
+                        EventController.prototype.init = function () {
+                            this.$scope.save = function () {
+                            };
+                            var months = [
+                                "Jan", "Feb", "Mar", "Apr",
+                                "May", "Jun", "Jul", "Aug",
+                                "Sep", "Oct", "Nov", "Dec"
+                            ];
+                            var picker = new window.MaterialDatePicker({
+                                "container": document.body
+                            });
+                            var editing;
+                            picker.on("submit", function (val) {
+                                var date = new Date(val);
+                                editing.val(months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear());
+                            });
+                            $(".event-datepicker").on("focus", function () {
+                                picker.open();
+                                editing = this;
+                            });
+                        };
+                        EventController.prototype.open = function () {
+                            var _this = this;
+                            this.$scope.id = EventController.newId;
+                            ApiController.instance.event.request(this.$scope.id, function (event) { return _this.$scope.$apply(function () {
+                                event.date = new Date(event.date);
+                                event.time.start = event.time.start == null ? null : new Date(event.time.start);
+                                event.time.end = event.time.end == null ? null : new Date(event.time.end);
+                                _this.$scope.event = event;
+                                setTimeout(function () { return $("select").material_select(); }, 0);
+                            }); });
+                        };
+                        return EventController;
+                    }(management.AbstractPage));
+                    pages.EventController = EventController;
+                })(pages = management.pages || (management.pages = {}));
+            })(management = robotics.management || (robotics.management = {}));
+        })(robotics = usd232.robotics || (usd232.robotics = {}));
+    })(usd232 = org.usd232 || (org.usd232 = {}));
+})(org || (org = {}));
+/// <reference path="../page.ts" />
+/// <reference path="../apis.ts" />
+/// <reference path="login.ts" />
+/// <reference path="event.ts" />
+var org;
+(function (org) {
+    var usd232;
+    (function (usd232) {
+        var robotics;
+        (function (robotics) {
+            var management;
+            (function (management) {
+                var pages;
+                (function (pages) {
+                    var ApiController = org.usd232.robotics.management.apis.ApiController;
+                    var EventsController = (function (_super) {
+                        __extends(EventsController, _super);
+                        function EventsController() {
+                            return _super.apply(this, arguments) || this;
+                        }
+                        EventsController.prototype.init = function () {
+                            this.$scope.LoginController = pages.LoginController;
+                            this.$scope.events = [];
+                            this.$scope.view = function (event) {
+                                if (pages.LoginController.user.permissions.events.view) {
+                                    pages.EventController.show(event.id);
+                                }
+                            };
+                            this.$scope.add = function () {
+                                ApiController.instance.addEvent.request(function (res) {
+                                    if (res.success) {
+                                        pages.EventController.show(res.id);
+                                    }
+                                    else {
+                                        Materialize.toast("Unable to create event", 4000);
+                                    }
+                                });
+                            };
+                        };
+                        EventsController.prototype.open = function () {
+                            var _this = this;
+                            ApiController.instance.events.request(function (events) { return _this.$scope.$apply(function () {
+                                _this.$scope.events = events;
+                            }); });
+                        };
+                        return EventsController;
+                    }(management.AbstractPage));
+                    pages.EventsController = EventsController;
+                })(pages = management.pages || (management.pages = {}));
+            })(management = robotics.management || (robotics.management = {}));
+        })(robotics = usd232.robotics || (usd232.robotics = {}));
+    })(usd232 = org.usd232 || (org.usd232 = {}));
+})(org || (org = {}));
 /// <reference path="page.ts" />
 /// <reference path="pages/login.ts" />
 /// <reference path="pages/404.ts" />
@@ -1632,6 +1759,8 @@ var org;
 /// <reference path="pages/home.ts" />
 /// <reference path="pages/users.ts" />
 /// <reference path="pages/send.ts" />
+/// <reference path="pages/events.ts" />
+/// <reference path="pages/event.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -1648,6 +1777,8 @@ var org;
                 var HomeController = org.usd232.robotics.management.pages.HomeController;
                 var UsersController = org.usd232.robotics.management.pages.UsersController;
                 var MessageController = org.usd232.robotics.management.pages.MessageController;
+                var EventsController = org.usd232.robotics.management.pages.EventsController;
+                var EventController = org.usd232.robotics.management.pages.EventController;
                 var PageFactory = (function () {
                     function PageFactory() {
                     }
@@ -1661,6 +1792,8 @@ var org;
                             new HomeController("home"),
                             new UsersController("users"),
                             new MessageController("send"),
+                            new EventsController("events"),
+                            new EventController("event"),
                         ];
                     };
                     return PageFactory;
@@ -1694,6 +1827,7 @@ var org;
                             $(".modal").modal();
                             $(".dropdown-button").dropdown();
                             $("select").material_select();
+                            $(".button-collapse").sideNav();
                             $(".editor").materialnote({
                                 "toolbar": [
                                     ["style", ["style", "bold", "italic", "underline", "strikethrough", "clear"]],

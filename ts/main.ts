@@ -16,6 +16,7 @@ namespace org.usd232.robotics.management {
                 ($(".modal") as any).modal();
                 $(".dropdown-button").dropdown();
                 $("select").material_select();
+                $(".button-collapse").sideNav();
                 ($(".editor") as any).materialnote({
                     "toolbar": [
                         ["style", ["style", "bold", "italic", "underline", "strikethrough", "clear"]],

@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
 <title>Loading...</title>
 
@@ -33,129 +33,215 @@
 <script src="/js/xml.js"></script>
 <script src="/js/materialNote.js"></script>
 
+<!-- Include Materialize CSS again -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" />
+
+<!-- Material Date/Time Picker -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
+<link rel="stylesheet" href="/css/datepicker.css" />
+<script src="/js/datepicker.standalone.js"></script>
+
 <!-- Our stuff -->
 <link rel="stylesheet" href="/css/main.css" />
 <script src="/js/main.js"></script>
 
     </head>
     <body ng-app="team-manage">
-        <nav ng-controller="header" ng-hide="title == null || title == ''" class="indigo darken-4">
-    <div class="nav-wrapper">
-        <a class="brand-logo center" ng-bind="title"></a>
-        <ul class="left">
-            <li>
-                <a ng-click="back()">
-                    <i class="material-icons">
-                        arrow_back
-                    </i>
-                </a>
-            </li>
-        </ul>
-        <div class="container">
-            <ul class="right">
+        <div class="navbar-fixed">
+    <nav ng-controller="header" ng-hide="title == null || title == ''" class="indigo darken-4">
+        <div class="nav-wrapper">
+            <a class="brand-logo center" ng-bind="title"></a>
+            <ul class="left" class="hide-on-med-and-up">
                 <li>
-                    <a ng-click="openProfile()">
-                        Profile
-                    </a>
-                </li>
-                <li ng-show="LoginController.user.permissions.kiosk.open">
-                    <a ng-click="go('/kiosk')">
-                        Kiosk
-                    </a>
-                </li>
-                <li ng-show="LoginController.user.permissions.devices.add || LoginController.user.permissions.devices.update || LoginController.user.permissions.devices.remove || LoginController.user.permissions.events.view || LoginController.user.permissions.message.send || LoginController.user.permissions.settings.view || LoginController.user.permissions.users.view">
-                    <a class="dropdown-button" data-activates="navbar-admin-dropdown">
-                        Administration
-                        <i class="material-icons right">
-                            arrow_drop_down
+                    <a data-activates="navbar-slide-out" class="button-collapse">
+                        <i class="material-icons">
+                            menu
                         </i>
                     </a>
                 </li>
             </ul>
+            <div class="hide-on-small-only">
+                <ul class="left">
+                    <li>
+                        <a ng-click="back()">
+                            <i class="material-icons">
+                                arrow_back
+                            </i>
+                        </a>
+                    </li>
+                </ul>
+                <div class="container">
+                    <ul class="right">
+                        <li>
+                            <a ng-click="openProfile()">
+                                Profile
+                            </a>
+                        </li>
+                        <li ng-show="LoginController.user.permissions.kiosk.open">
+                            <a ng-click="go('/kiosk')">
+                                Kiosk
+                            </a>
+                        </li>
+                        <li ng-show="LoginController.user.permissions.devices.add || LoginController.user.permissions.devices.update || LoginController.user.permissions.devices.remove || LoginController.user.permissions.events.view || LoginController.user.permissions.message.send || LoginController.user.permissions.settings.view || LoginController.user.permissions.users.view">
+                            <a class="dropdown-button" data-activates="navbar-admin-dropdown">
+                                Administration
+                                <i class="material-icons right">
+                                    arrow_drop_down
+                                </i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
-    <ul id="navbar-admin-dropdown" class="dropdown-content">
-        <li ng-show="LoginController.user.permissions.devices.add || LoginController.user.permissions.devices.update || LoginController.user.permissions.devices.remove">
-            <a ng-click="go('/admin/devices')">
-                Devices
-            </a>
-        </li>
-        <li ng-show="LoginController.user.permissions.events.view">
-            <a ng-click="go('/admin/events')">
-                Events
-            </a>
-        </li>
-        <li ng-show="LoginController.user.permissions.message.send">
-            <a ng-click="go('/send')">
-                Send Message
-            </a>
-        </li>
-        <li ng-show="LoginController.user.permissions.settings.view">
-            <a ng-click="go('/admin/settings')">
-                Settings
-            </a>
-        </li>
-        <li ng-show="LoginController.user.permissions.users.view">
-            <a ng-click="go('/admin/users')">
-                Users
-            </a>
-        </li>
-    <ul>
-</nav>
+        <ul id="navbar-slide-out" class="side-nav hide-on-med-and-up">
+            <li>
+                <a onclick="$('.button-collapse').sideNav('hide')" ng-click="back()">
+                    <i class="material-icons">
+                        arrow_back
+                    </i>
+                    Back
+                </a>
+            </li>
+            <li>
+                <a onclick="$('.button-collapse').sideNav('hide')" ng-click="openProfile()">
+                    Profile
+                </a>
+            </li>
+            <li ng-show="LoginController.user.permissions.kiosk.open">
+                <a onclick="$('.button-collapse').sideNav('hide')" ng-click="go('/kiosk')">
+                    Kiosk
+                </a>
+            </li>
+            <li ng-show="LoginController.user.permissions.devices.add || LoginController.user.permissions.devices.update || LoginController.user.permissions.devices.remove || LoginController.user.permissions.events.view || LoginController.user.permissions.message.send || LoginController.user.permissions.settings.view || LoginController.user.permissions.users.view">
+                <a class="dropdown-button" data-activates="navbar-admin-dropdown">
+                    Administration
+                    <i class="material-icons right">
+                        arrow_drop_down
+                    </i>
+                </a>
+            </li>
+        </ul>
+        <ul id="navbar-admin-dropdown" class="dropdown-content">
+            <li ng-show="LoginController.user.permissions.devices.add || LoginController.user.permissions.devices.update || LoginController.user.permissions.devices.remove">
+                <a onclick="$('.button-collapse').sideNav('hide')" ng-click="go('/admin/devices')">
+                    Devices
+                </a>
+            </li>
+            <li ng-show="LoginController.user.permissions.events.view">
+                <a onclick="$('.button-collapse').sideNav('hide')" ng-click="go('/admin/events')">
+                    Events
+                </a>
+            </li>
+            <li ng-show="LoginController.user.permissions.message.send">
+                <a onclick="$('.button-collapse').sideNav('hide')" ng-click="go('/send')">
+                    Send Message
+                </a>
+            </li>
+            <li ng-show="LoginController.user.permissions.settings.view">
+                <a onclick="$('.button-collapse').sideNav('hide')" ng-click="go('/admin/settings')">
+                    Settings
+                </a>
+            </li>
+            <li ng-show="LoginController.user.permissions.users.view">
+                <a onclick="$('.button-collapse').sideNav('hide')" ng-click="go('/admin/users')">
+                    Users
+                </a>
+            </li>
+        <ul>
+    </nav>
+</div>
 <div class="container" ng-controller="pages">
     
         <div ng-show="name == 'login'" id="page-login" ng-controller="page-login">
             <input type="hidden" name="navbarTitle" value="" />
             <input type="hidden" name="pageTitle" value="Login" />
             <input type="hidden" name="pageUrl" value="/" />
-            <div class="valign-wrapper login-container">
+            <div class="valign-wrapper login-container hide-on-small-only">
     <div class="valign">
         <div class="row">
-            <div class="col s12">
-                <h1 class="center">
-                    Log In
-                </h1>
-            </div>
-        </div>
-        <form onsubmit="return false" ng-submit="login()">
-            <div class="row">
-                <div class="col s12 input-field">
-                    <input name="server" type="text" ng-model="server" />
-                    <label for="server">Server</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 input-field">
-                    <input name="user" type="text" ng-model="username" />
-                    <label for="user">Username</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 input-field">
-                    <input name="pass" type="password" ng-model="password" />
-                    <label for="pass">Password</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <button class="waves-effect waves-light btn left">
-                        Log In
-                        <i class="material-icons">
-                            send
-                        </i>
-                    </button>
-                </div>
-                <div class="col s6">
-                    <button type="button" class="waves-effect waves-light btn right" ng-click="create()">
-                        Create Account
-                        <i class="material-icons">
-                            add
-                        </i>
-                    </button>
-                </div>
-            </div>
-        </form>
+    <div class="col s12">
+        <h1 class="center">
+            Log In
+        </h1>
     </div>
+</div>
+<form onsubmit="return false" ng-submit="login()">
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="server" type="text" ng-model="server" />
+            <label for="server">Server</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="user" type="text" ng-model="username" />
+            <label for="user">Username</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="pass" type="password" ng-model="password" />
+            <label for="pass">Password</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s6">
+            <button class="waves-effect waves-light btn left">
+                Log In
+            </button>
+        </div>
+        <div class="col s6">
+            <button type="button" class="waves-effect waves-light btn right" ng-click="create()">
+                Create
+            </button>
+        </div>
+    </div>
+</form>
+
+    </div>
+</div>
+<div class="hide-on-med-and-up">
+    <div class="row">
+    <div class="col s12">
+        <h1 class="center">
+            Log In
+        </h1>
+    </div>
+</div>
+<form onsubmit="return false" ng-submit="login()">
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="server" type="text" ng-model="server" />
+            <label for="server">Server</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="user" type="text" ng-model="username" />
+            <label for="user">Username</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="pass" type="password" ng-model="password" />
+            <label for="pass">Password</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s6">
+            <button class="waves-effect waves-light btn left">
+                Log In
+            </button>
+        </div>
+        <div class="col s6">
+            <button type="button" class="waves-effect waves-light btn right" ng-click="create()">
+                Create
+            </button>
+        </div>
+    </div>
+</form>
+
 </div>
 
         </div>
@@ -177,85 +263,159 @@
             <input type="hidden" name="navbarTitle" value="" />
             <input type="hidden" name="pageTitle" value="Create Account" />
             <input type="hidden" name="pageUrl" value="/register" />
-            <div class="valign-wrapper register-container">
+            <div class="valign-wrapper register-container hide-on-small-only">
     <div class="valign">
         <div class="row">
-            <div class="col s12">
-                <h1 class="center">
-                    Create an Account
-                </h1>
-            </div>
-        </div>
-        <form onsubmit="return false" ng-submit="register()">
-            <div class="row">
-                <div class="col s12 input-field">
-                    <input name="server" type="text" ng-model="server" />
-                    <label for="server">Server</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 input-field">
-                    <input name="user" type="text" ng-model="username" />
-                    <label for="user">Username</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m6 input-field">
-                    <input name="firstname" type="text" ng-model="firstname" />
-                    <label for="firstname">First Name</label>
-                </div>
-                <div class="col s12 m6 input-field">
-                    <input name="lastname" type="text" ng-model="lastname" />
-                    <label for="lastname">Last Name</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m6 input-field">
-                    <input name="pass" type="password" ng-model="password" />
-                    <label for="pass">Password</label>
-                </div>
-                <div class="col s12 m6 input-field">
-                    <input name="passconf" type="password" ng-model="passconf" />
-                    <label for="passconf">Confirm password</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m6 input-field">
-                    <input name="email" type="email" ng-model="email" class="validate" />
-                    <label for="email">Email Address</label>
-                </div>
-                <div class="col s12 m6 input-field">
-                    <input name="parentemail" type="email" ng-model="parentemail" class="validate" />
-                    <label for="parentemail">Parent Email</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m6 input-field">
-                    <input name="phonenumber" type="text" ng-model="phonenumber" />
-                    <label for="phonenumber">Phone Number</label>
-                </div>
-                <div class="col s12 m6 input-field">
-                    <input type="text" name="provider" ng-model="provider" class="autocomplete autocomplete-register-phone-provider" />
-                    <label for="provider">Cell Phone Provider</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <button type="button" class="waves-effect waves-light btn left" ng-click="back()">
-                        I already have an account
-                    </button>
-                </div>
-                <div class="col s6">
-                    <button class="waves-effect waves-light btn right">
-                        Submit
-                        <i class="material-icons">
-                            add
-                        </i>
-                    </button>
-                </div>
-            </div>
-        </form>
+    <div class="col s12">
+        <h1 class="center">
+            Create an Account
+        </h1>
     </div>
+</div>
+<form onsubmit="return false" ng-submit="register()">
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="server" type="text" ng-model="server" />
+            <label for="server">Server</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="user" type="text" ng-model="username" />
+            <label for="user">Username</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m6 input-field">
+            <input name="firstname" type="text" ng-model="firstname" />
+            <label for="firstname">First Name</label>
+        </div>
+        <div class="col s12 m6 input-field">
+            <input name="lastname" type="text" ng-model="lastname" />
+            <label for="lastname">Last Name</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m6 input-field">
+            <input name="pass" type="password" ng-model="password" />
+            <label for="pass">Password</label>
+        </div>
+        <div class="col s12 m6 input-field">
+            <input name="passconf" type="password" ng-model="passconf" />
+            <label for="passconf">Confirm password</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m6 input-field">
+            <input name="email" type="email" ng-model="email" class="validate" />
+            <label for="email">Email Address</label>
+        </div>
+        <div class="col s12 m6 input-field">
+            <input name="parentemail" type="email" ng-model="parentemail" class="validate" />
+            <label for="parentemail">Parent Email</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m6 input-field">
+            <input name="phonenumber" type="text" ng-model="phonenumber" />
+            <label for="phonenumber">Phone Number</label>
+        </div>
+        <div class="col s12 m6 input-field">
+            <input type="text" name="provider" ng-model="provider" class="autocomplete autocomplete-register-phone-provider" />
+            <label for="provider">Cell Phone Provider</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s6">
+            <button type="button" class="waves-effect waves-light btn left" ng-click="back()">
+                Cancel
+            </button>
+        </div>
+        <div class="col s6">
+            <button class="waves-effect waves-light btn right">
+                Create
+            </button>
+        </div>
+    </div>
+</form>
+
+    </div>
+</div>
+<div class="hide-on-med-and-up">
+    <div class="row">
+    <div class="col s12">
+        <h1 class="center">
+            Create an Account
+        </h1>
+    </div>
+</div>
+<form onsubmit="return false" ng-submit="register()">
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="server" type="text" ng-model="server" />
+            <label for="server">Server</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="user" type="text" ng-model="username" />
+            <label for="user">Username</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m6 input-field">
+            <input name="firstname" type="text" ng-model="firstname" />
+            <label for="firstname">First Name</label>
+        </div>
+        <div class="col s12 m6 input-field">
+            <input name="lastname" type="text" ng-model="lastname" />
+            <label for="lastname">Last Name</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m6 input-field">
+            <input name="pass" type="password" ng-model="password" />
+            <label for="pass">Password</label>
+        </div>
+        <div class="col s12 m6 input-field">
+            <input name="passconf" type="password" ng-model="passconf" />
+            <label for="passconf">Confirm password</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m6 input-field">
+            <input name="email" type="email" ng-model="email" class="validate" />
+            <label for="email">Email Address</label>
+        </div>
+        <div class="col s12 m6 input-field">
+            <input name="parentemail" type="email" ng-model="parentemail" class="validate" />
+            <label for="parentemail">Parent Email</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m6 input-field">
+            <input name="phonenumber" type="text" ng-model="phonenumber" />
+            <label for="phonenumber">Phone Number</label>
+        </div>
+        <div class="col s12 m6 input-field">
+            <input type="text" name="provider" ng-model="provider" class="autocomplete autocomplete-register-phone-provider" />
+            <label for="provider">Cell Phone Provider</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s6">
+            <button type="button" class="waves-effect waves-light btn left" ng-click="back()">
+                Cancel
+            </button>
+        </div>
+        <div class="col s6">
+            <button class="waves-effect waves-light btn right">
+                Create
+            </button>
+        </div>
+    </div>
+</form>
+
 </div>
 
         </div>
@@ -826,6 +986,93 @@
         </i>
     </a>
 </div>
+
+        </div>
+    
+        <div ng-show="name == 'events'" id="page-events" ng-controller="page-events">
+            <input type="hidden" name="navbarTitle" value="Events" />
+            <input type="hidden" name="pageTitle" value="Events" />
+            <input type="hidden" name="pageUrl" value="/admin/events" />
+            <table class="highlight">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Date
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="event in events" ng-click="view(event)">
+            <td>
+                <span ng-bind="event.name" ng-show="event.type == 'event'"></span>
+                <span ng-show="event.type == 'meeting'">
+                    Meeting
+                </span>
+            </td>
+            <td ng-bind="event.date"></td>
+        </tr>
+    </tbody>
+</table>
+<div class="fixed-action-btn" ng-show="LoginController.user.permissions.events.add">
+    <a class="btn-floating btn-large waves-effect waves-light red" ng-click="add()">
+        <i class="material-icons">
+            add
+        </i>
+    </a>
+</div>
+
+        </div>
+    
+        <div ng-show="name == 'event'" id="page-event" ng-controller="page-event">
+            <input type="hidden" name="navbarTitle" value="Edit Event" />
+            <input type="hidden" name="pageTitle" value="Edit Event" />
+            <input type="hidden" name="pageUrl" value="/admin/event" />
+            <form onsubmit="return false" ng-submit="save()">
+    <div class="row">
+        <div class="input-field col s12">
+            <select ng-model="event.type">
+                <option value="meeting" selected>Meeting</option>
+                <option value="event">Activity</option>
+            </select>
+            <label>Type</label>
+        </div>
+    </div>
+    <div class="row" ng-show="event.type == 'event'">
+        <div class="input-field col s12">
+            <input id="event-name" type="text" ng-model="event.name" />
+            <label for="event-name" class="active">Name</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s12">
+            <input id="event-date" type="date" class="event-datepicker" ng-model="event.date" />
+            <label for="event-date" class="active">Date</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s12">
+            <p>
+                <input type="checkbox" id="event-allday" ng-model="event.time.allDay" />
+                <label for="event-allday">All day</label>
+            </p>
+        </div>
+    </div>
+    <div class="row" ng-hide="event.time.allDay">
+        <div class="input-field col s12">
+            <input id="event-start" type="time" class="c-datepicker-input" ng-model="event.time.start" />
+            <label for="event-start" class="active">Start time</label>
+        </div>
+    </div>
+    <div class="row" ng-hide="event.time.allDay">
+        <div class="input-field col s12">
+            <input id="event-end" type="time" class="c-datepicker-input" ng-model="event.time.end" />
+            <label for="event-end" class="active">End time</label>
+        </div>
+    </div>
+</form>
 
         </div>
     

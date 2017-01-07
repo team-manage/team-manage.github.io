@@ -78,11 +78,11 @@ public class EventApis
      * @throws SQLException
      *             If an error occurs while connecting to the database
      */
-    @GetApi("/events/*")
+    @GetApi("/event/*")
     @RequirePermissions("event.view")
     public static Event getEvent(String url) throws SQLException
     {
-        int eventId = Integer.parseInt(url.substring(8, url.length() - 5));
+        int eventId = Integer.parseInt(url.substring(7, url.length() - 5));
         try (PreparedStatement st = Database.prepareStatement(
                         "SELECT `type`, `name`, `location`, `date`, `start`, `end`, `signup` FROM `events` WHERE `id` = ?"))
         {

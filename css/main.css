@@ -66,3 +66,6 @@
 
 .loading.done {
   display: none; }
+
+#sidenav-overlay {
+  z-index: 996; }

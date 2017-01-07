@@ -16,6 +16,10 @@
 
     /// <reference path="pages/send.ts" />
 
+    /// <reference path="pages/events.ts" />
+
+    /// <reference path="pages/event.ts" />
+
 
 namespace org.usd232.robotics.management {
     
@@ -34,6 +38,10 @@ namespace org.usd232.robotics.management {
         import UsersController = org.usd232.robotics.management.pages.UsersController;
     
         import MessageController = org.usd232.robotics.management.pages.MessageController;
+    
+        import EventsController = org.usd232.robotics.management.pages.EventsController;
+    
+        import EventController = org.usd232.robotics.management.pages.EventController;
     
 
     export class PageFactory {
@@ -55,6 +63,10 @@ namespace org.usd232.robotics.management {
                     new UsersController("users"),
                 
                     new MessageController("send"),
+                
+                    new EventsController("events"),
+                
+                    new EventController("event"),
                 
             ];
         }

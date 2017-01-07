@@ -1,6 +1,7 @@
 /// <reference path="../page.ts" />
 /// <reference path="../navigation.ts" />
 /// <reference path="../apis.ts" />
+/// <reference path="../providers.ts" />
 /// <reference path="login.ts" />
 
 namespace org.usd232.robotics.management.pages {
@@ -14,6 +15,7 @@ namespace org.usd232.robotics.management.pages {
     import RemoveContactRequest = org.usd232.robotics.management.apis.RemoveContactRequest;
     import RsvpRequest = org.usd232.robotics.management.apis.RsvpRequest;
     import LoginResponse = org.usd232.robotics.management.apis.LoginResponse;
+    let Providers = (org.usd232.robotics.management as any).Providers; // VS doesn't like Liquid
 
     export class ProfileController extends AbstractPage {
         private static newUser: number;
@@ -40,6 +42,10 @@ namespace org.usd232.robotics.management.pages {
                 });
             };
             this.$scope.addPhone = () => {
+                if ( Providers.getProviderNames().indexOf(this.$scope.newPhoneProvider) < 0 ) {
+                    Materialize.toast("Please choose a provider from the list", 4000);
+                    return;
+                }
                 let contact: UserContact = new UserContact("phone", null, this.$scope.newPhone, this.$scope.newPhoneProvider, new Notifications(new SignInNotifications(this.$scope.newNotificationsManualSignIn, this.$scope.newNotificationsAutoSignIn), this.$scope.newNotificationsTeam, new MeetingNotifications(this.$scope.newNotificationsMissedMeeting, this.$scope.newNotificationsMeetingReminders)));
                 ApiController.instance.addContact.request(new AddContactRequest(contact), res => {
                     if ( res.success ) {
