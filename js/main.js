@@ -1482,6 +1482,18 @@ var org;
                             }).data().plugin_WebCodeCamJQuery;
                             decoder.init();
                             decoder.play();
+                            if (document.body.requestFullscreen) {
+                                document.body.requestFullscreen();
+                            }
+                            else if (document.body.webkitRequestFullscreen) {
+                                document.body.webkitRequestFullscreen();
+                            }
+                            else if (document.body.webkitRequestFullScreen) {
+                                document.body.webkitRequestFullScreen();
+                            }
+                            else if (document.body.mozRequestFullScreen) {
+                                document.body.mozRequestFullScreen();
+                            }
                         };
                         return KioskController;
                     }(management.AbstractPage));

@@ -85,6 +85,15 @@ namespace org.usd232.robotics.management.pages {
             }).data().plugin_WebCodeCamJQuery;
             decoder.init();
             decoder.play();
+            if ( document.body.requestFullscreen ) {
+                document.body.requestFullscreen();
+            } else if ( document.body.webkitRequestFullscreen ) {
+                document.body.webkitRequestFullscreen();
+            } else if ( document.body.webkitRequestFullScreen ) {
+                document.body.webkitRequestFullScreen();
+            } else if ( (document.body as any).mozRequestFullScreen ) {
+                (document.body as any).mozRequestFullScreen();
+            }
         }
     }
 }
