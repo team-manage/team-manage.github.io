@@ -830,7 +830,15 @@
     <h3 class="center">Please enter your pin or scan a code</h3>
     <br/>
 
-    <input disabled class="inputa" type="number" maxlength="3" style="font-size: 50px" ng-value="pin" ng-init="pin=''">
+    <ul class="collection">
+        <li class="collection-item">
+            <h4 class="kiosk-pin">
+                <span class="kiosk-placeholder">-</span>
+                <span ng-bind="pin"></span>
+                <span class="kiosk-placeholder">-</span>
+            </h4>
+        </li>
+    </ul>
 
     <div class="row">
         <div class="col s12">

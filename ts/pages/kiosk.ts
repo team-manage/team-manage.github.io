@@ -48,6 +48,7 @@ namespace org.usd232.robotics.management.pages {
                     }
                 });
             };
+            this.$scope.pin = "";
         }
 
         protected open(): void {
@@ -94,6 +95,15 @@ namespace org.usd232.robotics.management.pages {
             } else if ( (document.body as any).mozRequestFullScreen ) {
                 (document.body as any).mozRequestFullScreen();
             }
+            document.body.onkeypress = e => {
+                if ( e.key >= '0' && e.key <= '9' && this.$scope.pin.length < 3 ) {
+                    this.$scope.$apply(() => this.$scope.pin += e.key);
+                } else if ( e.keyCode == 13 && this.$scope.pin.length == 3 ) {
+                    this.$scope.$apply(() => this.$scope.go());
+                } else if ( e.keyCode == 8 && this.$scope.pin.length > 0 ) {
+                    this.$scope.$apply(() => this.$scope.pin = this.$scope.pin.substring(0, this.$scope.pin.length - 1));
+                }
+            };
         }
     }
 }

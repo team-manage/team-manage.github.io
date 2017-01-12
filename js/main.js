@@ -1445,6 +1445,7 @@ var org;
                                     }
                                 });
                             };
+                            this.$scope.pin = "";
                         };
                         KioskController.prototype.open = function () {
                             var _this = this;
@@ -1494,6 +1495,17 @@ var org;
                             else if (document.body.mozRequestFullScreen) {
                                 document.body.mozRequestFullScreen();
                             }
+                            document.body.onkeypress = function (e) {
+                                if (e.key >= '0' && e.key <= '9' && _this.$scope.pin.length < 3) {
+                                    _this.$scope.$apply(function () { return _this.$scope.pin += e.key; });
+                                }
+                                else if (e.keyCode == 13 && _this.$scope.pin.length == 3) {
+                                    _this.$scope.$apply(function () { return _this.$scope.go(); });
+                                }
+                                else if (e.keyCode == 8 && _this.$scope.pin.length > 0) {
+                                    _this.$scope.$apply(function () { return _this.$scope.pin = _this.$scope.pin.substring(0, _this.$scope.pin.length - 1); });
+                                }
+                            };
                         };
                         return KioskController;
                     }(management.AbstractPage));

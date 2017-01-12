@@ -39,9 +39,11 @@
   height: 90px;
   font-size: 30px; }
 
-.inputa {
-  text-align: center;
-  font-size: 100%; }
+.kiosk-pin .kiosk-placeholder {
+  opacity: 0; }
+
+.kiosk-pin {
+  text-align: center; }
 
 .userpicture {
   height: 250px; }
