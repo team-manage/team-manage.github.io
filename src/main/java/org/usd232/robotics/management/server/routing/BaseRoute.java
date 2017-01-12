@@ -139,6 +139,7 @@ abstract class BaseRoute implements Route
             }
             else
             {
+                res.header("Content-Type", "application/json");
                 return GSON.toJson(result);
             }
         }
