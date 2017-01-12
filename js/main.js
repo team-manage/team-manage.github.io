@@ -657,7 +657,7 @@ var org;
                         ApiController.prototype.setServerUrl = function (url) {
                             var _this = this;
                             if (url.match(/^!.*$/)) {
-                                this.baseUrl = "https://" + url.substr(1) + ".herokuapp.com";
+                                this.baseUrl = "https://" + url.substr(1) + "-manage.tk";
                             }
                             else if (url.match(/^@[A-Za-z0-9+/]{6}$/)) {
                                 var ip = atob(url.substr(1));

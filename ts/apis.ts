@@ -527,7 +527,7 @@ namespace org.usd232.robotics.management.apis {
 
         public setServerUrl(url: string) {
             if ( url.match(/^!.*$/) ) {
-                this.baseUrl = "https://" + url.substr(1) + ".herokuapp.com";
+                this.baseUrl = "https://" + url.substr(1) + "-manage.tk";
             } else if ( url.match(/^@[A-Za-z0-9+/]{6}$/) ) {
                 let ip: string = atob(url.substr(1));
                 this.baseUrl = "http://" + ip.charCodeAt(0) + "." + ip.charCodeAt(1) + "." + ip.charCodeAt(2) + "." + ip.charCodeAt(3);
