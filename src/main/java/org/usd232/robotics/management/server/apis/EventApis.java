@@ -47,7 +47,7 @@ public class EventApis
     public static Event[] getEvents(Session session) throws SQLException
     {
         try (PreparedStatement st = Database.prepareStatement(
-                        "SELECT `events`.`id`, `events`.`type`, `events`.`name`, `events`.`location`, `events`.`date`, `events`.`signup`, `attendance`.`rsvp`,  IF(`events`.`date` < DATE(NOW()), `attendance`.`signin` IS NOT NULL, -1) FROM `events` LEFT JOIN `attendance` ON `events`.`id` = `attendance`.`eventid` AND `attendance`.`userid` = ?"))
+                        "SELECT `meetings`.`id`, `meetings`.`type`, `meetings`.`name`, `meetings`.`location`, `meetings`.`date`, `meetings`.`signup`, `attendance`.`rsvp`,  IF(`meetings`.`date` < DATE(NOW()), `attendance`.`signin` IS NOT NULL, -1) FROM `meetings` LEFT JOIN `attendance` ON `meetings`.`id` = `attendance`.`eventid` AND `attendance`.`userid` = ?"))
         {
             st.setInt(1, session.userId);
             try (ResultSet res = st.executeQuery())
@@ -84,7 +84,7 @@ public class EventApis
     {
         int eventId = Integer.parseInt(url.substring(7, url.length() - 5));
         try (PreparedStatement st = Database.prepareStatement(
-                        "SELECT `type`, `name`, `location`, `date`, `start`, `end`, `signup` FROM `events` WHERE `id` = ?"))
+                        "SELECT `type`, `name`, `location`, `date`, `start`, `end`, `signup` FROM `meetings` WHERE `id` = ?"))
         {
             st.setInt(1, eventId);
             try (ResultSet res = st.executeQuery())
@@ -115,12 +115,12 @@ public class EventApis
     @RequirePermissions("event.add")
     public static StatusIdResponse add() throws SQLException
     {
-        Database.startTransaction("events");
+        Database.startTransaction("meetings");
         try
         {
             try (Statement st = Database.createStatement())
             {
-                st.execute("INSERT INTO `events` () VALUES ()");
+                st.execute("INSERT INTO `meetings` () VALUES ()");
                 try (ResultSet res = st.executeQuery("SELECT LAST_INSERT_ID()"))
                 {
                     res.next();
@@ -189,11 +189,11 @@ public class EventApis
     @PostApi("/event/edit")
     public static StatusResponse edit(Event event, Session session) throws SQLException, IllegalAccessException
     {
-        Database.startTransaction("events");
+        Database.startTransaction("meetings");
         try
         {
             try (PreparedStatement st = Database.prepareStatement(
-                            "SELECT `type`, `name`, `location`, `date`, `start`, `end`, `signup` FROM `events` WHERE `id` = ?"))
+                            "SELECT `type`, `name`, `location`, `date`, `start`, `end`, `signup` FROM `meetings` WHERE `id` = ?"))
             {
                 st.setInt(1, event.id);
                 try (ResultSet res = st.executeQuery())
@@ -216,7 +216,7 @@ public class EventApis
                 }
             }
             try (PreparedStatement st = Database.prepareStatement(
-                            "UPDATE `events` SET `type` = ?, `name` = ?, `location` = ?, `date` = ?, `start` = ?, `end` = ?, `signup` = ? WHERE `id` = ?"))
+                            "UPDATE `meetings` SET `type` = ?, `name` = ?, `location` = ?, `date` = ?, `start` = ?, `end` = ?, `signup` = ? WHERE `id` = ?"))
             {
                 st.setString(1, event.type.name());
                 st.setString(2, event.name);
@@ -252,7 +252,7 @@ public class EventApis
     @RequirePermissions("event.remove")
     public static StatusResponse delete(int eventId) throws SQLException
     {
-        Database.startTransaction("attendance", "events");
+        Database.startTransaction("attendance", "meetings");
         try
         {
             try (PreparedStatement st = Database.prepareStatement("DELETE FROM `attendance` WHERE `eventid` = ?"))
@@ -260,7 +260,7 @@ public class EventApis
                 st.setInt(1, eventId);
                 st.execute();
             }
-            try (PreparedStatement st = Database.prepareStatement("DELETE FROM `events` WHERE `id` = ?"))
+            try (PreparedStatement st = Database.prepareStatement("DELETE FROM `meetings` WHERE `id` = ?"))
             {
                 st.setInt(1, eventId);
                 st.execute();

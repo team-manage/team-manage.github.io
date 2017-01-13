@@ -61,7 +61,7 @@ public abstract class KioskApis
         }
         int unexcused;
         try (PreparedStatement st = Database.prepareStatement(
-                        "SELECT COUNT(`events`.`id`) FROM `events` LEFT JOIN `attendance` ON `attendance`.`eventid` = `events`.`id` AND `attendance`.`userid` = ? WHERE `events`.`date` < DATE(NOW()) AND `attendance`.`signin` IS NULL AND (`attendance`.`excused` IS NULL OR `attendance`.`excused` != 1)"))
+                        "SELECT COUNT(`meetings`.`id`) FROM `meetings` LEFT JOIN `attendance` ON `attendance`.`eventid` = `meetings`.`id` AND `attendance`.`userid` = ? WHERE `meetings`.`date` < DATE(NOW()) AND `attendance`.`signin` IS NULL AND (`attendance`.`excused` IS NULL OR `attendance`.`excused` != 1)"))
         {
             st.setInt(1, userId);
             try (ResultSet res = st.executeQuery())
@@ -71,7 +71,7 @@ public abstract class KioskApis
             }
         }
         try (PreparedStatement st = Database.prepareStatement(
-                        "SELECT COUNT(`events`.`id`) FROM `events` INNER JOIN `attendance` ON `attendance`.`eventid` = `events`.`id` AND `attendance`.`userid` = ? WHERE `events`.`date` < DATE(NOW()) AND `attendance`.`signin` IS NOT NULL AND TIME(`attendance`.`signin`) > `events`.`start`"))
+                        "SELECT COUNT(`meetings`.`id`) FROM `meetings` INNER JOIN `attendance` ON `attendance`.`eventid` = `meetings`.`id` AND `attendance`.`userid` = ? WHERE `meetings`.`date` < DATE(NOW()) AND `attendance`.`signin` IS NOT NULL AND TIME(`attendance`.`signin`) > `meetings`.`start`"))
         {
             st.setInt(1, userId);
             try (ResultSet res = st.executeQuery())
@@ -103,7 +103,7 @@ public abstract class KioskApis
             try (Statement st = Database.createStatement())
             {
                 try (ResultSet res = st.executeQuery(
-                                "SELECT `id` FROM `events` WHERE `date` = DATE(NOW()) AND ((`start` IS NULL AND `end` IS NULL) OR (ADDTIME(TIME(NOW()), '1:0:0') > `start` AND TIME(NOW()) < ADDTIME(`end`, '1:0:0')))"))
+                                "SELECT `id` FROM `meetings` WHERE `date` = DATE(NOW()) AND ((`start` IS NULL AND `end` IS NULL) OR (ADDTIME(TIME(NOW()), '1:0:0') > `start` AND TIME(NOW()) < ADDTIME(`end`, '1:0:0')))"))
                 {
                     if (!res.next())
                     {

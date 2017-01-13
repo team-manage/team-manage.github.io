@@ -56,7 +56,7 @@ public class UserApis
             }
         }
         try (PreparedStatement st = Database.prepareStatement(
-                        "SELECT COUNT(`events`.`id`) FROM `events` LEFT JOIN `attendance` ON `attendance`.`eventid` = `events`.`id` AND `attendance`.`userid` = ? WHERE `events`.`date` < DATE(NOW()) AND `attendance`.`signin` IS NULL AND (`attendance`.`excused` IS NULL OR `attendance`.`excused` != 1)"))
+                        "SELECT COUNT(`meetings`.`id`) FROM `meetings` LEFT JOIN `attendance` ON `attendance`.`eventid` = `meetings`.`id` AND `attendance`.`userid` = ? WHERE `meetings`.`date` < DATE(NOW()) AND `attendance`.`signin` IS NULL AND (`attendance`.`excused` IS NULL OR `attendance`.`excused` != 1)"))
         {
             for (User user : users)
             {
@@ -69,7 +69,7 @@ public class UserApis
             }
         }
         try (PreparedStatement st = Database.prepareStatement(
-                        "SELECT COUNT(`events`.`id`) FROM `events` INNER JOIN `attendance` ON `attendance`.`eventid` = `events`.`id` AND `attendance`.`userid` = ? WHERE `events`.`date` < DATE(NOW()) AND `attendance`.`signin` IS NOT NULL AND TIME(`attendance`.`signin`) > `events`.`start`"))
+                        "SELECT COUNT(`meetings`.`id`) FROM `meetings` INNER JOIN `attendance` ON `attendance`.`eventid` = `meetings`.`id` AND `attendance`.`userid` = ? WHERE `meetings`.`date` < DATE(NOW()) AND `attendance`.`signin` IS NOT NULL AND TIME(`attendance`.`signin`) > `meetings`.`start`"))
         {
             for (User user : users)
             {
@@ -100,7 +100,7 @@ public class UserApis
     {
         int userId = Integer.parseInt(url.substring(12, url.length() - 5));
         try (PreparedStatement st = Database.prepareStatement(
-                        "SELECT `events`.`id`, `events`.`type`, `events`.`name`, `events`.`location`, `events`.`date`, `events`.`signup`, `attendance`.`rsvp`,  IF(`events`.`date` < DATE(NOW()), `attendance`.`signin` IS NOT NULL, -1) FROM `events` LEFT JOIN `attendance` ON `events`.`id` = `attendance`.`eventid` AND `attendance`.`userid` = ?"))
+                        "SELECT `meetings`.`id`, `meetings`.`type`, `meetings`.`name`, `meetings`.`location`, `meetings`.`date`, `meetings`.`signup`, `attendance`.`rsvp`,  IF(`meetings`.`date` < DATE(NOW()), `attendance`.`signin` IS NOT NULL, -1) FROM `meetings` LEFT JOIN `attendance` ON `meetings`.`id` = `attendance`.`eventid` AND `attendance`.`userid` = ?"))
         {
             st.setInt(1, userId);
             try (ResultSet res = st.executeQuery())
