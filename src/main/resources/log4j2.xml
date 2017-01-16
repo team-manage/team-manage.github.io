@@ -15,8 +15,12 @@
 	<Loggers>
 		<Root level="all">
 			<AppenderRef ref="Console" level="info" />
-			<AppenderRef ref="LogFile" level="debug" />
+			<AppenderRef ref="LogFile" level="info" />
 		</Root>
+		<Logger name="org.usd232.robotics" level="all" additivity="false">
+			<AppenderRef ref="Console" level="info" />
+			<AppenderRef ref="LogFile" level="debug" />
+		</Logger>
 		<!--
 			How to debug a certain class (or package):
 			
