@@ -86,14 +86,14 @@ namespace org.usd232.robotics.management.pages {
             }).data().plugin_WebCodeCamJQuery;
             decoder.init();
             decoder.play();
-            if ( document.body.requestFullscreen ) {
-                document.body.requestFullscreen();
-            } else if ( document.body.webkitRequestFullscreen ) {
-                document.body.webkitRequestFullscreen();
-            } else if ( document.body.webkitRequestFullScreen ) {
-                document.body.webkitRequestFullScreen();
-            } else if ( (document.body as any).mozRequestFullScreen ) {
-                (document.body as any).mozRequestFullScreen();
+            if ( document.documentElement.requestFullscreen ) {
+                document.documentElement.requestFullscreen();
+            } else if ( document.documentElement.webkitRequestFullscreen ) {
+                document.documentElement.webkitRequestFullscreen();
+            } else if ( document.documentElement.webkitRequestFullScreen ) {
+                document.documentElement.webkitRequestFullScreen();
+            } else if ( (document.documentElement as any).mozRequestFullScreen ) {
+                (document.documentElement as any).mozRequestFullScreen();
             }
             document.body.onkeypress = e => {
                 if ( e.key >= '0' && e.key <= '9' && this.$scope.pin.length < 3 ) {

@@ -1483,17 +1483,17 @@ var org;
                             }).data().plugin_WebCodeCamJQuery;
                             decoder.init();
                             decoder.play();
-                            if (document.body.requestFullscreen) {
-                                document.body.requestFullscreen();
+                            if (document.documentElement.requestFullscreen) {
+                                document.documentElement.requestFullscreen();
                             }
-                            else if (document.body.webkitRequestFullscreen) {
-                                document.body.webkitRequestFullscreen();
+                            else if (document.documentElement.webkitRequestFullscreen) {
+                                document.documentElement.webkitRequestFullscreen();
                             }
-                            else if (document.body.webkitRequestFullScreen) {
-                                document.body.webkitRequestFullScreen();
+                            else if (document.documentElement.webkitRequestFullScreen) {
+                                document.documentElement.webkitRequestFullScreen();
                             }
-                            else if (document.body.mozRequestFullScreen) {
-                                document.body.mozRequestFullScreen();
+                            else if (document.documentElement.mozRequestFullScreen) {
+                                document.documentElement.mozRequestFullScreen();
                             }
                             document.body.onkeypress = function (e) {
                                 if (e.key >= '0' && e.key <= '9' && _this.$scope.pin.length < 3) {
@@ -1689,18 +1689,20 @@ var org;
                                 "May", "Jun", "Jul", "Aug",
                                 "Sep", "Oct", "Nov", "Dec"
                             ];
-                            var picker = new window.MaterialDatePicker({
+                            /*
+                            let picker: any = new (window as any).DateTimePicker({
                                 "container": document.body
                             });
-                            var editing;
-                            picker.on("submit", function (val) {
-                                var date = new Date(val);
+                            var editing: JQuery;
+                            picker.on("submit", val => {
+                                let date: Date = new Date(val);
                                 editing.val(months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear());
                             });
-                            $(".event-datepicker").on("focus", function () {
+                            $(".event-datepicker").on("focus", function() {
                                 picker.open();
                                 editing = this;
                             });
+                            */
                         };
                         EventController.prototype.open = function () {
                             var _this = this;

@@ -23,7 +23,8 @@ namespace org.usd232.robotics.management.pages {
                 "May", "Jun", "Jul", "Aug",
                 "Sep", "Oct", "Nov", "Dec"
             ];
-            let picker: any = new (window as any).MaterialDatePicker({
+            /*
+            let picker: any = new (window as any).DateTimePicker({
                 "container": document.body
             });
             var editing: JQuery;
@@ -35,6 +36,7 @@ namespace org.usd232.robotics.management.pages {
                 picker.open();
                 editing = this;
             });
+            */
         }
 
         protected open(): void {
