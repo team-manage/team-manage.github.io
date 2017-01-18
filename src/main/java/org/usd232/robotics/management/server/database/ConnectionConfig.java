@@ -89,6 +89,7 @@ class ConnectionConfig extends Properties
         setProperty("database", "team-manage");
         setProperty("user", "root");
         setProperty("password", "root");
+        setProperty("autoReconnect", "true");
     }
 
     /**
