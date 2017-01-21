@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.usd232.robotics.management.server.database.Database;
 import org.usd232.robotics.management.server.session.RequirePermissions;
 import org.usd232.robotics.management.server.session.Session;
 import org.usd232.robotics.management.server.session.SessionManager;
@@ -32,6 +33,12 @@ abstract class BaseRoute implements Route
      * @since 1.0
      */
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+    /**
+     * The maximum number of times the server will try to serve a request before it returns a 500 error
+     * 
+     * @since 1.0
+     */
+    private static final int              MAX_TRIES   = 10;
     /**
      * The method that this route represents
      * 
@@ -120,7 +127,36 @@ abstract class BaseRoute implements Route
                 }
                 bodyStr = body.toString();
             }
-            Object result = performRequest(req, session, bodyStr);
+            Object result;
+            // Java doesn't support real goto's, so we make a fake goto with a loop (the while loop will only ever run
+            // once)
+            retryTop: while (true)
+            {
+                for (int i = 0; i < MAX_TRIES; ++i)
+                {
+                    try
+                    {
+                        result = performRequest(req, session, bodyStr);
+                        break retryTop;
+                    }
+                    catch (Exception ex)
+                    {
+                        LOG.catching(ex);
+                    }
+                    // This block will only run if the previous block caught an exception
+                    try
+                    {
+                        Database.ensureConnected();
+                    }
+                    catch (Exception ex)
+                    {
+                        LOG.catching(ex);
+                    }
+                }
+                LOG.error("Unable to serve request after maximum retries elapsed");
+                res.header("Content-Type", "application/json");
+                return "{\"error\":500}";
+            }
             if (result instanceof StartedSessionResponse)
             {
                 res.header("X-Session-Token", ((StartedSessionResponse) result).session.uuid.toString());

@@ -32,32 +32,29 @@ import org.usd232.robotics.management.server.database.migrations.DatabaseMigrato
  */
 public abstract class Database
 {
-    private static final Logger     LOG   = LogManager.getLogger();
+    private static final Logger    LOG   = LogManager.getLogger();
     /**
      * The connection to the database
      * 
      * @since 1.0
      */
-    private static final Connection DB;
+    private static Connection      DB;
     /**
      * The mutex for transactions
      * 
      * @since 1.0
      */
-    private static final Semaphore  MUTEX = new Semaphore(1);
+    private static final Semaphore MUTEX = new Semaphore(1);
     static
     {
-        Connection tmp;
         try
         {
-            tmp = ConnectionConfig.getConnection();
+            DB = ConnectionConfig.getConnection();
         }
         catch (SQLException ex)
         {
             LOG.catching(ex);
-            tmp = null;
         }
-        DB = tmp;
         try
         {
             DatabaseMigrator.runMigrations();
@@ -65,6 +62,14 @@ public abstract class Database
         catch (Exception ex)
         {
             LOG.catching(ex);
+        }
+    }
+
+    public static void ensureConnected() throws SQLException
+    {
+        if (!DB.isValid(1))
+        {
+            DB = ConnectionConfig.getConnection();
         }
     }
 

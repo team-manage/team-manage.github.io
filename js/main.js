@@ -433,7 +433,7 @@ var org;
                     var StatusIdResponse = (function (_super) {
                         __extends(StatusIdResponse, _super);
                         function StatusIdResponse() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         return StatusIdResponse;
                     }(StatusResponse));
@@ -525,7 +525,7 @@ var org;
                     var ParameterizedApi = (function (_super) {
                         __extends(ParameterizedApi, _super);
                         function ParameterizedApi() {
-                            var _this = _super.apply(this, arguments) || this;
+                            var _this = _super !== null && _super.apply(this, arguments) || this;
                             _this.lastResponses = {};
                             _this.lastModifieds = {};
                             return _this;
@@ -553,7 +553,7 @@ var org;
                     var BinaryParameterizedApi = (function (_super) {
                         __extends(BinaryParameterizedApi, _super);
                         function BinaryParameterizedApi() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         BinaryParameterizedApi.prototype.request = function (param, callback, lateCallback) {
                             var _this = this;
@@ -589,7 +589,7 @@ var org;
                     var GeneralApi = (function (_super) {
                         __extends(GeneralApi, _super);
                         function GeneralApi() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         GeneralApi.prototype.request = function (callback, lateCallback) {
                             if (lateCallback === void 0) { lateCallback = callback; }
@@ -601,7 +601,7 @@ var org;
                     var CollectionApi = (function (_super) {
                         __extends(CollectionApi, _super);
                         function CollectionApi() {
-                            var _this = _super.apply(this, arguments) || this;
+                            var _this = _super !== null && _super.apply(this, arguments) || this;
                             _this.lastResponses = {};
                             _this.lastModifieds = {};
                             return _this;
@@ -724,7 +724,7 @@ var org;
                     var LoginController = (function (_super) {
                         __extends(LoginController, _super);
                         function LoginController() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         LoginController.readStorage = function () {
                             for (var i = 0; i < LoginController.instances.length; ++i) {
@@ -790,7 +790,7 @@ var org;
                     var NotFoundController = (function (_super) {
                         __extends(NotFoundController, _super);
                         function NotFoundController() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         NotFoundController.prototype.init = function () {
                         };
@@ -1207,7 +1207,7 @@ var org;
                     var ProfileController = (function (_super) {
                         __extends(ProfileController, _super);
                         function ProfileController() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         ProfileController.show = function (user) {
                             if (user === void 0) { user = 0; }
@@ -1398,7 +1398,7 @@ var org;
                     var KioskController = (function (_super) {
                         __extends(KioskController, _super);
                         function KioskController() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         KioskController.prototype.signIn = function (pin, verify) {
                             var _this = this;
@@ -1533,7 +1533,7 @@ var org;
                     var HomeController = (function (_super) {
                         __extends(HomeController, _super);
                         function HomeController() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         HomeController.prototype.init = function () {
                             var _this = this;
@@ -1572,7 +1572,7 @@ var org;
                     var UsersController = (function (_super) {
                         __extends(UsersController, _super);
                         function UsersController() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         UsersController.prototype.init = function () {
                             var _this = this;
@@ -1630,7 +1630,7 @@ var org;
                     var MessageController = (function (_super) {
                         __extends(MessageController, _super);
                         function MessageController() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         MessageController.prototype.init = function () {
                             var _this = this;
@@ -1675,7 +1675,7 @@ var org;
                     var EventController = (function (_super) {
                         __extends(EventController, _super);
                         function EventController() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         EventController.show = function (id) {
                             EventController.newId = id;
@@ -1741,7 +1741,7 @@ var org;
                     var EventsController = (function (_super) {
                         __extends(EventsController, _super);
                         function EventsController() {
-                            return _super.apply(this, arguments) || this;
+                            return _super !== null && _super.apply(this, arguments) || this;
                         }
                         EventsController.prototype.init = function () {
                             this.$scope.LoginController = pages.LoginController;
