@@ -1,0 +1,13 @@
+{
+    "id": 1,
+    "signupRequired": true,
+    "users": [
+        {
+            "id": 1,
+            "name": "Thorin Oakenshield",
+            "rsvp": true,
+            "attended": true,
+            "excused": false
+        }
+    ]
+}

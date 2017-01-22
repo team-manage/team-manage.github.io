@@ -1,6 +1,7 @@
 /// <reference path="../page.ts" />
 /// <reference path="../apis.ts" />
 /// <reference path="login.ts" />
+/// <reference path="attendance.ts" />
 
 namespace org.usd232.robotics.management.pages {
     import ApiController = org.usd232.robotics.management.apis.ApiController;
@@ -9,7 +10,6 @@ namespace org.usd232.robotics.management.pages {
     import EventTime = org.usd232.robotics.management.apis.EventTime;
 
     export class EventController extends AbstractPage {
-        private static scope: any;
         private static newId: number;
 
         public static show(id: number): void {
@@ -42,7 +42,7 @@ namespace org.usd232.robotics.management.pages {
                 });
             };
             this.$scope.viewAttendance = () => {
-
+                AttendanceController.show(this.$scope.event.id);
             };
             this.$scope.delete = () => {
                 ApiController.instance.removeEvent.request(this.$scope.event.id, res => {

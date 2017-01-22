@@ -1188,6 +1188,66 @@
 
         </div>
     
+        <div ng-show="name == 'attendance'" id="page-attendance" ng-controller="page-attendance">
+            <input type="hidden" name="navbarTitle" value="Event Attendance" />
+            <input type="hidden" name="pageTitle" value="Event Attendance" />
+            <input type="hidden" name="pageUrl" value="/admin/attendance" />
+            <table>
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th ng-show="attendance.signupRequired">
+                RSVP
+            </th>
+            <th>
+                Attended
+            </th>
+            <th>
+                Excused
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="user in attendance.users">
+            <td ng-bind="user.name" ng-click="showUser(user.id)"></td>
+            <td ng-show="$parent.attendance.signupRequired">
+                <div class="switch">
+                    <label>
+                        No
+                        <input type="checkbox" ng-model="user.rsvp" disabled>
+                        <span class="lever"></span>
+                        Yes
+                    </label>
+                </div>
+            </td>
+            <td>
+                <div class="switch">
+                    <label>
+                        No
+                        <input type="checkbox" ng-model="user.attended" disabled>
+                        <span class="lever"></span>
+                        Yes
+                    </label>
+                </div>
+            </td>
+            <td>
+                <div class="switch">
+                    <label>
+                        No
+                        <input type="checkbox" ng-model="user.excused" ng-change="update(user)">
+                        <span class="lever"></span>
+                        Yes
+                    </label>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+        </div>
+    
 </div>
 <div class="loading"></div>
         <script>org.usd232.robotics.management.ng.AngularController.init()</script>

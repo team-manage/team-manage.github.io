@@ -345,6 +345,20 @@ namespace org.usd232.robotics.management.apis {
         }
     }
 
+    export class EventAttendanceRecord {
+        public id: number;
+        public name: string;
+        public rsvp: boolean;
+        public attended: boolean;
+        public excused: boolean;
+    }
+
+    export class EventAttendance {
+        public id: number;
+        public signupRequired: boolean;
+        public users: EventAttendanceRecord[];
+    }
+
     class ApiBase<T> {
         private url: string;
         private ctrlr: ApiController;
@@ -530,6 +544,7 @@ namespace org.usd232.robotics.management.apis {
         public unverify = new ParameterizedApi<StatusResponse, number>("/unverify", this);
         public setSetting = new ParameterizedApi<StatusResponse, SetSettingRequest>("/setSetting", this);
         public impersonate = new ParameterizedApi<LoginResponse, number>("/impersonate", this);
+        public eventAttendance = new CollectionApi<EventAttendance, number>("/eventdata", this);
 
         public setServerUrl(url: string) {
             if ( url.match(/^!.*$/) ) {

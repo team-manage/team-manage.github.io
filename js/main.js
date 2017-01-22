@@ -458,6 +458,18 @@ var org;
                         return SetSettingRequest;
                     }());
                     apis.SetSettingRequest = SetSettingRequest;
+                    var EventAttendanceRecord = (function () {
+                        function EventAttendanceRecord() {
+                        }
+                        return EventAttendanceRecord;
+                    }());
+                    apis.EventAttendanceRecord = EventAttendanceRecord;
+                    var EventAttendance = (function () {
+                        function EventAttendance() {
+                        }
+                        return EventAttendance;
+                    }());
+                    apis.EventAttendance = EventAttendance;
                     var ApiBase = (function () {
                         function ApiBase(url, ctrlr) {
                             this.lastModified = 0;
@@ -656,6 +668,7 @@ var org;
                             this.unverify = new ParameterizedApi("/unverify", this);
                             this.setSetting = new ParameterizedApi("/setSetting", this);
                             this.impersonate = new ParameterizedApi("/impersonate", this);
+                            this.eventAttendance = new CollectionApi("/eventdata", this);
                         }
                         ApiController.prototype.setServerUrl = function (url) {
                             var _this = this;
@@ -1662,7 +1675,58 @@ var org;
 })(org || (org = {}));
 /// <reference path="../page.ts" />
 /// <reference path="../apis.ts" />
+/// <reference path="profile.ts" />
+var org;
+(function (org) {
+    var usd232;
+    (function (usd232) {
+        var robotics;
+        (function (robotics) {
+            var management;
+            (function (management) {
+                var pages;
+                (function (pages) {
+                    var ApiController = org.usd232.robotics.management.apis.ApiController;
+                    var HistoryController = org.usd232.robotics.management.HistoryController;
+                    var ExcuseRequest = org.usd232.robotics.management.apis.ExcuseRequest;
+                    var AttendanceController = (function (_super) {
+                        __extends(AttendanceController, _super);
+                        function AttendanceController() {
+                            return _super !== null && _super.apply(this, arguments) || this;
+                        }
+                        AttendanceController.show = function (id) {
+                            AttendanceController.newId = id;
+                            HistoryController.load("/admin/attendance");
+                        };
+                        AttendanceController.prototype.init = function () {
+                            var _this = this;
+                            this.$scope.showUser = function (id) { return pages.ProfileController.show(id); };
+                            this.$scope.update = function (user) {
+                                ApiController.instance.excuse.request(new ExcuseRequest(user.id, _this.$scope.attendance.id, user.excused), function (res) {
+                                    if (!res.success) {
+                                        Materialize.toast("Unable to excuse absence", 4000);
+                                    }
+                                });
+                            };
+                        };
+                        AttendanceController.prototype.open = function () {
+                            var _this = this;
+                            ApiController.instance.eventAttendance.request(AttendanceController.newId, function (res) { return _this.$scope.$apply(function () {
+                                _this.$scope.attendance = res;
+                            }); });
+                        };
+                        return AttendanceController;
+                    }(management.AbstractPage));
+                    pages.AttendanceController = AttendanceController;
+                })(pages = management.pages || (management.pages = {}));
+            })(management = robotics.management || (robotics.management = {}));
+        })(robotics = usd232.robotics || (usd232.robotics = {}));
+    })(usd232 = org.usd232 || (org.usd232 = {}));
+})(org || (org = {}));
+/// <reference path="../page.ts" />
+/// <reference path="../apis.ts" />
 /// <reference path="login.ts" />
+/// <reference path="attendance.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -1708,6 +1772,7 @@ var org;
                                 });
                             };
                             this.$scope.viewAttendance = function () {
+                                pages.AttendanceController.show(_this.$scope.event.id);
                             };
                             this.$scope["delete"] = function () {
                                 ApiController.instance.removeEvent.request(_this.$scope.event.id, function (res) {
@@ -1899,6 +1964,7 @@ var org;
 /// <reference path="pages/send.ts" />
 /// <reference path="pages/events.ts" />
 /// <reference path="pages/event.ts" />
+/// <reference path="pages/attendance.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -1917,6 +1983,7 @@ var org;
                 var MessageController = org.usd232.robotics.management.pages.MessageController;
                 var EventsController = org.usd232.robotics.management.pages.EventsController;
                 var EventController = org.usd232.robotics.management.pages.EventController;
+                var AttendanceController = org.usd232.robotics.management.pages.AttendanceController;
                 var PageFactory = (function () {
                     function PageFactory() {
                     }
@@ -1932,6 +1999,7 @@ var org;
                             new MessageController("send"),
                             new EventsController("events"),
                             new EventController("event"),
+                            new AttendanceController("attendance"),
                         ];
                     };
                     return PageFactory;

@@ -11,6 +11,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.usd232.robotics.management.apis.Event;
+import org.usd232.robotics.management.apis.EventAttendance;
+import org.usd232.robotics.management.apis.EventAttendanceRecord;
 import org.usd232.robotics.management.apis.EventSignup;
 import org.usd232.robotics.management.apis.EventTime;
 import org.usd232.robotics.management.apis.EventType;
@@ -275,5 +277,37 @@ public class EventApis
             Database.rollbackTransaction();
             throw ex;
         }
+    }
+
+    @GetApi("/eventdata/*")
+    @RequirePermissions({ "event.view", "attendance.view" })
+    public static EventAttendance getAttendance(String url) throws SQLException
+    {
+        int eventId = Integer.parseInt(url.substring(11, url.length() - 5));
+        boolean signupRequired;
+        try (PreparedStatement st = Database.prepareStatement("SELECT `signup` IS NOT NULL FROM `meetings` WHERE `id` = ?"))
+        {
+            st.setInt(1, eventId);
+            try (ResultSet res = st.executeQuery())
+            {
+                res.next();
+                signupRequired = res.getBoolean(1);
+            }
+        }
+        List<EventAttendanceRecord> records = new ArrayList<EventAttendanceRecord>();
+        try (PreparedStatement st = Database.prepareStatement(
+                        "SELECT `users`.`id`, `users`.`name`, `attendance`.`rsvp` IS NOT NULL, `attendance`.`signin` IS NOT NULL, `attendance`.`excused` FROM `users` INNER JOIN `meetings` ON `meetings`.`id` = ? LEFT JOIN `attendance` ON `attendance`.`userid` = `users`.`id` AND `attendance`.`eventid` = `meetings`.`id`"))
+        {
+            st.setInt(1, eventId);
+            try (ResultSet res = st.executeQuery())
+            {
+                while (res.next())
+                {
+                    records.add(new EventAttendanceRecord(res.getInt(1), res.getString(2), res.getBoolean(3),
+                                    res.getBoolean(4), res.getBoolean(5)));
+                }
+            }
+        }
+        return new EventAttendance(eventId, signupRequired, records);
     }
 }

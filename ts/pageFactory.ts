@@ -20,6 +20,8 @@
 
     /// <reference path="pages/event.ts" />
 
+    /// <reference path="pages/attendance.ts" />
+
 
 namespace org.usd232.robotics.management {
     
@@ -42,6 +44,8 @@ namespace org.usd232.robotics.management {
         import EventsController = org.usd232.robotics.management.pages.EventsController;
     
         import EventController = org.usd232.robotics.management.pages.EventController;
+    
+        import AttendanceController = org.usd232.robotics.management.pages.AttendanceController;
     
 
     export class PageFactory {
@@ -67,6 +71,8 @@ namespace org.usd232.robotics.management {
                     new EventsController("events"),
                 
                     new EventController("event"),
+                
+                    new AttendanceController("attendance"),
                 
             ];
         }
