@@ -514,11 +514,11 @@ namespace org.usd232.robotics.management.apis {
         public editContact = new ParameterizedApi<StatusResponse, EditContactRequest>("/contact/edit", this);
         public removeContact = new ParameterizedApi<StatusResponse, RemoveContactRequest>("/contact/remove", this);
         public setPicture = new BinaryParameterizedApi<StatusResponse>("/setPicture", this);
-        public rsvp = new ParameterizedApi<StatusResponse, RsvpRequest>("/event/rsvp", this);
+        public rsvp = new ParameterizedApi<StatusResponse, RsvpRequest>("/events/rsvp", this);
         public changePin = new ParameterizedApi<StatusResponse, number>("/changePin", this);
-        public addEvent = new GeneralApi<StatusIdResponse>("/event/add", this);
-        public editEvent = new ParameterizedApi<StatusResponse, Event>("/event/edit", this);
-        public removeEvent = new ParameterizedApi<StatusResponse, number>("/event/remove", this);
+        public addEvent = new GeneralApi<StatusIdResponse>("/events/add", this);
+        public editEvent = new ParameterizedApi<StatusResponse, Event>("/events/edit", this);
+        public removeEvent = new ParameterizedApi<StatusResponse, number>("/events/remove", this);
         public excuse = new ParameterizedApi<StatusResponse, ExcuseRequest>("/attendance/excuse", this);
         public verify = new ParameterizedApi<StatusResponse, number>("/verify", this);
         public unverify = new ParameterizedApi<StatusResponse, number>("/unverify", this);

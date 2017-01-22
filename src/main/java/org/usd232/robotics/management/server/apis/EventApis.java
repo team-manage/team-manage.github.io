@@ -111,7 +111,7 @@ public class EventApis
      * @throws SQLException
      *             If an error occurs while connecting to the database
      */
-    @GetApi("/event/add")
+    @GetApi("/events/add")
     @RequirePermissions("event.add")
     public static StatusIdResponse add() throws SQLException
     {
@@ -186,7 +186,7 @@ public class EventApis
      * @throws IllegalAccessException
      *             If the user does not have the permission
      */
-    @PostApi("/event/edit")
+    @PostApi("/events/edit")
     public static StatusResponse edit(Event event, Session session) throws SQLException, IllegalAccessException
     {
         Database.startTransaction("meetings");
@@ -248,7 +248,7 @@ public class EventApis
      * @throws SQLException
      *             If an error occurs while connecting to the database
      */
-    @PostApi("/event/remove")
+    @PostApi("/events/remove")
     @RequirePermissions("event.remove")
     public static StatusResponse delete(int eventId) throws SQLException
     {

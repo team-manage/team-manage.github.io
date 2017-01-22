@@ -141,7 +141,7 @@ public class ProfileApis
      * @throws SQLException
      *             If an error occurs while connecting to the database
      */
-    @PostApi("/event/rsvp")
+    @PostApi("/events/rsvp")
     public static StatusResponse rsvp(RsvpRequest req, Session session) throws SQLException
     {
         Database.startTransaction("attendance");
