@@ -36,11 +36,6 @@
 <!-- Include Materialize CSS again -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" />
 
-<!-- Material Date/Time Picker -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
-<link rel="stylesheet" href="/css/datepicker.css" />
-<script src="/js/datepicker.standalone.js"></script>
-
 <!-- Our stuff -->
 <link rel="stylesheet" href="/css/main.css" />
 <script src="/js/main.js"></script>
@@ -1081,40 +1076,115 @@
             </select>
             <label>Type</label>
         </div>
-    </div>
-    <div class="row" ng-show="event.type == 'event'">
-        <div class="input-field col s12">
+        <div class="input-field col s12" ng-show="event.type == 'event'">
             <input id="event-name" type="text" ng-model="event.name" />
             <label for="event-name" class="active">Name</label>
         </div>
-    </div>
-    <div class="row">
-        <div class="input-field col s12">
-            <input id="event-date" type="date" class="event-datepicker" ng-model="event.date" />
-            <label for="event-date" class="active">Date</label>
+        <div class="input-field col s4">
+            <select ng-model="day" ng-model-options="{ 'getterSetter': true }" disabled>
+                <option value="0" selected>Sunday</option>
+                <option value="1">Monday</option>
+                <option value="2">Tuesday</option>
+                <option value="3">Wednesday</option>
+                <option value="4">Thursday</option>
+                <option value="5">Friday</option>
+                <option value="6">Saturday</option>
+            </select>
+            <label>Date</label>
         </div>
-    </div>
-    <div class="row">
+        <div class="input-field col s4">
+            <select ng-model="month" ng-model-options="{ 'getterSetter': true }" ng-change="changed()">
+                <option value="0">January</option>
+                <option value="1" ng-disabled="date() > (year() % 4 == 0 && (year() % 100 != 0 || year() % 400 == 0) ? 29 : 28)">February</option>
+                <option value="2">March</option>
+                <option value="3" ng-disabled="date() > 30">April</option>
+                <option value="4">May</option>
+                <option value="5" ng-disabled="date() > 30">June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8" ng-disabled="date() > 30">September</option>
+                <option value="9">October</option>
+                <option value="10" ng-disabled="date() > 30">November</option>
+                <option value="11">December</option>
+            </select>
+        </div>
+        <div class="input-field col s2">
+            <input type="number" ng-model="date" min="0" max="{{ month() == '1' ? (year() % 4 == 0 && (year() % 100 != 0 || year() % 400 == 0) ? 29 : 28) : month() == '3' || month() == '5' || month() == '8' || month() == '10' ? 30 : 31 }}" ng-model-options="{ 'getterSetter': true }" ng-change="changed()" />
+        </div>
+        <div class="input-field col s2">
+            <input type="number" ng-model="year" ng-model-options="{ 'getterSetter': true }" ng-change="changed()" />
+        </div>
         <div class="input-field col s12">
             <p>
                 <input type="checkbox" id="event-allday" ng-model="event.time.allDay" />
                 <label for="event-allday">All day</label>
             </p>
+            <br />
+        </div>
+        <div class="input-field col s5" ng-hide="event.time.allDay">
+            <input id="event-start" type="number" ng-model="startHour" min="1" max="{{ startMeridiem() == endMeridiem() ? (startMinute() >= endMinute() ? endHour() - 1 : endHour()) : 12 }}" ng-model-options="{ 'getterSetter': true }" ng-change="changed()" />
+            <label for="event-start" class="event-active">Start time</label>
+        </div>
+        <div class="input-field col s5" ng-hide="event.time.allDay">
+            <input type="number" ng-model="startMinute" min="0" max="{{ startHour() == endHour() && startMeridiem() == endMeridiem() ? endMinute() - 1 : 59 }}" ng-model-options="{ 'getterSetter': true }" ng-change="changed()" />
+        </div>
+        <div class="input-field col s2" ng-hide="event.time.allDay">
+            <select ng-model="startMeridiem" ng-model-options="{ 'getterSetter': true }" ng-change="changed()">
+                <option value="0" selected>AM</option>
+                <option value="12" ng-disabled="endMeridiem() == '0' || startHour() > endHour() || (startHour() == endHour() && startMinute() >= endMinute())">PM</option>
+            </select>
+        </div>
+        <div class="input-field col s5" ng-hide="event.time.allDay">
+            <input id="event-end" type="number" ng-model="endHour" min="{{ startMeridiem() == endMeridiem() ? (startMinute() >= endMinute() ? startHour() + 1 : startHour()) : 1 }}" max="12" ng-model-options="{ 'getterSetter': true }" ng-change="changed()" />
+            <label for="event-end" class="event-active">End time</label>
+        </div>
+        <div class="input-field col s5" ng-hide="event.time.allDay">
+            <input type="number" ng-model="endMinute" min="{{ startHour() == endHour() && startMeridiem() == endMeridiem() ? startMinute() + 1 : 0 }}" max="59" ng-model-options="{ 'getterSetter': true }" ng-change="changed()" />
+        </div>
+        <div class="input-field col s2" ng-hide="event.time.allDay">
+            <select ng-model="endMeridiem" ng-model-options="{ 'getterSetter': true }" ng-change="changed()">
+                <option value="0" selected ng-disabled="startMeridiem() == '12' || startHour() > endHour() || (startHour() == endHour() && startMinute() >= endMinute())">AM</option>
+                <option value="12">PM</option>
+            </select>
         </div>
     </div>
-    <div class="row" ng-hide="event.time.allDay">
-        <div class="input-field col s12">
-            <input id="event-start" type="time" class="c-datepicker-input" ng-model="event.time.start" />
-            <label for="event-start" class="active">Start time</label>
+    <div class="row">
+        <div class="col s4 center">
+            <a class="btn waves-effect waves-red" href="#event-delete-warning">
+                Delete Event
+            </a>
         </div>
-    </div>
-    <div class="row" ng-hide="event.time.allDay">
-        <div class="input-field col s12">
-            <input id="event-end" type="time" class="c-datepicker-input" ng-model="event.time.end" />
-            <label for="event-end" class="active">End time</label>
+        <div class="col s4 center">
+            <button class="btn waves-effect waves-green" type="button" ng-click="viewAttendance()">
+                View Attendance
+            </button>
+        </div>
+        <div class="col s4 center">
+            <button class="btn waves-effect waves-green" type="submit">
+                Save
+            </button>
         </div>
     </div>
 </form>
+<div id="event-delete-warning" class="modal">
+    <div class="modal-content">
+        <h4>
+            Warning!
+        </h4>
+        <p>
+            Deleting an event is unreversable!
+            This will also delete all attendance information (including excuses and rsvps).
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a class="modal-action modal-close waves-effect waves-red btn-flat">
+            Cancel
+        </a>
+        <a class="modal-action modal-close waves-effect waves-red btn-flat" ng-click="delete()">
+            Delete
+        </a>
+    </div>
+</div>
 
         </div>
     

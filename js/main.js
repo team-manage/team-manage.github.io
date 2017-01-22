@@ -302,7 +302,10 @@ var org;
                         EventType[EventType["meeting"] = 1] = "meeting";
                     })(EventType = apis.EventType || (apis.EventType = {}));
                     var EventTime = (function () {
-                        function EventTime() {
+                        function EventTime(allDay, start, end) {
+                            this.allDay = allDay;
+                            this.start = start;
+                            this.end = end;
                         }
                         return EventTime;
                     }());
@@ -1672,6 +1675,8 @@ var org;
                 (function (pages) {
                     var ApiController = org.usd232.robotics.management.apis.ApiController;
                     var HistoryController = org.usd232.robotics.management.HistoryController;
+                    var Event = org.usd232.robotics.management.apis.Event;
+                    var EventTime = org.usd232.robotics.management.apis.EventTime;
                     var EventController = (function (_super) {
                         __extends(EventController, _super);
                         function EventController() {
@@ -1682,37 +1687,144 @@ var org;
                             HistoryController.load("/admin/event");
                         };
                         EventController.prototype.init = function () {
-                            this.$scope.save = function () {
-                            };
-                            var months = [
+                            var _this = this;
+                            var monthMap = [
                                 "Jan", "Feb", "Mar", "Apr",
                                 "May", "Jun", "Jul", "Aug",
                                 "Sep", "Oct", "Nov", "Dec"
                             ];
-                            /*
-                            let picker: any = new (window as any).DateTimePicker({
-                                "container": document.body
-                            });
-                            var editing: JQuery;
-                            picker.on("submit", val => {
-                                let date: Date = new Date(val);
-                                editing.val(months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear());
-                            });
-                            $(".event-datepicker").on("focus", function() {
-                                picker.open();
-                                editing = this;
-                            });
-                            */
+                            var hourMap = [
+                                12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+                                12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+                            ];
+                            this.$scope.save = function () {
+                                ApiController.instance.editEvent.request(new Event(_this.$scope.event.id, _this.$scope.event.type, _this.$scope.event.name, monthMap[_this.$scope.event.date.getMonth()] + " " + _this.$scope.event.date.getDate() + ", " + _this.$scope.event.date.getFullYear(), new EventTime(_this.$scope.event.time.allDay, hourMap[_this.$scope.event.time.start.getHours()] + ":" + _this.$scope.event.time.start.getMinutes() + ":00 " + (_this.$scope.event.time.start.getHours() < 12 ? "AM" : "PM"), hourMap[_this.$scope.event.time.end.getHours()] + ":" + _this.$scope.event.time.end.getMinutes() + ":00 " + (_this.$scope.event.time.end.getHours() < 12 ? "AM" : "PM")), _this.$scope.event.signup), function (res) {
+                                    if (res.success) {
+                                        Materialize.toast("Event saved!", 4000);
+                                    }
+                                    else {
+                                        Materialize.toast("Error saving event", 4000);
+                                    }
+                                });
+                            };
+                            this.$scope.viewAttendance = function () {
+                            };
+                            this.$scope["delete"] = function () {
+                                ApiController.instance.removeEvent.request(_this.$scope.event.id, function (res) {
+                                    if (res.success) {
+                                        Materialize.toast("Event deleted!", 4000);
+                                        HistoryController.back();
+                                    }
+                                    else {
+                                        Materialize.toast("Error deleting event", 4000);
+                                    }
+                                });
+                            };
+                            this.$scope.day = function () {
+                                return _this.$scope.event == null || _this.$scope.event.date == null ? null : "" + _this.$scope.event.date.getDay();
+                            };
+                            this.$scope.month = function (val) {
+                                if (!_this.$scope.event || !_this.$scope.event.date) {
+                                    return null;
+                                }
+                                if (val) {
+                                    _this.$scope.event.date.setMonth(parseInt(val));
+                                }
+                                return "" + _this.$scope.event.date.getMonth();
+                            };
+                            this.$scope.date = function (val) {
+                                if (!_this.$scope.event || !_this.$scope.event.date) {
+                                    return null;
+                                }
+                                if (val) {
+                                    _this.$scope.event.date.setDate(parseInt(val));
+                                }
+                                return _this.$scope.event.date.getDate();
+                            };
+                            this.$scope.year = function (val) {
+                                if (!_this.$scope.event || !_this.$scope.event.date) {
+                                    return null;
+                                }
+                                if (val) {
+                                    _this.$scope.event.date.setFullYear(parseInt(val));
+                                }
+                                return _this.$scope.event.date.getFullYear();
+                            };
+                            var startOffset = 0;
+                            this.$scope.startHour = function (val) {
+                                if (!_this.$scope.event || !_this.$scope.event.time || !_this.$scope.event.time.start) {
+                                    return null;
+                                }
+                                if (val) {
+                                    val = parseInt(val);
+                                    _this.$scope.event.time.start.setHours((val == 0 ? 12 : val) + startOffset);
+                                }
+                                return hourMap[_this.$scope.event.time.start.getHours()];
+                            };
+                            this.$scope.startMinute = function (val) {
+                                if (!_this.$scope.event || !_this.$scope.event.time || !_this.$scope.event.time.start) {
+                                    return null;
+                                }
+                                if (val) {
+                                    _this.$scope.event.time.start.setMinutes(parseInt(val));
+                                }
+                                return _this.$scope.event.time.start.getMinutes();
+                            };
+                            this.$scope.startMeridiem = function (val) {
+                                if (!_this.$scope.event || !_this.$scope.event.time || !_this.$scope.event.time.start) {
+                                    return null;
+                                }
+                                if (val) {
+                                    startOffset = parseInt(val);
+                                    _this.$scope.startHour(_this.$scope.startHour());
+                                }
+                                return "" + startOffset;
+                            };
+                            var endOffset = 0;
+                            this.$scope.endHour = function (val) {
+                                if (!_this.$scope.event || !_this.$scope.event.time || !_this.$scope.event.time.end) {
+                                    return null;
+                                }
+                                if (val) {
+                                    val = parseInt(val);
+                                    _this.$scope.event.time.end.setHours((val == 0 ? 12 : val) + endOffset);
+                                }
+                                return hourMap[_this.$scope.event.time.end.getHours()];
+                            };
+                            this.$scope.endMinute = function (val) {
+                                if (!_this.$scope.event || !_this.$scope.event.time || !_this.$scope.event.time.end) {
+                                    return null;
+                                }
+                                if (val) {
+                                    _this.$scope.event.time.end.setMinutes(parseInt(val));
+                                }
+                                return _this.$scope.event.time.end.getMinutes();
+                            };
+                            this.$scope.endMeridiem = function (val) {
+                                if (!_this.$scope.event || !_this.$scope.event.time || !_this.$scope.event.time.end) {
+                                    return null;
+                                }
+                                if (val) {
+                                    endOffset = parseInt(val);
+                                    _this.$scope.endHour(_this.$scope.endHour());
+                                }
+                                return "" + endOffset;
+                            };
+                            this.$scope.changed = function () { return setTimeout(function () { return $("select").material_select(); }, 0); };
                         };
                         EventController.prototype.open = function () {
                             var _this = this;
                             this.$scope.id = EventController.newId;
                             ApiController.instance.event.request(this.$scope.id, function (event) { return _this.$scope.$apply(function () {
                                 event.date = new Date(event.date);
-                                event.time.start = event.time.start == null ? null : new Date(event.time.start);
-                                event.time.end = event.time.end == null ? null : new Date(event.time.end);
+                                var now = new Date();
+                                event.time.start = event.time.start == null ? new Date(0, 0, 0, now.getHours(), now.getMinutes()) : new Date("1/1/0 " + event.time.start);
+                                event.time.end = event.time.end == null ? new Date(0, 0, 0, now.getHours() + 1, now.getMinutes()) : new Date("1/1/0 " + event.time.end);
                                 _this.$scope.event = event;
-                                setTimeout(function () { return $("select").material_select(); }, 0);
+                                _this.$scope.startMeridiem(event.time.start == null ? 0 : event.time.start.getHours() >= 12 ? 12 : 0);
+                                _this.$scope.endMeridiem(event.time.end == null ? 0 : event.time.end.getHours() >= 12 ? 12 : 0);
+                                _this.$scope.changed();
+                                setTimeout(function () { return $(".event-active").addClass("active"); }, 0);
                             }); });
                         };
                         return EventController;

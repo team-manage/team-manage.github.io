@@ -156,6 +156,12 @@ namespace org.usd232.robotics.management.apis {
         public allDay: boolean;
         public start: string;
         public end: string;
+
+        public constructor(allDay?: boolean, start?: string, end?: string) {
+            this.allDay = allDay;
+            this.start = start;
+            this.end = end;
+        }
     }
 
     export class Event {

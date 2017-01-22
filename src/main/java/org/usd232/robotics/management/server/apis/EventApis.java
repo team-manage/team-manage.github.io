@@ -120,7 +120,7 @@ public class EventApis
         {
             try (Statement st = Database.createStatement())
             {
-                st.execute("INSERT INTO `meetings` () VALUES ()");
+                st.execute("INSERT INTO `meetings` (`date`) VALUES (DATE(NOW()))");
                 try (ResultSet res = st.executeQuery("SELECT LAST_INSERT_ID()"))
                 {
                     res.next();
@@ -225,6 +225,7 @@ public class EventApis
                 st.setTime(5, event.time == null ? null : event.time.start);
                 st.setTime(6, event.time == null ? null : event.time.end);
                 st.setDate(7, event.signup == null ? null : event.signup.deadline);
+                st.setInt(8, event.id);
                 st.execute();
                 Database.commitTransaction();
                 return new StatusResponse(true);
