@@ -59,6 +59,7 @@ namespace org.usd232.robotics.management {
     }
 
     export class PageController {
+        public static defaultPage: string = "/";
         private $scope;
         private nav: NavBar;
         private listeners: { [name: string]: () => void } = {};
@@ -79,7 +80,7 @@ namespace org.usd232.robotics.management {
             this.nav = nav;
             AngularController.registerController("pages", $scope => {
                 this.$scope = $scope;
-                HistoryController.load("/");
+                HistoryController.load(PageController.defaultPage);
             });
         }
     }

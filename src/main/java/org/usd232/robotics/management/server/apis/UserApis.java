@@ -1,11 +1,13 @@
 package org.usd232.robotics.management.server.apis;
 
+import java.security.SecureRandom;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
@@ -14,12 +16,15 @@ import org.usd232.robotics.management.apis.Event;
 import org.usd232.robotics.management.apis.EventSignup;
 import org.usd232.robotics.management.apis.EventType;
 import org.usd232.robotics.management.apis.ExcuseRequest;
+import org.usd232.robotics.management.apis.ForgotCredentialsRequest;
 import org.usd232.robotics.management.apis.StatusResponse;
 import org.usd232.robotics.management.apis.User;
 import org.usd232.robotics.management.server.database.Database;
+import org.usd232.robotics.management.server.messaging.MessagingController;
 import org.usd232.robotics.management.server.routing.GetApi;
 import org.usd232.robotics.management.server.routing.PostApi;
 import org.usd232.robotics.management.server.session.RequirePermissions;
+import spark.Request;
 
 /**
  * Apis relating to user management
@@ -235,5 +240,124 @@ public class UserApis
             st.setInt(1, userId);
             return new StatusResponse(st.executeUpdate() == 1);
         }
+    }
+
+    /**
+     * Sends the user their username or a link to reset their password
+     * 
+     * @param req
+     *            The request
+     * @param http
+     *            The http request
+     * @return If it was successful
+     * @since 1.0
+     * @throws SQLException
+     *             If an error occurs while connecting to the database
+     */
+    @PostApi("/forgot")
+    public static StatusResponse forgotCredentials(ForgotCredentialsRequest req, Request http) throws SQLException
+    {
+        List<Integer> users = new ArrayList<Integer>();
+        switch (req.known)
+        {
+            case email:
+                try (PreparedStatement st = Database.prepareStatement(
+                                "SELECT `userid` FROM `contacts` WHERE `type` = 'email' AND `value` = ?"))
+                {
+                    st.setString(1, req.value);
+                    try (ResultSet res = st.executeQuery())
+                    {
+                        while (res.next())
+                        {
+                            users.add(res.getInt(1));
+                        }
+                    }
+                }
+                break;
+            case phone:
+                try (PreparedStatement st = Database.prepareStatement(
+                                "SELECT `userid` FROM `contacts` WHERE `type` = 'phone' AND `value` = ?"))
+                {
+                    st.setString(1, req.value);
+                    try (ResultSet res = st.executeQuery())
+                    {
+                        while (res.next())
+                        {
+                            users.add(res.getInt(1));
+                        }
+                    }
+                }
+                break;
+            case username:
+                try (PreparedStatement st = Database.prepareStatement("SELECT `id` FROM `users` WHERE `username` = ?"))
+                {
+                    st.setString(1, req.value);
+                    try (ResultSet res = st.executeQuery())
+                    {
+                        if (res.next())
+                        {
+                            users.add(res.getInt(1));
+                        }
+                        else
+                        {
+                            return new StatusResponse(false);
+                        }
+                    }
+                }
+                break;
+            default:
+                LOG.warn("Unknown credential type '{}'", req.known);
+                return new StatusResponse(false);
+        }
+        switch (req.forgot)
+        {
+            case password:
+                String server = Base64.getEncoder().encodeToString(http.url().replaceAll("/forgot\\.json$", "").getBytes());
+                try (PreparedStatement st = Database.prepareStatement(
+                                "UPDATE `users` SET `resettoken` = ?, `resettokenset` = NOW() WHERE `id` = ?"))
+                {
+                    for (int userId : users)
+                    {
+                        byte[] tokenBytes = new byte[32];
+                        SecureRandom random = new SecureRandom();
+                        random.nextBytes(tokenBytes);
+                        char[] tokenChars = new char[64];
+                        for (int i = 0; i < tokenBytes.length; ++i)
+                        {
+                            System.arraycopy(String.format("%02x", tokenBytes[i]).toCharArray(), 0, tokenChars, i * 2, 2);
+                        }
+                        String token = new String(tokenChars);
+                        st.setString(1, token);
+                        st.setInt(2, userId);
+                        st.execute();
+                        MessagingController.sendMessage(
+                                        String.format("Reset password link:<br />\n<a href='https://team-manage.github.io/reset#%s/%s'>https://team-manage.github.io/reset#%s/%s</a><br />\nYou are receiving this message because someone used the forgot credentials page with your %s.  If this was not you, just forget about this message (the link will expire in an hour).",
+                                                        server, token, server, token, req.known),
+                                        userId, null);
+                    }
+                }
+                break;
+            case username:
+                try (PreparedStatement st = Database.prepareStatement("SELECT `username` FROM `users` WHERE `id` = ?"))
+                {
+                    for (int userId : users)
+                    {
+                        st.setInt(1, userId);
+                        try (ResultSet res = st.executeQuery())
+                        {
+                            res.next();
+                            MessagingController.sendMessage(
+                                            String.format("Your username is: %s.<br />\nYou are receiving this message because someone used the forgot credentials page with your %s.  If this was not you, just forget about this message.",
+                                                            res.getString(1), req.known),
+                                            userId, null);
+                        }
+                    }
+                }
+                break;
+            default:
+                LOG.warn("Unknown credential type '{}'", req.forgot);
+                return new StatusResponse(false);
+        }
+        return new StatusResponse(true);
     }
 }

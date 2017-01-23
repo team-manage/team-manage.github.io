@@ -22,6 +22,10 @@
 
     /// <reference path="pages/attendance.ts" />
 
+    /// <reference path="pages/forgot.ts" />
+
+    /// <reference path="pages/reset.ts" />
+
 
 namespace org.usd232.robotics.management {
     
@@ -46,6 +50,10 @@ namespace org.usd232.robotics.management {
         import EventController = org.usd232.robotics.management.pages.EventController;
     
         import AttendanceController = org.usd232.robotics.management.pages.AttendanceController;
+    
+        import ForgotController = org.usd232.robotics.management.pages.ForgotController;
+    
+        import ResetController = org.usd232.robotics.management.pages.ResetController;
     
 
     export class PageFactory {
@@ -73,6 +81,10 @@ namespace org.usd232.robotics.management {
                     new EventController("event"),
                 
                     new AttendanceController("attendance"),
+                
+                    new ForgotController("forgot"),
+                
+                    new ResetController("reset"),
                 
             ];
         }

@@ -19,6 +19,10 @@ namespace org.usd232.robotics.management.pages {
                     Materialize.toast("Please choose a provider from the list", 4000);
                     return;
                 }
+                if (this.$scope.password != this.$scope.passconf) {
+                    Materialize.toast("Passwords do not match", 4000);
+                    return;
+                }
                 ApiController.instance.setServerUrl(this.$scope.server);
                 ApiController.instance.register.request(new RegisterRequest(
                     this.$scope.username, this.$scope.firstname, this.$scope.lastname, this.$scope.password,

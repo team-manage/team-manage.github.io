@@ -18,6 +18,7 @@ import org.usd232.robotics.management.apis.ContactType;
 import org.usd232.robotics.management.apis.LoginRequest;
 import org.usd232.robotics.management.apis.LoginResponse;
 import org.usd232.robotics.management.apis.RegisterRequest;
+import org.usd232.robotics.management.apis.ResetPasswordRequest;
 import org.usd232.robotics.management.apis.StatusResponse;
 import org.usd232.robotics.management.apis.UserContact;
 import org.usd232.robotics.management.apis.UserProfile;
@@ -332,7 +333,9 @@ public abstract class AuthenticationApis
                 st.setString(5, "team,meeting.missed,meeting.reminders");
                 st.execute();
             }
-            MessagingController.sendMessage("Thank you for applying to this team.  An administrator will review your application shortly.", userId, null);
+            MessagingController.sendMessage(
+                            "Thank you for applying to this team.  An administrator will review your application shortly.",
+                            userId, null);
             Database.commitTransaction();
             return new StatusResponse(true);
         }
@@ -341,6 +344,53 @@ public abstract class AuthenticationApis
             LOG.catching(ex);
             Database.rollbackTransaction();
             throw ex;
+        }
+    }
+
+    /**
+     * Resets a user's password
+     * 
+     * @param req
+     *            The request
+     * @return If it was successful
+     * @since 1.0
+     * @throws SQLException
+     *             If an error occurs while connecting to the database
+     * @throws NoSuchAlgorithmException
+     *             If the hashing algorithm could not be found
+     * @throws UnsupportedEncodingException
+     *             If the string encoding could not be found
+     */
+    @PostApi("/reset")
+    public static StatusResponse resetPassword(ResetPasswordRequest req)
+                    throws SQLException, NoSuchAlgorithmException, UnsupportedEncodingException
+    {
+        int userId;
+        byte[] salt;
+        try (PreparedStatement st = Database.prepareStatement(
+                        "SELECT `id`, `salt` FROM `users` WHERE `resettoken` = ? AND DATE_ADD(`resettokenset`, INTERVAL 1 HOUR) > NOW()"))
+        {
+            st.setString(1, req.token);
+            try (ResultSet res = st.executeQuery())
+            {
+                if (res.next())
+                {
+                    userId = res.getInt(1);
+                    salt = res.getBytes(2);
+                }
+                else
+                {
+                    return new StatusResponse(false);
+                }
+            }
+        }
+        try (PreparedStatement st = Database.prepareStatement(
+                        "UPDATE `users` SET `password` = ?, `resettoken` = NULL, `resettokenset` = NULL WHERE `id` = ?"))
+        {
+            st.setBytes(1, hashPassword(req.password, salt));
+            st.setInt(2, userId);
+            st.execute();
+            return new StatusResponse(true);
         }
     }
 }

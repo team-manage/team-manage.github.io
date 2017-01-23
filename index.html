@@ -215,13 +215,18 @@
         </div>
     </div>
     <div class="row">
-        <div class="col s6">
-            <button class="waves-effect waves-light btn left">
+        <div class="col s4 center">
+            <button class="waves-effect waves-light btn">
                 Log In
             </button>
         </div>
-        <div class="col s6">
-            <button type="button" class="waves-effect waves-light btn right" ng-click="create()">
+        <div class="col s4 center">
+            <button type="button" class="waves-effect waves-light btn" ng-click="forgot()">
+                Forgot Credentials
+            </button>
+        </div>
+        <div class="col s4 center">
+            <button type="button" class="waves-effect waves-light btn" ng-click="create()">
                 Create
             </button>
         </div>
@@ -258,13 +263,18 @@
         </div>
     </div>
     <div class="row">
-        <div class="col s6">
-            <button class="waves-effect waves-light btn left">
+        <div class="col s4 center">
+            <button class="waves-effect waves-light btn">
                 Log In
             </button>
         </div>
-        <div class="col s6">
-            <button type="button" class="waves-effect waves-light btn right" ng-click="create()">
+        <div class="col s4 center">
+            <button type="button" class="waves-effect waves-light btn" ng-click="forgot()">
+                Forgot Credentials
+            </button>
+        </div>
+        <div class="col s4 center">
+            <button type="button" class="waves-effect waves-light btn" ng-click="create()">
                 Create
             </button>
         </div>
@@ -1251,8 +1261,217 @@
 
         </div>
     
+        <div ng-show="name == 'forgot'" id="page-forgot" ng-controller="page-forgot">
+            <input type="hidden" name="navbarTitle" value="" />
+            <input type="hidden" name="pageTitle" value="Forgot Password" />
+            <input type="hidden" name="pageUrl" value="/forgot" />
+            <div class="forgot">
+    <div class="valign-wrapper forgot-container hide-on-small-only">
+        <div class="valign">
+            <div class="row">
+    <div class="col s12">
+        <h1 class="center">
+            Forgot Credentials
+        </h1>
+    </div>
+</div>
+<form onsubmit="return false">
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="server" type="text" ng-model="server" />
+            <label for="server">Server</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field">
+            <select ng-model="type" ng-change="activateLabels()">
+                <option value="username" selected>Username</option>
+                <option value="email">Email</option>
+                <option value="phone">Phone Number</option>
+                <option value="nothing">Nothing</option>
+            </select>
+            <label>What you remember</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field" ng-show="type == 'username'">
+            <input name="user" type="text" ng-model="value" />
+            <label for="user">Username</label>
+        </div>
+        <div class="col s12 input-field" ng-show="type == 'email'">
+            <input name="email" type="text" ng-model="value" />
+            <label for="email">Email</label>
+        </div>
+        <div class="col s12 input-field" ng-show="type == 'phone'">
+            <input name="phone" type="text" ng-model="value" />
+            <label for="phone">Phone Number</label>
+        </div>
+        <div class="col s12 input-field" ng-show="type == 'nothing'">
+            Then how am I supposed to help you?
+        </div>
+    </div>
+    <div class="row" ng-hide="type == 'nothing'">
+        <div class="col s4 center">
+            <button type="button" class="waves-effect waves-light btn" ng-click="back()">
+                Back
+            </button>
+        </div>
+        <div class="col s4 center">
+            <button type="button" class="waves-effect waves-light btn" ng-click="forgot('username')" ng-disabled="type == 'username'">
+                Forgot Username
+            </button>
+        </div>
+        <div class="col s4 center">
+            <button type="button" class="waves-effect waves-light btn" ng-click="forgot('password')">
+                Forgot Password
+            </button>
+        </div>
+    </div>
+</form>
+
+        </div>
+    </div>
+    <div class="hide-on-med-and-up">
+        <div class="row">
+    <div class="col s12">
+        <h1 class="center">
+            Forgot Credentials
+        </h1>
+    </div>
+</div>
+<form onsubmit="return false">
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="server" type="text" ng-model="server" />
+            <label for="server">Server</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field">
+            <select ng-model="type" ng-change="activateLabels()">
+                <option value="username" selected>Username</option>
+                <option value="email">Email</option>
+                <option value="phone">Phone Number</option>
+                <option value="nothing">Nothing</option>
+            </select>
+            <label>What you remember</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field" ng-show="type == 'username'">
+            <input name="user" type="text" ng-model="value" />
+            <label for="user">Username</label>
+        </div>
+        <div class="col s12 input-field" ng-show="type == 'email'">
+            <input name="email" type="text" ng-model="value" />
+            <label for="email">Email</label>
+        </div>
+        <div class="col s12 input-field" ng-show="type == 'phone'">
+            <input name="phone" type="text" ng-model="value" />
+            <label for="phone">Phone Number</label>
+        </div>
+        <div class="col s12 input-field" ng-show="type == 'nothing'">
+            Then how am I supposed to help you?
+        </div>
+    </div>
+    <div class="row" ng-hide="type == 'nothing'">
+        <div class="col s4 center">
+            <button type="button" class="waves-effect waves-light btn" ng-click="back()">
+                Back
+            </button>
+        </div>
+        <div class="col s4 center">
+            <button type="button" class="waves-effect waves-light btn" ng-click="forgot('username')" ng-disabled="type == 'username'">
+                Forgot Username
+            </button>
+        </div>
+        <div class="col s4 center">
+            <button type="button" class="waves-effect waves-light btn" ng-click="forgot('password')">
+                Forgot Password
+            </button>
+        </div>
+    </div>
+</form>
+
+    </div>
+</div>
+
+        </div>
+    
+        <div ng-show="name == 'reset'" id="page-reset" ng-controller="page-reset">
+            <input type="hidden" name="navbarTitle" value="" />
+            <input type="hidden" name="pageTitle" value="Reset Password" />
+            <input type="hidden" name="pageUrl" value="/reset" />
+            <div class="valign-wrapper reset-container hide-on-small-only">
+    <div class="valign">
+        <div class="row">
+    <div class="col s12">
+        <h1 class="center">
+            Reset Password
+        </h1>
+    </div>
+</div>
+<form onsubmit="return false" ng-submit="reset()">
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="password" type="password" ng-model="password" />
+            <label for="password">Password</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="passconf" type="password" ng-model="passconf" />
+            <label for="passconf">Confirm Password</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <button class="waves-effect waves-light btn">
+                Reset Password
+            </button>
+        </div>
+    </div>
+</form>
+
+    </div>
+</div>
+<div class="hide-on-med-and-up">
+    <div class="row">
+    <div class="col s12">
+        <h1 class="center">
+            Reset Password
+        </h1>
+    </div>
+</div>
+<form onsubmit="return false" ng-submit="reset()">
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="password" type="password" ng-model="password" />
+            <label for="password">Password</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 input-field">
+            <input name="passconf" type="password" ng-model="passconf" />
+            <label for="passconf">Confirm Password</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <button class="waves-effect waves-light btn">
+                Reset Password
+            </button>
+        </div>
+    </div>
+</form>
+
+</div>
+
+        </div>
+    
 </div>
 <div class="loading"></div>
-        <script>org.usd232.robotics.management.ng.AngularController.init()</script>
+        
+        <script>org.usd232.robotics.management.ng.AngularController.init();</script>
     </body>
 </html>

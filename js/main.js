@@ -137,7 +137,7 @@ var org;
                         this.nav = nav;
                         AngularController.registerController("pages", function ($scope) {
                             _this.$scope = $scope;
-                            HistoryController.load("/");
+                            HistoryController.load(PageController.defaultPage);
                         });
                     }
                     PageController.prototype.loadPage = function (name) {
@@ -152,6 +152,7 @@ var org;
                     };
                     return PageController;
                 }());
+                PageController.defaultPage = "/";
                 management.PageController = PageController;
             })(management = robotics.management || (robotics.management = {}));
         })(robotics = usd232.robotics || (usd232.robotics = {}));
@@ -470,6 +471,34 @@ var org;
                         return EventAttendance;
                     }());
                     apis.EventAttendance = EventAttendance;
+                    var KnownCredentialType;
+                    (function (KnownCredentialType) {
+                        KnownCredentialType[KnownCredentialType["username"] = 0] = "username";
+                        KnownCredentialType[KnownCredentialType["email"] = 1] = "email";
+                        KnownCredentialType[KnownCredentialType["phone"] = 2] = "phone";
+                    })(KnownCredentialType = apis.KnownCredentialType || (apis.KnownCredentialType = {}));
+                    var ForgotCredentialType;
+                    (function (ForgotCredentialType) {
+                        ForgotCredentialType[ForgotCredentialType["username"] = 0] = "username";
+                        ForgotCredentialType[ForgotCredentialType["password"] = 1] = "password";
+                    })(ForgotCredentialType = apis.ForgotCredentialType || (apis.ForgotCredentialType = {}));
+                    var ForgotCredentialsRequest = (function () {
+                        function ForgotCredentialsRequest(known, value, forgot) {
+                            this.known = known;
+                            this.value = value;
+                            this.forgot = forgot;
+                        }
+                        return ForgotCredentialsRequest;
+                    }());
+                    apis.ForgotCredentialsRequest = ForgotCredentialsRequest;
+                    var ResetPasswordRequest = (function () {
+                        function ResetPasswordRequest(token, password) {
+                            this.token = token;
+                            this.password = password;
+                        }
+                        return ResetPasswordRequest;
+                    }());
+                    apis.ResetPasswordRequest = ResetPasswordRequest;
                     var ApiBase = (function () {
                         function ApiBase(url, ctrlr) {
                             this.lastModified = 0;
@@ -669,6 +698,8 @@ var org;
                             this.setSetting = new ParameterizedApi("/setSetting", this);
                             this.impersonate = new ParameterizedApi("/impersonate", this);
                             this.eventAttendance = new CollectionApi("/eventdata", this);
+                            this.forgotCredentials = new ParameterizedApi("/forgot", this);
+                            this.resetPassword = new ParameterizedApi("/reset", this);
                         }
                         ApiController.prototype.setServerUrl = function (url) {
                             var _this = this;
@@ -767,6 +798,7 @@ var org;
                             var _this = this;
                             LoginController.instances.push(this);
                             this.$scope.create = function () { return management.HistoryController.load("/register"); };
+                            this.$scope.forgot = function () { return management.HistoryController.load("/forgot"); };
                             this.$scope.login = function () {
                                 ApiController.instance.setServerUrl(_this.$scope.server);
                                 ApiController.instance.login.request(new LoginRequest(_this.$scope.username, _this.$scope.password), function (res) {
@@ -1169,6 +1201,10 @@ var org;
                             this.$scope.register = function () {
                                 if (Providers.getProviderNames().indexOf(_this.$scope.provider) < 0) {
                                     Materialize.toast("Please choose a provider from the list", 4000);
+                                    return;
+                                }
+                                if (_this.$scope.password != _this.$scope.passconf) {
+                                    Materialize.toast("Passwords do not match", 4000);
                                     return;
                                 }
                                 ApiController.instance.setServerUrl(_this.$scope.server);
@@ -1953,6 +1989,114 @@ var org;
         })(robotics = usd232.robotics || (usd232.robotics = {}));
     })(usd232 = org.usd232 || (org.usd232 = {}));
 })(org || (org = {}));
+/// <reference path="../page.ts" />
+/// <reference path="../apis.ts" />
+var org;
+(function (org) {
+    var usd232;
+    (function (usd232) {
+        var robotics;
+        (function (robotics) {
+            var management;
+            (function (management) {
+                var pages;
+                (function (pages) {
+                    var ApiController = org.usd232.robotics.management.apis.ApiController;
+                    var HistoryController = org.usd232.robotics.management.HistoryController;
+                    var ForgotCredentialsRequest = org.usd232.robotics.management.apis.ForgotCredentialsRequest;
+                    var ForgotController = (function (_super) {
+                        __extends(ForgotController, _super);
+                        function ForgotController() {
+                            return _super !== null && _super.apply(this, arguments) || this;
+                        }
+                        ForgotController.prototype.init = function () {
+                            var _this = this;
+                            this.$scope.type = "username";
+                            this.$scope.server = localStorage.getItem("serverUrl");
+                            this.$scope.value = localStorage.getItem("username");
+                            if (this.$scope.server) {
+                                $(".forgot label[for='server']").addClass("active");
+                            }
+                            this.$scope.activateLabels = function () {
+                                if (_this.$scope.value) {
+                                    setTimeout(function () { return $(".forgot label[for]").addClass("active"); }, 0);
+                                }
+                            };
+                            this.$scope.activateLabels();
+                            this.$scope.back = function () { return HistoryController.back(); };
+                            this.$scope.forgot = function (what) {
+                                ApiController.instance.setServerUrl(_this.$scope.server);
+                                ApiController.instance.forgotCredentials.request(new ForgotCredentialsRequest(_this.$scope.type, _this.$scope.value, what), function (res) {
+                                    if (res.success) {
+                                        localStorage.setItem("serverUrl", _this.$scope.server);
+                                        pages.LoginController.readStorage();
+                                        HistoryController.load("/");
+                                        Materialize.toast("Check your email/phone for your " + (what == "username" ? "username" : "password reset link") + ".", 4000);
+                                    }
+                                    else {
+                                        Materialize.toast("Error retrieving account information", 4000);
+                                    }
+                                });
+                            };
+                        };
+                        return ForgotController;
+                    }(management.AbstractPage));
+                    pages.ForgotController = ForgotController;
+                })(pages = management.pages || (management.pages = {}));
+            })(management = robotics.management || (robotics.management = {}));
+        })(robotics = usd232.robotics || (usd232.robotics = {}));
+    })(usd232 = org.usd232 || (org.usd232 = {}));
+})(org || (org = {}));
+/// <reference path="../page.ts" />
+/// <reference path="../apis.ts" />
+var org;
+(function (org) {
+    var usd232;
+    (function (usd232) {
+        var robotics;
+        (function (robotics) {
+            var management;
+            (function (management) {
+                var pages;
+                (function (pages) {
+                    var ApiController = org.usd232.robotics.management.apis.ApiController;
+                    var HistoryController = org.usd232.robotics.management.HistoryController;
+                    var ResetPasswordRequest = org.usd232.robotics.management.apis.ResetPasswordRequest;
+                    var ResetController = (function (_super) {
+                        __extends(ResetController, _super);
+                        function ResetController() {
+                            return _super !== null && _super.apply(this, arguments) || this;
+                        }
+                        ResetController.prototype.init = function () {
+                            var _this = this;
+                            this.$scope.reset = function () {
+                                if (_this.$scope.password != _this.$scope.passconf) {
+                                    Materialize.toast("Passwords do not match", 4000);
+                                    return;
+                                }
+                                var parts = ResetController.hash.split("/", 2);
+                                var server = atob(parts[0]);
+                                ApiController.instance.setServerUrl(server);
+                                ApiController.instance.resetPassword.request(new ResetPasswordRequest(parts[1], _this.$scope.password), function (res) {
+                                    if (res.success) {
+                                        localStorage.setItem("serverUrl", server);
+                                        HistoryController.load("/");
+                                        Materialize.toast("Password set successfully!", 4000);
+                                    }
+                                    else {
+                                        Materialize.toast("Error while setting password", 4000);
+                                    }
+                                });
+                            };
+                        };
+                        return ResetController;
+                    }(management.AbstractPage));
+                    pages.ResetController = ResetController;
+                })(pages = management.pages || (management.pages = {}));
+            })(management = robotics.management || (robotics.management = {}));
+        })(robotics = usd232.robotics || (usd232.robotics = {}));
+    })(usd232 = org.usd232 || (org.usd232 = {}));
+})(org || (org = {}));
 /// <reference path="page.ts" />
 /// <reference path="pages/login.ts" />
 /// <reference path="pages/404.ts" />
@@ -1965,6 +2109,8 @@ var org;
 /// <reference path="pages/events.ts" />
 /// <reference path="pages/event.ts" />
 /// <reference path="pages/attendance.ts" />
+/// <reference path="pages/forgot.ts" />
+/// <reference path="pages/reset.ts" />
 var org;
 (function (org) {
     var usd232;
@@ -1984,6 +2130,8 @@ var org;
                 var EventsController = org.usd232.robotics.management.pages.EventsController;
                 var EventController = org.usd232.robotics.management.pages.EventController;
                 var AttendanceController = org.usd232.robotics.management.pages.AttendanceController;
+                var ForgotController = org.usd232.robotics.management.pages.ForgotController;
+                var ResetController = org.usd232.robotics.management.pages.ResetController;
                 var PageFactory = (function () {
                     function PageFactory() {
                     }
@@ -2000,6 +2148,8 @@ var org;
                             new EventsController("events"),
                             new EventController("event"),
                             new AttendanceController("attendance"),
+                            new ForgotController("forgot"),
+                            new ResetController("reset"),
                         ];
                     };
                     return PageFactory;

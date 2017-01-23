@@ -36,6 +36,7 @@ namespace org.usd232.robotics.management.pages {
         protected init(): void {
             LoginController.instances.push(this);
             this.$scope.create = () => HistoryController.load("/register");
+            this.$scope.forgot = () => HistoryController.load("/forgot");
             this.$scope.login = () => {
                 ApiController.instance.setServerUrl(this.$scope.server);
                 ApiController.instance.login.request(new LoginRequest(this.$scope.username, this.$scope.password), res => {

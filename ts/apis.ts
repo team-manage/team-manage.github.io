@@ -360,6 +360,39 @@ namespace org.usd232.robotics.management.apis {
         public users: EventAttendanceRecord[];
     }
 
+    export enum KnownCredentialType {
+        username,
+        email,
+        phone
+    }
+
+    export enum ForgotCredentialType {
+        username,
+        password
+    }
+
+    export class ForgotCredentialsRequest {
+        public known: KnownCredentialType;
+        public value: string;
+        public forgot: ForgotCredentialType;
+
+        public constructor(known?: KnownCredentialType, value?: string, forgot?: ForgotCredentialType) {
+            this.known = known;
+            this.value = value;
+            this.forgot = forgot;
+        }
+    }
+
+    export class ResetPasswordRequest {
+        public token: string;
+        public password: string;
+
+        public constructor(token?: string, password?: string) {
+            this.token = token;
+            this.password = password;
+        }
+    }
+
     class ApiBase<T> {
         private url: string;
         private ctrlr: ApiController;
@@ -546,6 +579,8 @@ namespace org.usd232.robotics.management.apis {
         public setSetting = new ParameterizedApi<StatusResponse, SetSettingRequest>("/setSetting", this);
         public impersonate = new ParameterizedApi<LoginResponse, number>("/impersonate", this);
         public eventAttendance = new CollectionApi<EventAttendance, number>("/eventdata", this);
+        public forgotCredentials = new ParameterizedApi<StatusResponse, ForgotCredentialsRequest>("/forgot", this);
+        public resetPassword = new ParameterizedApi<StatusResponse, ResetPasswordRequest>("/reset", this);
 
         public setServerUrl(url: string) {
             if ( url.match(/^!.*$/) ) {

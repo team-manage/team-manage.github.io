@@ -56,6 +56,18 @@
   width: 100vw;
   height: 100vh; }
 
+.forgot-container {
+  height: 100vh; }
+
+.forgot-container .valign {
+  width: 100%; }
+
+.reset-container {
+  height: 100vh; }
+
+.reset-container .valign {
+  width: 100%; }
+
 .loading {
   position: fixed;
   top: 0;
