@@ -100,7 +100,7 @@ public class UserApis
     {
         int userId = Integer.parseInt(url.substring(12, url.length() - 5));
         try (PreparedStatement st = Database.prepareStatement(
-                        "SELECT `meetings`.`id`, `meetings`.`type`, `meetings`.`name`, `meetings`.`location`, `meetings`.`date`, `meetings`.`signup`, `attendance`.`rsvp`,  IF(`meetings`.`date` < DATE(NOW()), `attendance`.`signin` IS NOT NULL, -1) FROM `meetings` LEFT JOIN `attendance` ON `meetings`.`id` = `attendance`.`eventid` AND `attendance`.`userid` = ?"))
+                        "SELECT `meetings`.`id`, `meetings`.`type`, `meetings`.`name`, `meetings`.`location`, `meetings`.`date`, `meetings`.`signup`, `attendance`.`rsvp`,  IF(`meetings`.`date` < DATE(NOW()), `attendance`.`signin` IS NOT NULL, -1), IF(`meetings`.`date` < DATE(NOW()), TIME(`attendance`.`signin`) > `meetings`.`start`, -1) FROM `meetings` LEFT JOIN `attendance` ON `meetings`.`id` = `attendance`.`eventid` AND `attendance`.`userid` = ?"))
         {
             st.setInt(1, userId);
             try (ResultSet res = st.executeQuery())
@@ -111,10 +111,11 @@ public class UserApis
                     Date signupDeadline = res.getDate(6);
                     Date rsvp = res.getDate(7);
                     int attended = res.getInt(8);
+                    int late = res.getInt(9);
                     events.add(new Event(res.getInt(1), EventType.valueOf(res.getString(2)), res.getString(3),
                                     res.getString(4), res.getDate(5), null,
                                     new EventSignup(signupDeadline != null, signupDeadline, rsvp == null ? null : true),
-                                    attended == -1 ? null : attended == 1));
+                                    attended == -1 ? null : attended == 1, late == -1 ? null : late == 1));
                 }
                 return events.toArray(new Event[0]);
             }

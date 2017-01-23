@@ -1,7 +1,6 @@
 package org.usd232.robotics.management.apis;
 
 import java.io.Serializable;
-
 import java.sql.Date;
 
 /**
@@ -19,50 +18,57 @@ public class Event implements Cloneable, Serializable, Comparable<Event>
      * 
      * @since 1.0
      */
-    public int         id;
+    public int                id;
     /**
      * The type of the event
      * 
      * @since 1.0
      */
-    public EventType   type;
+    public EventType          type;
     /**
      * The name of the event
      * 
      * @since 1.0
      */
-    public String      name;
+    public String             name;
     /**
      * The location the event occurs at
      * 
      * @since 1.0
      */
-    public String      location;
+    public String             location;
     /**
      * The date the event occurs on
      * 
      * @since 1.0
      */
-    public Date        date;
+    public Date               date;
     /**
      * The time the event occurs
      * 
      * @since 1.0
      */
-    public EventTime   time;
+    public EventTime          time;
     /**
      * How the event should be signed up for
      * 
      * @since 1.0
      */
-    public EventSignup signup;
+    public EventSignup        signup;
     /**
      * <code>true</code> if the member attended the event, <code>false</code> if the member did not attend the event,
      * and <code>null</code> if the event has not yet occurred.
      * 
      * @since 1.0
      */
-    public Boolean     attended;
+    public Boolean            attended;
+    /**
+     * <code>true</code> if the member was late to the event, <code>false</code> if the member was not late, and
+     * <code>null</code> if the event has not yet occurred or the member did not attend the event.
+     * 
+     * @since 1.0
+     */
+    public Boolean            late;
 
     @Override
     public Event clone()
@@ -83,6 +89,7 @@ public class Event implements Cloneable, Serializable, Comparable<Event>
         result = prime * result + ((time == null) ? 0 : time.hashCode());
         result = prime * result + ((signup == null) ? 0 : signup.hashCode());
         result = prime * result + ((attended == null) ? 0 : attended.hashCode());
+        result = prime * result + ((late == null) ? 0 : late.hashCode());
         return result;
     }
 
@@ -183,8 +190,19 @@ public class Event implements Cloneable, Serializable, Comparable<Event>
         {
             return false;
         }
+        if (late == null)
+        {
+            if (other.late != null)
+            {
+                return false;
+            }
+        }
+        else if (!late.equals(other.late))
+        {
+            return false;
+        }
         return true;
-   }
+    }
 
     @Override
     public int compareTo(Event o)
@@ -195,7 +213,9 @@ public class Event implements Cloneable, Serializable, Comparable<Event>
     @Override
     public String toString()
     {
-        return String.format("Event [id=%s, type=%s, name=%s, location=%s, date=%s, time=%s, signup=%s, attended=%s]", id, type, name, location, date, time, signup, attended);
+        return String.format(
+                        "Event [id=%s, type=%s, name=%s, location=%s, date=%s, time=%s, signup=%s, attended=%s, late=%s]",
+                        id, type, name, location, date, time, signup, attended, late);
     }
 
     /**
@@ -211,24 +231,29 @@ public class Event implements Cloneable, Serializable, Comparable<Event>
      * Default constructor
      *
      * @param id
-     *            The id of the event      
+     *            The id of the event
      * @param type
-     *            The type of the event      
+     *            The type of the event
      * @param name
-     *            The name of the event      
+     *            The name of the event
      * @param location
-     *            The location the event occurs at      
+     *            The location the event occurs at
      * @param date
-     *            The date the event occurs on      
+     *            The date the event occurs on
      * @param time
-     *            The time the event occurs      
+     *            The time the event occurs
      * @param signup
-     *            How the event should be signed up for      
+     *            How the event should be signed up for
      * @param attended
-     *            <code>true</code> if the member attended the event, <code>false</code> if the member did not attend the event,      
+     *            <code>true</code> if the member attended the event, <code>false</code> if the member did not attend
+     *            the event, and <code>null</code> if the event has not yet occurred.
+     * @param late
+     *            <code>true</code> if the member was late to the event, <code>false</code> if the member was not late,
+     *            and <code>null</code> if the event has not yet occurred or the member did not attend the event.
      * @since 1.0
      */
-    public Event(int id, EventType type, String name, String location, Date date, EventTime time, EventSignup signup, Boolean attended)
+    public Event(int id, EventType type, String name, String location, Date date, EventTime time, EventSignup signup,
+                    Boolean attended, Boolean late)
     {
         this.id = id;
         this.type = type;
@@ -238,6 +263,7 @@ public class Event implements Cloneable, Serializable, Comparable<Event>
         this.time = time;
         this.signup = signup;
         this.attended = attended;
+        this.late = late;
     }
 
     /**
@@ -249,6 +275,6 @@ public class Event implements Cloneable, Serializable, Comparable<Event>
      */
     public Event(Event obj)
     {
-        this(obj.id, obj.type, obj.name, obj.location, obj.date, obj.time, obj.signup, obj.attended);
+        this(obj.id, obj.type, obj.name, obj.location, obj.date, obj.time, obj.signup, obj.attended, obj.late);
     }
 }

@@ -173,6 +173,7 @@ namespace org.usd232.robotics.management.apis {
         public time?: EventTime;
         public signup: EventSignup;
         public attended?: boolean;
+        public late?: boolean;
 
         public constructor(id?: number, type?: EventType, name?: string, date?: string, time?: EventTime, signup?: EventSignup) {
             this.id = id;

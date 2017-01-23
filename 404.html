@@ -802,8 +802,11 @@
                         )
                     </td>
                     <td>
-                        <span ng-show="event.attended">
+                        <span ng-show="event.attended && !event.late">
                             Attended
+                        </span>
+                        <span ng-show="event.late">
+                            Late
                         </span>
                         <span ng-hide="event.attended">
                             Missed

@@ -49,7 +49,7 @@ public class EventApis
     public static Event[] getEvents(Session session) throws SQLException
     {
         try (PreparedStatement st = Database.prepareStatement(
-                        "SELECT `meetings`.`id`, `meetings`.`type`, `meetings`.`name`, `meetings`.`location`, `meetings`.`date`, `meetings`.`signup`, `attendance`.`rsvp`,  IF(`meetings`.`date` < DATE(NOW()), `attendance`.`signin` IS NOT NULL, -1) FROM `meetings` LEFT JOIN `attendance` ON `meetings`.`id` = `attendance`.`eventid` AND `attendance`.`userid` = ?"))
+                        "SELECT `meetings`.`id`, `meetings`.`type`, `meetings`.`name`, `meetings`.`location`, `meetings`.`date`, `meetings`.`signup`, `attendance`.`rsvp`,  IF(`meetings`.`date` < DATE(NOW()), `attendance`.`signin` IS NOT NULL, -1), IF(`meetings`.`date` < DATE(NOW()), TIME(`attendance`.`signin`) > `meetings`.`start`, -1) FROM `meetings` LEFT JOIN `attendance` ON `meetings`.`id` = `attendance`.`eventid` AND `attendance`.`userid` = ?"))
         {
             st.setInt(1, session.userId);
             try (ResultSet res = st.executeQuery())
@@ -60,10 +60,11 @@ public class EventApis
                     Date signupDeadline = res.getDate(6);
                     Date rsvp = res.getDate(7);
                     int attended = res.getInt(8);
+                    int late = res.getInt(9);
                     events.add(new Event(res.getInt(1), EventType.valueOf(res.getString(2)), res.getString(3),
                                     res.getString(4), res.getDate(5), null,
                                     new EventSignup(signupDeadline != null, signupDeadline, rsvp == null ? null : true),
-                                    attended == -1 ? null : attended == 1));
+                                    attended == -1 ? null : attended == 1, late == -1 ? null : late == 1));
                 }
                 return events.toArray(new Event[0]);
             }
@@ -100,7 +101,7 @@ public class EventApis
                 Date deadline = res.getDate(7);
                 return new Event(eventId, EventType.valueOf(res.getString(1)), res.getString(2), res.getString(3),
                                 res.getDate(4), new EventTime(start == null && end == null, start, end),
-                                new EventSignup(deadline != null, deadline, null), null);
+                                new EventSignup(deadline != null, deadline, null), null, null);
             }
         }
     }
@@ -285,7 +286,8 @@ public class EventApis
     {
         int eventId = Integer.parseInt(url.substring(11, url.length() - 5));
         boolean signupRequired;
-        try (PreparedStatement st = Database.prepareStatement("SELECT `signup` IS NOT NULL FROM `meetings` WHERE `id` = ?"))
+        try (PreparedStatement st = Database
+                        .prepareStatement("SELECT `signup` IS NOT NULL FROM `meetings` WHERE `id` = ?"))
         {
             st.setInt(1, eventId);
             try (ResultSet res = st.executeQuery())
