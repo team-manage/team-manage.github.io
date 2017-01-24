@@ -20,7 +20,7 @@ import org.usd232.robotics.management.apis.ForgotCredentialsRequest;
 import org.usd232.robotics.management.apis.StatusResponse;
 import org.usd232.robotics.management.apis.User;
 import org.usd232.robotics.management.server.database.Database;
-import org.usd232.robotics.management.server.messaging.MessagingController;
+import org.usd232.robotics.management.server.messaging.Messages;
 import org.usd232.robotics.management.server.routing.GetApi;
 import org.usd232.robotics.management.server.routing.PostApi;
 import org.usd232.robotics.management.server.session.RequirePermissions;
@@ -209,6 +209,7 @@ public class UserApis
                 st.setInt(1, pin);
                 st.setInt(2, userId);
                 Database.commitTransaction();
+                Messages.VERIFIED_MESSAGE.send(userId);
                 return new StatusResponse(st.executeUpdate() == 1);
             }
         }
@@ -238,6 +239,7 @@ public class UserApis
                         .prepareStatement("UPDATE `users` SET `verified` = 0, `pin` = NULL WHERE `id` = ?"))
         {
             st.setInt(1, userId);
+            Messages.UNVERIFIED_MESSAGE.send(userId);
             return new StatusResponse(st.executeUpdate() == 1);
         }
     }
@@ -312,7 +314,8 @@ public class UserApis
         switch (req.forgot)
         {
             case password:
-                String server = Base64.getEncoder().encodeToString(http.url().replaceAll("/forgot\\.json$", "").getBytes());
+                String server = Base64.getEncoder()
+                                .encodeToString(http.url().replaceAll("/forgot\\.json$", "").getBytes());
                 try (PreparedStatement st = Database.prepareStatement(
                                 "UPDATE `users` SET `resettoken` = ?, `resettokenset` = NOW() WHERE `id` = ?"))
                 {
@@ -324,34 +327,21 @@ public class UserApis
                         char[] tokenChars = new char[64];
                         for (int i = 0; i < tokenBytes.length; ++i)
                         {
-                            System.arraycopy(String.format("%02x", tokenBytes[i]).toCharArray(), 0, tokenChars, i * 2, 2);
+                            System.arraycopy(String.format("%02x", tokenBytes[i]).toCharArray(), 0, tokenChars, i * 2,
+                                            2);
                         }
                         String token = new String(tokenChars);
                         st.setString(1, token);
                         st.setInt(2, userId);
                         st.execute();
-                        MessagingController.sendMessage(
-                                        String.format("Reset password link:<br />\n<a href='https://team-manage.github.io/reset#%s/%s'>https://team-manage.github.io/reset#%s/%s</a><br />\nYou are receiving this message because someone used the forgot credentials page with your %s.  If this was not you, just forget about this message (the link will expire in an hour).",
-                                                        server, token, server, token, req.known),
-                                        userId, null);
+                        Messages.FORGOT_PASSWORD_MESSAGE.send(userId, server);
                     }
                 }
                 break;
             case username:
-                try (PreparedStatement st = Database.prepareStatement("SELECT `username` FROM `users` WHERE `id` = ?"))
+                for (int userId : users)
                 {
-                    for (int userId : users)
-                    {
-                        st.setInt(1, userId);
-                        try (ResultSet res = st.executeQuery())
-                        {
-                            res.next();
-                            MessagingController.sendMessage(
-                                            String.format("Your username is: %s.<br />\nYou are receiving this message because someone used the forgot credentials page with your %s.  If this was not you, just forget about this message.",
-                                                            res.getString(1), req.known),
-                                            userId, null);
-                        }
-                    }
+                    Messages.FORGOT_USERNAME_MESSAGE.send(userId);
                 }
                 break;
             default:

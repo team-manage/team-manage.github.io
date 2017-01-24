@@ -1,5 +1,6 @@
 package org.usd232.robotics.management.server;
 
+import org.usd232.robotics.management.server.messaging.MessagerThread;
 import org.usd232.robotics.management.server.routing.RouteMapper;
 import spark.Spark;
 
@@ -32,5 +33,6 @@ public abstract class Main
         Spark.internalServerError("{\"error\":500}");
         Spark.notFound("{\"error\":404}");
         Spark.redirect.get("/", "https://team-manage.github.io/");
+        new MessagerThread().start();
     }
 }

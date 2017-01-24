@@ -10,6 +10,7 @@ import org.usd232.robotics.management.apis.Setting;
 import org.usd232.robotics.management.apis.SettingType;
 import org.usd232.robotics.management.apis.StatusResponse;
 import org.usd232.robotics.management.server.database.Database;
+import org.usd232.robotics.management.server.database.Settings;
 import org.usd232.robotics.management.server.routing.GetApi;
 import org.usd232.robotics.management.server.routing.PostApi;
 import org.usd232.robotics.management.server.session.RequirePermissions;
@@ -69,6 +70,7 @@ public class SettingsApis
             st.setString(1, req.value);
             st.setString(2, req.key);
             st.execute();
+            Settings.modified(req.key);
             return new StatusResponse(true);
         }
     }

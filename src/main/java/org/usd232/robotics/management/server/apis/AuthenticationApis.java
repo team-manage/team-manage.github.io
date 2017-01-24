@@ -36,7 +36,7 @@ import org.usd232.robotics.management.apis.permissions.SettingsPermissions;
 import org.usd232.robotics.management.apis.permissions.SignInPermissions;
 import org.usd232.robotics.management.apis.permissions.UserPermissions;
 import org.usd232.robotics.management.server.database.Database;
-import org.usd232.robotics.management.server.messaging.MessagingController;
+import org.usd232.robotics.management.server.messaging.Messages;
 import org.usd232.robotics.management.server.routing.PostApi;
 import org.usd232.robotics.management.server.session.RequirePermissions;
 import org.usd232.robotics.management.server.session.StartedSessionResponse;
@@ -333,10 +333,8 @@ public abstract class AuthenticationApis
                 st.setString(5, "team,meeting.missed,meeting.reminders");
                 st.execute();
             }
-            MessagingController.sendMessage(
-                            "Thank you for applying to this team.  An administrator will review your application shortly.",
-                            userId, null);
             Database.commitTransaction();
+            Messages.REGISTER_MESSAGE.send(userId);
             return new StatusResponse(true);
         }
         catch (SQLException ex)
