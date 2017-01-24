@@ -38,7 +38,7 @@ public class MessagingApis
     public static Message[] getMessages(Session session) throws SQLException
     {
         try (PreparedStatement st = Database.prepareStatement(
-                        "SELECT `messages`.`sent`, IF(`users`.`name` IS NULL, 'system', `users`.`name`), `messages`.`content` FROM `messages` LEFT JOIN `users` ON `messages`.`sender` = `users`.`id` WHERE `messages`.`recipient`=?"))
+                        "SELECT `messages`.`sent`, IF(`users`.`name` IS NULL, 'system', `users`.`name`), `messages`.`content` FROM `messages` LEFT JOIN `users` ON `messages`.`sender` = `users`.`id` WHERE `messages`.`recipient`=? ORDER BY `sent` DESC"))
         {
             st.setInt(1, session.userId);
             try (ResultSet res = st.executeQuery())
